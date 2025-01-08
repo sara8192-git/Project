@@ -23,7 +23,7 @@ const AppointmentsSchema = new mongoose.Schema({
         },
    appointment_time:{
         time:{ type:Number ,require: true  },
-        date:{ type:Date ,require: true  }
+        date:{ type:Date , format:("dd-MM-yy") ,require: true  }
 
    }
 })
