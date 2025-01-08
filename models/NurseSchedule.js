@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const {format}=require('date-fns')
 const NurseScheduleSchema = new mongoose.Schema({
     nurse_id:{
         type: mongoose.Schema.Types.ObjectId,
@@ -7,6 +8,7 @@ const NurseScheduleSchema = new mongoose.Schema({
     }, 
     working_day:{
         type: Date, 
+        format:('dd-MM-yyyy'),
         require: true
     }, 
     satrt_time:{
