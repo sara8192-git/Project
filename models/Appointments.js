@@ -15,7 +15,7 @@ const AppointmentsSchema = new mongoose.Schema({
         ref: "User"
     } ,
     status: {
-        type: String,
+        type: Boolean,
         enum: ['canceled','completed','confirmed','pending'],
         default:false
         },
@@ -25,4 +25,4 @@ const AppointmentsSchema = new mongoose.Schema({
    }
 })
 
-module.exports= mongoose.model('Babies', AppointmentsSchema)
+module.exports= mongoose.model('Appointments', AppointmentsSchema)
