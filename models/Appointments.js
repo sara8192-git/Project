@@ -5,23 +5,28 @@ const AppointmentsSchema = new mongoose.Schema({
         require: true
     }, 
     baby_id:{
-        type: mongoose.Schema.Types.ObjectId,
-        require: true , 
-        ref: "Babies"
+        // type: mongoose.Schema.Types.ObjectId,
+        // require: true , 
+        // ref: "Babies"
+                type: String
+
     },
     nurse_id:{
         type: mongoose.Schema.Types.ObjectId,
         require: true , 
         ref: "User"
+        // type: String
+
     } ,
     status: {
-        type: Boolean,
-        enum: ['canceled','completed','confirmed','pending'],
-        default:false
+        type: String,
+        enum: ['canceled','completed','confirmed','pending']
         },
    appointment_time:{
         time:{ type:Number ,require: true  },
-        date:{ type:Date ,require: true  }
+        // date:{ type:Date ,require: true  }
+        date:{ type:Number ,require: true  }
+
    }
 })
 
