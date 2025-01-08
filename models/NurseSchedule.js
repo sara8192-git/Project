@@ -3,7 +3,7 @@ const NurseScheduleSchema = new mongoose.Schema({
     nurse_id:{
         type: mongoose.Schema.Types.ObjectId,
         require: true , 
-        ref: "Nurse"
+        ref: "User"
     }, 
     working_day:{
         type: Date, 

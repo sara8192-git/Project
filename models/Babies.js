@@ -15,7 +15,7 @@ const BabiesSchema = new mongoose.Schema({
     parent_id:{
         type: mongoose.Schema.Types.ObjectId,
         require: true , 
-        ref: "Parent"
+        ref: "User"
     }
 })
 
