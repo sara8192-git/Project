@@ -5,10 +5,9 @@ const AppointmentsSchema = new mongoose.Schema({
         require: true
     }, 
     baby_id:{
-        // type: mongoose.Schema.Types.ObjectId,
-        // require: true , 
-        // ref: "Babies"
-                type: String
+        type: mongoose.Schema.Types.ObjectId,
+        require: true , 
+        ref: "Babies"
 
     },
     nurse_id:{
@@ -24,8 +23,7 @@ const AppointmentsSchema = new mongoose.Schema({
         },
    appointment_time:{
         time:{ type:Number ,require: true  },
-        // date:{ type:Date ,require: true  }
-        date:{ type:Number ,require: true  }
+        date:{ type:Date ,require: true  }
 
    }
 })
