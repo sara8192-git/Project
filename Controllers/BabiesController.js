@@ -35,10 +35,14 @@ const updateBabies = async (req, res) => {
     if (!baby) {
         return res.status(400).json({ message: 'baby not found' })
     }
-    baby.identity = identity
-    baby.name = name
-    baby.dob = dob
-    baby.parent_id = parent_id
+    if(identity)
+        baby.identity = identity
+    if(name)
+        baby.name = name
+    if(dob)
+        baby.dob = dob
+    if(parent_id)
+        baby.parent_id = parent_id
     const updatedbaby = await baby.save()
     res.json(`'${updatedbaby.identity}' updated`)
 }

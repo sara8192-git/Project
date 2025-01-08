@@ -35,10 +35,14 @@ const updateUser = async (req, res) => {
     if (!user) {
         return res.status(400).json({ message: 'user not found' })
     }
-    user.identity = identity
-    user.name = name
-    user.email = email
-    user.role = role
+    if(identity)
+        user.identity = identity
+    if(name)
+        user.name = name
+    if(email)
+        user.email = email
+    if(role)
+         user.role = role
     const updatedUser = await user.save()
     res.json(`'${updatedUser.name}' updated`)
 }

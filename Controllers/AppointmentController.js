@@ -25,14 +25,13 @@ const createNewAppointments = async (req, res) => {
    const updateAppointment = async (req, res) => {
     const {_id, identity,baby_id,nurse_id,status,appointment_time}= req.body
     // Confirm data
-    if (!identity  ) {
-    return res.status(400).json({ message: 'fields are required' })
-    }
     // Confirm task exists to update
     const Appointments = await Appointment.findById(_id).exec()
     if (!Appointments) {
     return res.status(400).json({ message: 'Appointment not found' })
     }
+    if(identity)
+        Appointments.identity=identity
     if(baby_id)
         Appointments.baby_id=baby_id
     if(nurse_id)
