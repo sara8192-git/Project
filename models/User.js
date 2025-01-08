@@ -4,7 +4,7 @@ const UserSchema = new mongoose.Schema({
         type: String, 
         require: true
     }, 
-    Name:{
+    name:{
         type: String, 
         require: true
     }, 
@@ -18,7 +18,9 @@ const UserSchema = new mongoose.Schema({
     },
     role: {
         type: String,
-        enum: ['Secretary','Parent','Nurse','Admin'],
+        enum: ['Secretary','Parent','Nurse','Admin','guest'] ,
+        require: true 
+       
         }
 
     
