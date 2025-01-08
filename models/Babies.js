@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const {format}=require('date-fns')
 const BabiesSchema = new mongoose.Schema({
     identity:{
         type: String, 
@@ -9,7 +10,8 @@ const BabiesSchema = new mongoose.Schema({
         require: true
     }, 
     dob:{
-        type: Date, 
+        type: Date,
+        format:("dd-MM-yyyy") ,
         require: true 
     }, 
     parent_id:{
