@@ -1,5 +1,5 @@
 const mongoose = require('mongoose')
-const UsersSchema = new mongoose.Schema({
+const BabiesSchema = new mongoose.Schema({
     identity:{
         type: String, 
         require: true
@@ -16,11 +16,7 @@ const UsersSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         require: true , 
         ref: "Parent"
-    }, 
-    phone:{
-        type: String, 
-        maxLength:10
     }
 })
 
-module.exports= mongoose.model('User', UsersSchema)
+module.exports= mongoose.model('Babies', BabiesSchema)
