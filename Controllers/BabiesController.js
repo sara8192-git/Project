@@ -51,7 +51,7 @@ const updateBabies = async (req, res) => {
 }
 
 
-const deleteBabies = async (req, res) => {
+const deleteBaby = async (req, res) => {
     const {_id} = req.params
     const baby = await Babies.findById(_id).exec()
     if (!baby) {
@@ -77,7 +77,7 @@ module.exports = {
     creatNewBabie,
     getAllBabies,
     updateBabies,
-    deleteBabies,
+    deleteBaby,
     getBabiesById  
 }
 

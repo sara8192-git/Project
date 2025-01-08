@@ -12,10 +12,11 @@ app.use(cors(corsOptions))
 app.use(express.json())
 app.use(express.static("public"))
 
-app.use('/users',require('./Routes/UserRoure'))
+app.use('/user',require('./Routes/UserRoure'))
 app.use('/appointment',require('./Routes/AppointmentRoure'))
 app.use('/nurseScheduler',require('./Routes/NurseScheduleroute'))
-app.use('/baby',require('./Routes/BabiesRoure'))
+app.use('/baby',require('./Routes/BabiesRout'))
+app.use('/testResults',require('./Routes/TestResults'))
 
 mongoose.connection.once('open', () => {
     console.log('Connected to MongoDB')

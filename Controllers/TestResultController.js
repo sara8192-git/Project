@@ -15,66 +15,66 @@ const creatTestResults = async (req, res) => {
     }
 }
 
-// const getTestResults = async (req, res) => {
-//     const testResults = await TestResults.find().lean()
-//     if (!testResults?.length) {
-//         return res.status(400).json({ message: 'No testResults found' })
-//     }
-//     res.json(testResults)
-// }
+const getAllTestResults = async (req, res) => {
+    const testResults = await TestResults.find().lean()
+    if (!testResults?.length) {
+        return res.status(400).json({ message: 'No testResults found' })
+    }
+    res.json(testResults)
+}
 
 
-// const updateUser = async (req, res) => {
-//     const {_id,identity, name, email, role} = req.body
+const updateTestResults = async (req, res) => {
+    const {baby_id, nurse_id, test_date, result,_id} = req.body
 
-//     if (!_id) {
-//         return res.status(400).json({ message: "There is no user with this id" })
-//     }
+    if (!_id) {
+        return res.status(400).json({ message: "There is no testResults with this id" })
+    }
 
-//     const user = await Users.findById(_id).exec()
-//     if (!user) {
-//         return res.status(400).json({ message: 'user not found' })
-//     }
-//     if(identity)
-//         user.identity = identity
-//     if(name)
-//         user.name = name
-//     if(email)
-//         user.email = email
-//     if(role)
-//          user.role = role
-//     const updatedUser = await user.save()
-//     res.json(`'${updatedUser.name}' updated`)
-// }
-
-
-// const deleteUser = async (req, res) => {
-//     const {_id} = req.params
-//     const user = await Users.findById(_id).exec()
-//     if (!user) {
-//         return res.status(400).json({ message: 'user not found' })
-//     }
-//     const result = await user.deleteOne()
-//     const reply = ` ID ${_id} deleted`
-//     res.json("user delete successfully")
-// }
+    const testResult = await TestResults.findById(_id).exec()
+    if (!testResult) {
+        return res.status(400).json({ message: 'testResult not found' })
+    }
+    if(baby_id)
+        TestResults.baby_id = baby_id
+    if(nurse_id)
+        TestResults.nurse_id = nurse_id
+    if(test_date)
+        TestResults.test_date = test_date
+    if(result)
+        TestResults.result = result
+    const updateTestResults = await testResult.save()
+    res.json(`updated!!`)
+}
 
 
-// const getUserById = async (req, res) => {
-//     const {_id} = req.params
-//     const user = await Users.findById(_id).lean()
-//     if (!user) {
-//         return res.status(400).json({ message: 'No user found' })
-//     }
-//     res.json(user)
-// }
+const deleteTestResults = async (req, res) => {
+    const {_id} = req.params
+    const testResults = await TestResults.findById(_id).exec()
+    if (!testResults) {
+        return res.status(400).json({ message: 'testResults not found' })
+    }
+    const result = await TestResults.deleteOne()
+    const reply = ` ID ${_id} deleted`
+    res.json("testResults delete successfully")
+}
+
+
+const getUserById = async (req, res) => {
+    const {_id} = req.params
+    const testResults = await TestResults.findById(_id).lean()
+    if (!testResults) {
+        return res.status(400).json({ message: 'No testResults found' })
+    }
+    res.json(user)
+}
 
 
 module.exports = {
-    // getAllUsers,
-    creatTestResults
-    // getUserById,
-    // updateUser,
-    // deleteUser
+    getAllTestResults,
+    creatTestResults,
+    getUserById,
+    updateTestResults,
+    deleteTestResults
     
 }

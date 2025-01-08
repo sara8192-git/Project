@@ -5,7 +5,7 @@ const BabiesControler = require("../Controllers/BabiesController")
 router.get("/",BabiesControler.getAllBabies)
 router.get("/:_id",BabiesControler.getBabiesById)
 router.post("/",BabiesControler.creatNewBabie)
-router.delete("/:_id",BabiesControler.deleteBabies)
+router.delete("/:_id",BabiesControler.deleteBaby)
 router.put("/",BabiesControler.updateBabies)
 
 module.exports = router
