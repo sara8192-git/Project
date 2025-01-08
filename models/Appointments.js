@@ -19,10 +19,10 @@ const AppointmentsSchema = new mongoose.Schema({
         enum: ['canceled','completed','confirmed','pending'],
         default:false
         },
-        appointment_time:{
-            time:{ type:Number ,require: true  },
-            date:{ type:Date ,require: true  }
-        }
+   appointment_time:{
+        time:{ type:Number ,require: true  },
+        date:{ type:Date ,require: true  }
+   }
 })
 
 module.exports= mongoose.model('Babies', AppointmentsSchema)
