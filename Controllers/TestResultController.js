@@ -36,13 +36,13 @@ const updateTestResults = async (req, res) => {
         return res.status(400).json({ message: 'testResult not found' })
     }
     if(baby_id)
-        TestResults.baby_id = baby_id
+        testResult.baby_id = baby_id
     if(nurse_id)
-        TestResults.nurse_id = nurse_id
+        testResult.nurse_id = nurse_id
     if(test_date)
-        TestResults.test_date = test_date
+        testResult.test_date = test_date
     if(result)
-        TestResults.result = result
+        testResult.result = result
     const updateTestResults = await testResult.save()
     res.json(`updated!!`)
 }
@@ -56,7 +56,7 @@ const deleteTestResults = async (req, res) => {
     }
     const result = await TestResults.deleteOne()
     const reply = ` ID ${_id} deleted`
-    res.json("testResults delete successfully")
+    res.json(reply)
 }
 
 
@@ -66,7 +66,7 @@ const getTestResultById = async (req, res) => {
     if (!testResults) {
         return res.status(400).json({ message: 'No testResults found' })
     }
-    res.json(user)
+    res.json(testResults)
 }
 
 
@@ -76,5 +76,5 @@ module.exports = {
     getTestResultById,
     updateTestResults,
     deleteTestResults
-    
+   // 
 }

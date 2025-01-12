@@ -12,11 +12,12 @@ const TestResultsSchema = new mongoose.Schema({
     }, 
     test_date:{
         time:{ type: Number, required: true },
-        day :{ type: Date, required: true }, 
-        require: true 
+        day :{ type: Date, required: true }
+       
     },
     result:{
-        type: Object, 
+        //object
+        type: Number, 
         require: true 
     }
 }
