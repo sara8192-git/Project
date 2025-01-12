@@ -60,7 +60,7 @@ const deleteTestResults = async (req, res) => {
 }
 
 
-const getUserById = async (req, res) => {
+const getTestResultById = async (req, res) => {
     const {_id} = req.params
     const testResults = await TestResults.findById(_id).lean()
     if (!testResults) {
@@ -73,7 +73,7 @@ const getUserById = async (req, res) => {
 module.exports = {
     getAllTestResults,
     creatTestResults,
-    getUserById,
+    getTestResultById,
     updateTestResults,
     deleteTestResults
     

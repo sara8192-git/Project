@@ -16,7 +16,7 @@ app.use('/user',require('./Routes/UserRoure'))
 app.use('/appointment',require('./Routes/AppointmentRoure'))
 app.use('/nurseScheduler',require('./Routes/NurseScheduleroute'))
 app.use('/baby',require('./Routes/BabiesRout'))
-app.use('/testResults',require('./Routes/TestResults'))
+app.use('/testResults',require('./Routes/TestResultRout'))
 
 mongoose.connection.once('open', () => {
     console.log('Connected to MongoDB')
