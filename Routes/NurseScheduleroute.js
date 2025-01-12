@@ -1,9 +1,13 @@
 const express = require("express")
 const router = express.Router()
+const secretaryMW = require("../middleware/secretaryMW")
+const nurseMW = require("../middleware/nurseMW")
+const administerMW = require("../middleware/administerMW")
 const NurseScheduleControllers = require("../Controllers/NurseScheduleControllers")
- router.get("/",NurseScheduleControllers.getAllNurseSchedule)
-router.get("/:_id", NurseScheduleControllers.getNurseScheduleById)
-router.post("/", NurseScheduleControllers.createNewNurseSchedule)
- router.delete("/:_id",NurseScheduleControllers.deleteNurseSchedule)
- router.put("/",NurseScheduleControllers.updateNurseSchedule)
+
+ router.get("/",secretaryMW,NurseScheduleControllers.getAllNurseSchedule)
+router.get("/:_id", [secretaryMW,nurseMW],NurseScheduleControllers.getNurseScheduleById)
+router.post("/", secretaryMW, NurseScheduleControllers.createNewNurseSchedule)
+ router.delete("/:_id",secretaryMW, NurseScheduleControllers.deleteNurseSchedule)
+ router.put("/", [secretaryMW,nurseMW],NurseScheduleControllers.updateNurseSchedule)
 module.exports = router

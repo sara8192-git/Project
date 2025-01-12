@@ -20,11 +20,12 @@ app.get("/", (req, res) => { res.send("This is home page") })
 app.use(verifyJWT)
 app.use('/user',require('./Routes/UserRoure'))
 app.use('/appointment',require('./Routes/AppointmentRoure'))
-app.use('/nurseScheduler',require('./Routes/NurseScheduleroute'))
+
 app.use('/baby',require('./Routes/BabiesRout'))
 app.use('/testResults',require('./Routes/TestResultRout'))
 app.use("/auth", require("./Routes/authRoutes"))
 
+app.use('/nurseScheduler',require('./Routes/NurseScheduleroute'))
 mongoose.connection.once('open', () => {
     console.log('Connected to MongoDB')
     app.listen(PORT, () => console.log(`Server running on port
