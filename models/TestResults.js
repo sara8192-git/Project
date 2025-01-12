@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const {format}=require('date-fns')
 const TestResultsSchema = new mongoose.Schema({
     baby_id:{
         type: mongoose.Schema.Types.ObjectId,
@@ -12,7 +13,7 @@ const TestResultsSchema = new mongoose.Schema({
     }, 
     test_date:{
         time:{ type: Number, required: true },
-        day :{ type: Date, required: true }
+        day :{ type: Date, format:('dd-MM-yyyy'), required: true }
        
     },
     result:{
