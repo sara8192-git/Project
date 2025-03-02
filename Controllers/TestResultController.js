@@ -80,7 +80,7 @@ const deleteTestResults = async (req, res) => {
     }
 }
 
-
+// קבלת תוצאות בדיקות לפי מזהה חולה
 const getTestResultById = async (req, res) => {
     try {
         const { _id } = req.params
@@ -98,24 +98,8 @@ const getTestResultById = async (req, res) => {
         return res.status(500).json({ message: 'Error fetching test result', error })
     }
 }
-// קבלת תוצאות בדיקות לפי מזהה חולה
-const getTestResultsByPatientId = async (req, res) => {
-    try {
-        const { patient_id } = req.params
 
-        if (!patient_id) {
-            return res.status(400).json({ message: 'Patient ID is required' })
-        }
 
-        const testResults = await TestResult.find({ patient_id }).lean()
-        if (!testResults?.length) {
-            return res.status(400).json({ message: 'No test results found for this patient' })
-        }
-        res.json(testResults)
-    } catch (error) {
-        return res.status(500).json({ message: 'Error fetching test results for patient', error })
-    }
-}
 
 
 module.exports = {
@@ -124,6 +108,5 @@ module.exports = {
     getTestResultById,
     updateTestResults,
     deleteTestResults,
-    getTestResultsByPatientId//הוספתי רק פה ולא ברוט או...
-   // 
+    // 
 }
