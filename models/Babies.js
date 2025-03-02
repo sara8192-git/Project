@@ -3,22 +3,22 @@ const {format}=require('date-fns')
 const BabiesSchema = new mongoose.Schema({
     identity:{
         type: String, 
-        require: true
+        required: true
     }, 
     name:{
         type: String, 
-        require: true
+        required: true
     }, 
     dob:{
         type: Date,
         format:("dd-MM-yyyy") ,
-        require: true 
+        required: true 
     }, 
     parent_id:{
         type: mongoose.Schema.Types.ObjectId,
-        require: true , 
+        required: true , 
         ref: "User"
     }
-})
+}, { timestamps: true })
 
 module.exports= mongoose.model('Babies', BabiesSchema)

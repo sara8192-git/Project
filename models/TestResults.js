@@ -3,12 +3,12 @@ const {format}=require('date-fns')
 const TestResultsSchema = new mongoose.Schema({
     baby_id:{
         type: mongoose.Schema.Types.ObjectId,
-        require: true , 
+        required: true , 
         ref: "Babies"
     }, 
     nurse_id:{
         type: mongoose.Schema.Types.ObjectId,
-        require: true , 
+        required: true , 
         ref: "User"
     }, 
     test_date:{
@@ -19,7 +19,7 @@ const TestResultsSchema = new mongoose.Schema({
     result:{
         //object
         type: Number, 
-        require: true 
+        required: true 
     }
 }
 ,{timestamps:true})

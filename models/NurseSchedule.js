@@ -3,22 +3,22 @@ const {format}=require('date-fns')
 const NurseScheduleSchema = new mongoose.Schema({
     nurse_id:{
         type: mongoose.Schema.Types.ObjectId,
-        require: true , 
+        required: true , 
         ref: "User"
     }, 
     working_day:{
         type: Date, 
         format:('dd-MM-yyyy'),
-        require: true
+        required: true
     }, 
     satrt_time:{
         type: Number,
-        require: true 
+        required: true 
     }, 
     end_time:{
         type: Number,
-        require: true 
+        required: true 
     }
-})
+}, { timestamps: true })
 
 module.exports= mongoose.model('NurseSchedule', NurseScheduleSchema)
