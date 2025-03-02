@@ -1,72 +1,120 @@
 const TestResults = require("../models/TestResults")
 
 const creatTestResults = async (req, res) => {
-    {
-        const {baby_id, nurse_id, test_date, result} = req.body
-        if (!baby_id || !nurse_id || !test_date || !result)
-            return res.status(400).json({ message:'Mandatory fields' })
-        const testResults = await TestResults.create({baby_id, nurse_id, test_date, result})
-        if (testResults) {
-            return res.status(201).json({ message: 'New testResults created' })
+    try {
+        const { patient_id, test_type, result, date } = req.body
+        if (!patient_id || !test_type || !result || !date) {
+            return res.status(400).json({ message: 'patient_id, test_type, result, and date are required' })
         }
-        else {
-            return res.status(400).json({ message: 'Invalid testResults ' })
+
+        // בדיקת קיום תוצאה קודמת עבור החולה
+        const existingResult = await TestResult.findOne({ patient_id, test_type, date })
+        if (existingResult) {
+            return res.status(400).json({ message: 'Test result already exists for this patient on this date' })
         }
+
+        const testResult = await TestResult.create({ patient_id, test_type, result, date })
+        return res.status(201).json({ message: 'New test result created', testResult })
+    } catch (error) {
+        return res.status(500).json({ message: 'Error creating test result', error })
     }
 }
 
 const getAllTestResults = async (req, res) => {
-    const testResults = await TestResults.find().lean()
-    if (!testResults?.length) {
-        return res.status(400).json({ message: 'No testResults found' })
+    try {
+        const testResults = await TestResult.find().lean()
+        if (!testResults?.length) {
+            return res.status(400).json({ message: 'No test results found' })
+        }
+        res.json(testResults)
+    } catch (error) {
+        return res.status(500).json({ message: 'Error fetching test results', error })
     }
-    res.json(testResults)
 }
 
 
 const updateTestResults = async (req, res) => {
-    const {baby_id, nurse_id, test_date, result,_id} = req.body
+    try {
+        const { _id, patient_id, test_type, result, date } = req.body
 
-    if (!_id) {
-        return res.status(400).json({ message: "There is no testResults with this id" })
-    }
+        if (!_id) {
+            return res.status(400).json({ message: 'Test result ID is required' })
+        }
 
-    const testResult = await TestResults.findById(_id).exec()
-    if (!testResult) {
-        return res.status(400).json({ message: 'testResult not found' })
+        const testResult = await TestResult.findById(_id).exec()
+        if (!testResult) {
+            return res.status(400).json({ message: 'Test result not found' })
+        }
+
+        testResult.patient_id = patient_id || testResult.patient_id
+        testResult.test_type = test_type || testResult.test_type
+        testResult.result = result || testResult.result
+        testResult.date = date || testResult.date
+
+        const updatedTestResult = await testResult.save()
+
+        return res.status(200).json({ message: `'${updatedTestResult.test_type}' test result updated`, updatedTestResult })
+    } catch (error) {
+        return res.status(500).json({ message: 'Error updating test result', error })
     }
-    if(baby_id)
-        testResult.baby_id = baby_id
-    if(nurse_id)
-        testResult.nurse_id = nurse_id
-    if(test_date)
-        testResult.test_date = test_date
-    if(result)
-        testResult.result = result
-    const updateTestResults = await testResult.save()
-    res.json(`updated!!`)
 }
 
 
 const deleteTestResults = async (req, res) => {
-    const {_id} = req.params
-    const testResults = await TestResults.findById(_id).exec()
-    if (!testResults) {
-        return res.status(400).json({ message: 'testResults not found' })
+    try {
+        const { _id } = req.params
+
+        if (!_id) {
+            return res.status(400).json({ message: 'Test result ID is required' })
+        }
+
+        const testResult = await TestResult.findById(_id).exec()
+        if (!testResult) {
+            return res.status(400).json({ message: 'Test result not found' })
+        }
+
+        await testResult.deleteOne()
+        return res.status(200).json({ message: `Test result with ID ${_id} deleted` })
+    } catch (error) {
+        return res.status(500).json({ message: 'Error deleting test result', error })
     }
-    const result = await TestResults.deleteOne()
-    const reply = ` ID ${_id} deleted`
-    res.json(reply)
 }
 
 
 const getTestResultById = async (req, res) => {
-    const {_id} = req.params
-    const testResults = await TestResults.findById(_id).lean()
-    if (!testResults) {
-        return res.status(400).json({ message: 'No testResults found' })
+    try {
+        const { _id } = req.params
+
+        if (!_id) {
+            return res.status(400).json({ message: 'Test result ID is required' })
+        }
+
+        const testResult = await TestResult.findById(_id).lean()
+        if (!testResult) {
+            return res.status(400).json({ message: 'No test result found' })
+        }
+        res.json(testResult)
+    } catch (error) {
+        return res.status(500).json({ message: 'Error fetching test result', error })
     }
-    res.json(testResults)
+}
+// קבלת תוצאות בדיקות לפי מזהה חולה
+const getTestResultsByPatientId = async (req, res) => {
+    try {
+        const { patient_id } = req.params
+
+        if (!patient_id) {
+            return res.status(400).json({ message: 'Patient ID is required' })
+        }
+
+        const testResults = await TestResult.find({ patient_id }).lean()
+        if (!testResults?.length) {
+            return res.status(400).json({ message: 'No test results found for this patient' })
+        }
+        res.json(testResults)
+    } catch (error) {
+        return res.status(500).json({ message: 'Error fetching test results for patient', error })
+    }
 }
 
 
@@ -75,6 +123,7 @@ module.exports = {
     creatTestResults,
     getTestResultById,
     updateTestResults,
-    deleteTestResults
+    deleteTestResults,
+    getTestResultsByPatientId//הוספתי רק פה ולא ברוט או...
    // 
 }

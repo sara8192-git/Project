@@ -4,72 +4,86 @@
 const Babies = require("../models/Babies")
 
 const creatNewBabie = async (req, res) => {
-    {
-        const { identity, name, dob, parent_id} = req.body
-        if (!identity || !name || !dob || !parent_id )
-            return res.status(400).json({ message:'Mandatory fields' })
-        const baby = await Babies.create({identity, name, dob, parent_id})
+    try {
+        const { identity, name, dob, parent_id } = req.body
+        if (!identity || !name || !dob || !parent_id)
+            return res.status(400).json({ message: 'Mandatory fields are required' })
+        const baby = await Babies.create({ identity, name, dob, parent_id })
         if (baby) {
             return res.status(201).json({ message: 'New baby created' })
+        } else {
+            return res.status(400).json({ message: 'Invalid baby' })
         }
-        else {
-            return res.status(400).json({ message: 'Invalid baby ' })
-        }
+    } catch (error) {
+        return res.status(500).json({ message: 'Error creating baby', error })
     }
 }
 
 const getAllBabies = async (req, res) => {
-    const babies = await Babies.find().lean()
-    if (!babies?.length) {
-        return res.status(400).json({ message: 'No babies found' })
+    try {
+        const babies = await Babies.find().lean()
+        if (!babies?.length) {
+            return res.status(400).json({ message: 'No babies found' })
+        }
+        res.json(babies)
+    } catch (error) {
+        return res.status(500).json({ message: 'Error fetching babies', error })
     }
-    res.json(babies)
 }
 
 
 const updateBabies = async (req, res) => {
-    const {_id,identity, name, dob, parent_id} = req.body
+    try {
+        const { _id, identity, name, dob, parent_id } = req.body
 
-    if (!_id) {
-        return res.status(400).json({ message: "There is no Babies with this id" })
-    }
+        if (!_id) {
+            return res.status(400).json({ message: 'Baby ID is required' })
+        }
 
-    const baby = await Babies.findById(_id).exec()
-    if (!baby) {
-        return res.status(400).json({ message: 'baby not found' })
+        const baby = await Babies.findById(_id).exec()
+        if (!baby) {
+            return res.status(400).json({ message: 'Baby not found' })
+        }
+
+        baby.identity = identity || baby.identity
+        baby.name = name || baby.name
+        baby.dob = dob || baby.dob
+        baby.parent_id = parent_id || baby.parent_id
+
+        const updatedBaby = await baby.save()
+        res.json(`'${updatedBaby.identity}' updated`)
+    } catch (error) {
+        return res.status(500).json({ message: 'Error updating baby', error })
     }
-    if(identity)
-        baby.identity = identity
-    if(name)
-        baby.name = name
-    if(dob)
-        baby.dob = dob
-    if(parent_id)
-        baby.parent_id = parent_id
-    const updatedbaby = await baby.save()
-    res.json(`'${updatedbaby.identity}' updated`)
 }
-
 
 const deleteBaby = async (req, res) => {
-    const {_id} = req.params
-    const baby = await Babies.findById(_id).exec()
-    if (!baby) {
-        return res.status(400).json({ message: 'user not found' })
+    try {
+        const { _id } = req.params
+        const baby = await Babies.findById(_id).exec()
+        if (!baby) {
+            return res.status(400).json({ message: 'Baby not found' })
+        }
+        await baby.deleteOne()
+        res.json(`ID ${_id} deleted`)
+    } catch (error) {
+        return res.status(500).json({ message: 'Error deleting baby', error })
     }
-    const result = await baby.deleteOne()
-    const reply = ` ID ${_id} deleted`
-    res.json(reply)
 }
+
 
 
 const getBabiesById = async (req, res) => {
-    const {_id} = req.params
-    const baby = await Babies.findById(_id).lean()
-    if (!baby) {
-        return res.status(400).json({ message: 'No baby found' })
+    try {
+        const { _id } = req.params
+        const baby = await Babies.findById(_id).lean()
+        if (!baby) {
+            return res.status(400).json({ message: 'No baby found' })
+        }
+        res.json(baby)
+    } catch (error) {
+        return res.status(500).json({ message: 'Error fetching baby', error })
     }
-    res.json(baby)
 }
 
 

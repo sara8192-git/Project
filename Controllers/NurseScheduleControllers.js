@@ -1,79 +1,124 @@
 const NurseSchedule = require('../models/NurseSchedule')
 
 const createNewNurseSchedule = async (req, res) => {
-    const {nurse_id,working_day,satrt_time,end_time} = req.body
-    if (!nurse_id || !working_day || !satrt_time || !end_time )  
-        return res.status(400).json({ message: 'reqired field' })
+    try {
+        const { nurse_id, start_time, end_time } = req.body
+        if (!nurse_id || !start_time || !end_time) {
+            return res.status(400).json({ message: 'nurse_id, start_time, and end_time are required' })
+        }
 
-    const nurseSchedule = await NurseSchedule.create({nurse_id,working_day,satrt_time,end_time})
+        // בדיקת לוח זמנים קיים
+        const existingSchedule = await NurseSchedule.findOne({ nurse_id, start_time })
+        if (existingSchedule) {
+            return res.status(400).json({ message: 'Schedule already exists for this nurse at this time' })
+        }
 
-    if (nurseSchedule) { // Created
-        return res.status(201).json({ message: 'New NurseSchedule created' })
-        } else {
-        return res.status(400).json({ message: 'Invalid NurseSchedule ' })}
-   }
+        const schedule = await NurseSchedule.create({ nurse_id, start_time, end_time })
+        return res.status(201).json({ message: 'New Nurse schedule created', schedule })
+    } catch (error) {
+        return res.status(500).json({ message: 'Error creating nurse schedule', error })
+    }
+}
 
    const getAllNurseSchedule = async (req, res) => {
 
-    const nurseSchedule = await NurseSchedule.find().lean()
-    if (!nurseSchedule?.length) {
-        return res.status(400).json({ message: 'No nurseSchedule found' })
+    try {
+        const schedules = await NurseSchedule.find().lean()
+        if (!schedules?.length) {
+            return res.status(400).json({ message: 'No nurse schedules found' })
         }
-        res.json(nurseSchedule)
-        
-   }
-   const updateNurseSchedule = async (req, res) => {
-    const {nurse_id,working_day,satrt_time,end_time,_id}= req.body
-    // Confirm data
-    if (!_id) {
-        return res.status(400).json({ message: "There is no user with this id" })
+        res.json(schedules)
+    } catch (error) {
+        return res.status(500).json({ message: 'Error fetching nurse schedules', error })
     }
-
-    const nurseSchedule = await NurseSchedule.findById(_id).exec()
-    if (!nurseSchedule) {
-        return res.status(400).json({ message: 'nurseSchedule not found' })
-    }
-    if(nurse_id)
-        nurseSchedule.nurse_id = nurse_id
-    if(working_day)
-        nurseSchedule.working_day = working_day
-    if(satrt_time)
-        nurseSchedule.satrt_time = satrt_time
-    if(end_time)
-         nurseSchedule.end_time = end_time
-    const updateNurseSchedule = await nurseSchedule.save()
-    res.json(`'${updateNurseSchedule.nurse_id}' updated`)
 }
-    const deleteNurseSchedule = async (req, res) => {
-        const { _id } = req.params
-        // Confirm task exists to delete
-        const nurseSchedule = await NurseSchedule.findById(_id).exec()
+   const updateNurseSchedule = async (req, res) => {
+    try {
+        const { _id, nurse_id, start_time, end_time } = req.body
+
         if (!_id) {
-        return res.status(400).json({ message: 'NurseSchedule not found' })
+            return res.status(400).json({ message: 'Schedule ID is required' })
         }
-        const result = await NurseSchedule.deleteOne()
-        const reply=`ID ${_id} deleted`
-        //const newAppointment= await Appointment.find().lean()
-        res.json(reply)
+
+        const schedule = await NurseSchedule.findById(_id).exec()
+        if (!schedule) {
+            return res.status(400).json({ message: 'Schedule not found' })
+        }
+
+        schedule.nurse_id = nurse_id || schedule.nurse_id
+        schedule.start_time = start_time || schedule.start_time
+        schedule.end_time = end_time || schedule.end_time
+
+        const updatedSchedule = await schedule.save()
+
+        return res.status(200).json({ message: `'${updatedSchedule.nurse_id}' schedule updated`, updatedSchedule })
+    } catch (error) {
+        return res.status(500).json({ message: 'Error updating nurse schedule', error })
     }
+}
+
+    const deleteNurseSchedule = async (req, res) => {
+        try {
+            const { _id } = req.params
+    
+            if (!_id) {
+                return res.status(400).json({ message: 'Schedule ID is required' })
+            }
+    
+            const schedule = await NurseSchedule.findById(_id).exec()
+            if (!schedule) {
+                return res.status(400).json({ message: 'Schedule not found' })
+            }
+    
+            await schedule.deleteOne()
+            return res.status(200).json({ message: `Schedule with ID ${_id} deleted` })
+        } catch (error) {
+            return res.status(500).json({ message: 'Error deleting nurse schedule', error })
+        }
+    }
+    
 
     const getNurseScheduleById = async (req, res) => {
-        const {_id} = req.params
-        // Get single task from MongoDB
-        const nurseSchedule = await NurseSchedule.findById(_id).lean()
-        // If no tasks
-        if (!nurseSchedule || !_id) {
-        return res.status(400).json({ message: 'No nurseSchedule found' })
-        }
-        res.json(nurseSchedule)
-    }
-
+        try {
+            const { _id } = req.params
     
+            if (!_id) {
+                return res.status(400).json({ message: 'Schedule ID is required' })
+            }
+    
+            const schedule = await NurseSchedule.findById(_id).lean()
+            if (!schedule) {
+                return res.status(400).json({ message: 'No schedule found' })
+            }
+            res.json(schedule)
+        } catch (error) {
+            return res.status(500).json({ message: 'Error fetching nurse schedule', error })
+        }
+    }
+    // קבלת לוח זמנים לפי מזהה אחות
+const getSchedulesByNurseId = async (req, res) => {
+    try {
+        const { nurse_id } = req.params
+
+        if (!nurse_id) {
+            return res.status(400).json({ message: 'Nurse ID is required' })
+        }
+
+        const schedules = await NurseSchedule.find({ nurse_id }).lean()
+        if (!schedules?.length) {
+            return res.status(400).json({ message: 'No schedules found for this nurse' })
+        }
+        res.json(schedules)
+    } catch (error) {
+        return res.status(500).json({ message: 'Error fetching schedules for nurse', error })
+    }
+}
 
     module.exports = {
         createNewNurseSchedule,
          getAllNurseSchedule,
          updateNurseSchedule ,
          deleteNurseSchedule,
-         getNurseScheduleById
+         getNurseScheduleById,
+         getSchedulesByNurseId//רק הוספתי פה בלי ברוטר והמידל...
         }

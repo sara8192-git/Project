@@ -1,17 +1,29 @@
 const Appointment = require('../models/Appointments')
 
+ // יצירת תור חדש
 const createNewAppointments = async (req, res) => {
-    const {identity,baby_id,nurse_id,status,appointment_time} = req.body
-    if (!identity || !baby_id || !nurse_id || !appointment_time )  
-        return res.status(400).json({ message: 'identity, baby_id, nurse_id,appointment_time  are required' })
+    try {
+        const { appointment_time, status, user_id } = req.body;
 
-    const Appointments = await Appointment.create({identity,baby_id,nurse_id,status,appointment_time })
+        // בדיקה אם יש תור קיים באותו זמן
+        const existingAppointment = await Appointment.findOne({ appointment_time });
+        if (existingAppointment) {
+            return res.status(400).json({ message: 'Appointment already exists at this time' });
+        }
 
-    if (Appointments) { // Created
-        return res.status(201).json({ message: 'New Appointments created' })
-        } else {
-        return res.status(400).json({ message: 'Invalid Appointments ' })}
-   }
+        // יצירת תור חדש
+        const appointment = new Appointment({
+            appointment_time,
+            status,
+            user_id,
+        });
+
+        await appointment.save();
+        return res.status(201).json({ message: 'Appointment created successfully', appointment });
+    } catch (error) {
+        return res.status(500).json({ message: 'Error creating appointment', error });
+    }
+};
 
    const getAllAppointments = async (req, res) => {
 
@@ -22,44 +34,53 @@ const createNewAppointments = async (req, res) => {
         res.json(Appointments)
         
    }
-   const updateAppointment = async (req, res) => {
-    const {_id, identity,baby_id,nurse_id,status,appointment_time}= req.body
-    // Confirm data
-    // Confirm task exists to update
-    const Appointments = await Appointment.findById(_id).exec()
-    if (!Appointments) {
-    return res.status(400).json({ message: 'Appointment not found' })
-    }
-    if(identity)
-        Appointments.identity=identity
-    if(baby_id)
-        Appointments.baby_id=baby_id
-    if(nurse_id)
-        Appointments.nurse_id=nurse_id
-    if(status)
-        Appointments.status=status
-    if(appointment_time)
-        Appointments.appointment_time=appointment_time
-    const savedAppointments=await Appointments.save()
-    if (!savedAppointments)
-        res.status(400).send("Update Failed")
+ // עדכון תור
+const updateAppointment = async (req, res) => {
+    try {
+        const { _id, appointment_time, status } = req.body;
 
-    //const Appointments = await Appointment.find().lean()
-    res.json(`'${savedAppointments.identity}' updated`)
+        if (!_id) {
+            return res.status(400).json({ message: 'Appointment ID is required' });
+        }
+
+        // מציאת התור על ידי ID
+        const appointment = await Appointment.findById(_id).exec();
+        if (!appointment) {
+            return res.status(400).json({ message: 'Appointment not found' });
+        }
+
+        // עדכון פרטי התור
+        appointment.appointment_time = appointment_time || appointment.appointment_time;
+        appointment.status = status || appointment.status;
+
+        await appointment.save();
+        return res.status(200).json({ message: 'Appointment updated successfully', appointment });
+    } catch (error) {
+        return res.status(500).json({ message: 'Error updating appointment', error });
     }
+};
 
     const deleteAppointment = async (req, res) => {
-        const { _id } = req.params
-        // Confirm task exists to delete
-        const Appointments = await Appointment.findById(_id).exec()
-        if (!_id) {
-        return res.status(400).json({ message: 'Appointment not found' })
+        try {
+            const { _id } = req.body;
+    
+            if (!_id) {
+                return res.status(400).json({ message: 'Appointment ID is required' });
+            }
+    
+            // מציאת התור על ידי ID
+            const appointment = await Appointment.findById(_id).exec();
+            if (!appointment) {
+                return res.status(400).json({ message: 'Appointment not found' });
+            }
+    
+            // מחיקת התור
+            await Appointment.deleteOne({ _id });
+            return res.status(200).json({ message: 'Appointment deleted successfully' });
+        } catch (error) {
+            return res.status(500).json({ message: 'Error deleting appointment', error });
         }
-        const result = await Appointment.deleteOne()
-        const reply=`ID ${_id} deleted`
-        //const newAppointment= await Appointment.find().lean()
-        res.json(reply)
-    }
+    };
 
     const getAppointmentById = async (req, res) => {
         const {_id} = req.params
