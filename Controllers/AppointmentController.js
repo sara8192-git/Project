@@ -92,6 +92,7 @@ const updateAppointment = async (req, res) => {
         }
         res.json(Appointments)
     }
+    
 
     
 
