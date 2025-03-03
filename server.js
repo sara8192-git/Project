@@ -6,6 +6,7 @@ const mongoose=require("mongoose")
 const corsOptions = require('./config/corsOptions')
 const connectDB = require("./config/dbConn")
 const verifyJWT = require("./middleware/verifyJWT")
+const jwt= require('jsonwebtoken')
 const app = express()
 connectDB()
 const PORT = process.env.PORT || 7000

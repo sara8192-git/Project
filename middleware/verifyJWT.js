@@ -11,11 +11,12 @@ const verifyJWT = (req, res, next) => {
 
     jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
         if (err) {
+            console.log(err);
             return res.status(403).json({
                 message: 'Forbidden - Invalid or expired token'
             })
         }
-
+//מדוע לא מוכן לעשות את הפונקציות בפוסטמן אם יש את הif הזה??
         req.user = decoded
         next()
     })

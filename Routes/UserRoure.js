@@ -1,7 +1,7 @@
 const express = require("express")
 const router = express.Router()
 const UserControler = require("../Controllers/UserController")
-
+const verifyJWT = require("../middleware/verifyJWT")
 const secretaryMW = require("../middleware/secretaryMW")
 const nurseMW = require("../middleware/nurseMW")
 const administerMW = require("../middleware/administerMW")
