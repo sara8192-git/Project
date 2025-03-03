@@ -10,3 +10,5 @@ const administerMW = (req, res, next) => {
     
     next()
 }
+
+module.exports = administerMW
