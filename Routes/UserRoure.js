@@ -6,6 +6,7 @@ const secretaryMW = require("../middleware/secretaryMW")
 const nurseMW = require("../middleware/nurseMW")
 const administerMW = require("../middleware/administerMW")
 const parentMW = require("../middleware/parentMW")
+router.use(verifyJWT)
 
 router.get("/",[administerMW,nurseMW,secretaryMW],UserControler.getAllUsers)
 router.get("/:_id",UserControler.getUserById)

@@ -19,7 +19,6 @@ app.get("/", (req, res) => { res.send("This is home page") })
 
 
 
-app.use(verifyJWT)
 app.use('/user',require('./Routes/UserRoure'))
 app.use('/appointment',require('./Routes/AppointmentRoure'))
 
