@@ -87,12 +87,17 @@ const deleteUser = async (req, res) => {
 
 const getUserById = async (req, res) => {
     try {
+        
         const { _id } = req.params
+     
         if (!_id) {
             return res.status(400).json({ message: "User ID is required" })
         }
-
+        console.log("before user")
+        
         const user = await Users.findById(_id).lean()
+        console.log("after user")
+        console.log(user)
         if (!user) {
             return res.status(404).json({ message: 'User not found' })
         }
