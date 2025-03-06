@@ -4,7 +4,6 @@ const Appointment = require('../models/Appointments')
 const createNewAppointments = async (req, res) => {
     try {
         const { appointment_time, status, user_id } = req.body;
-
         // בדיקה אם יש תור קיים באותו זמן
         const existingAppointment = await Appointment.findOne({ appointment_time });
         if (existingAppointment) {

@@ -8,9 +8,9 @@ const TestResultController = require("../Controllers/TestResultController")
 const verifyJWT = require("../middleware/verifyJWT")
 
 router.use(verifyJWT)
-router.get("/", [nurseMW, secretaryMW], TestResultController.getAllTestResults)
-router.get("/:_id", [nurseMW, secretaryMW, parentMW], TestResultController.getTestResultById)
+router.get("/", nurseMW, TestResultController.getAllTestResults)
+router.get("/:_id", parentMW, TestResultController.getTestResultById)
 router.post("/", nurseMW, TestResultController.creatTestResults)
-router.delete("/:_id", [nurseMW, secretaryMW], TestResultController.deleteTestResults)
+router.delete("/:_id", nurseMW, TestResultController.deleteTestResults)
 router.put("/", nurseMW, TestResultController.updateTestResults)
 module.exports = router

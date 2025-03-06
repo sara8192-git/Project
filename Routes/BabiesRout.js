@@ -8,10 +8,10 @@ const BabiesControler = require("../Controllers/BabiesController")
 const verifyJWT = require("../middleware/verifyJWT")
 
 router.use(verifyJWT)
-router.get("/",[secretaryMW,nurseMW],BabiesControler.getAllBabies)
-router.get("/:_id",[secretaryMW,nurseMW, parentMW],BabiesControler.getBabiesById)
+router.get("/",nurseMW,BabiesControler.getAllBabies)
+router.get("/:_id",parentMW,BabiesControler.getBabiesById)
 router.post("/",secretaryMW,BabiesControler.creatNewBabie)
 router.delete("/:_id",administerMW,BabiesControler.deleteBaby)
-router.put("/",[secretaryMW,nurseMW, parentMW],BabiesControler.updateBabies)
+router.put("/",parentMW,BabiesControler.updateBabies)
 
 module.exports = router

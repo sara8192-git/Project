@@ -8,7 +8,7 @@ const administerMW = require("../middleware/administerMW")
 const parentMW = require("../middleware/parentMW")
 router.use(verifyJWT)
 
-router.get("/",[administerMW,nurseMW,secretaryMW],UserControler.getAllUsers)
+router.get("/",nurseMW,UserControler.getAllUsers)
 router.get("/:_id",UserControler.getUserById)
 router.post("/",UserControler.creatNewUsers)
 router.delete("/:_id",administerMW,UserControler.deleteUser)

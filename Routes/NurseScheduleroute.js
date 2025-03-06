@@ -8,9 +8,9 @@ const verifyJWT = require("../middleware/verifyJWT")
 
 router.use(verifyJWT)
 router.get("/", secretaryMW, NurseScheduleControllers.getAllNurseSchedule)
-router.get("/:_id", [secretaryMW, nurseMW], NurseScheduleControllers.getNurseScheduleById)
-router.get("/:_id", [secretaryMW, nurseMW], NurseScheduleControllers.getSchedulesByNurseId)
+router.get("/:_id",  nurseMW, NurseScheduleControllers.getNurseScheduleById)
+router.get("/:_id", nurseMW, NurseScheduleControllers.getSchedulesByNurseId)
 router.post("/", secretaryMW, NurseScheduleControllers.createNewNurseSchedule)
 router.delete("/:_id", secretaryMW, NurseScheduleControllers.deleteNurseSchedule)
-router.put("/", [secretaryMW, nurseMW], NurseScheduleControllers.updateNurseSchedule)
+router.put("/",  nurseMW, NurseScheduleControllers.updateNurseSchedule)
 module.exports = router

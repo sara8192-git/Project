@@ -26,6 +26,8 @@ const creatNewUsers = async (req, res) => {
 
 
 const getAllUsers = async (req, res) => {
+    console.log(req.user);
+
     try {
         const users = await Users.find().lean()
         if (!users?.length) {

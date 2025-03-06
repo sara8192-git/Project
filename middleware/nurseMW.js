@@ -3,8 +3,7 @@ const nurseMW = (req, res, next) => {
         return res.status(401).json({ message: 'Unauthorized' })
     }
 
-    const role = req.user.role.find(
-        r => r === "Nurse")
+    const role = req.user.role === "Nurse"||req.user.role === "Secretary"||req.user.role === "Admin"
     
     if (!role) {
         return res.status(401).json({ message: 'Nurse Unauthorized' })

@@ -3,7 +3,7 @@ const secretaryMW = (req, res, next) => {
         return res.status(401).json({ message: 'Unauthorized' })
     }
 
-    const role = req.user.role.find(r => r === "Secretary")
+    const role = req.user.role=="Secretary"||req.user.role === "Admin"
     if (!role) {
         return res.status(401).json({ message: 'Secretary Unauthorized' })
     }
