@@ -35,5 +35,3 @@ mongoose.connection.once('open', () => {
     mongoose.connection.on('error', err => {
     console.log(err)
 })
-
-
