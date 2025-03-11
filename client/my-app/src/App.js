@@ -7,6 +7,9 @@ import { Badge } from 'primereact/badge';
 import { Avatar } from 'primereact/avatar';  
 import { PrimeReactProvider, PrimeReactContext } from 'primereact/api';
 import 'primeicons/primeicons.css';
+import 'primereact/resources/themes/lara-light-blue/theme.css'; // או תנסה ערכה אחרת
+import 'primereact/resources/primereact.min.css'; 
+import 'primeicons/primeicons.css'; 
 
 function App() {
   const itemRenderer = (item) => (

@@ -36,3 +36,7 @@
     transform: rotate(360deg);
   }
 }
+
+button, a {
+  all: unset; /* אם זה קיים, תמחק את זה כי זה מסיר את כל העיצוב! */
+}
