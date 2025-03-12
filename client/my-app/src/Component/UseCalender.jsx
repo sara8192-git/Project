@@ -14,6 +14,12 @@ export default function UseCalendar() {
         const formattedDate = selectedDate.toISOString().split("T")[0]; // 🟡 המרת התאריך לפורמט YYYY-MM-DD  
         console.log("📅 תאריך שנבחר:", formattedDate); // 🟡 לוודא שהתאריך שהמשתמש בחר נקלט
 
+        const token = localStorage.getItem("authToken"); // 🟡 שליפת הטוקן מה-LocalStorage
+
+        if (!token) {
+            console.error("❌ לא נמצא טוקן, יש להתחבר!");
+            return;
+        }
         try {
             const res = await axios.get(`http://localhost:7000/appointment/${formattedDate}`);
             if (res.status === 200) {
