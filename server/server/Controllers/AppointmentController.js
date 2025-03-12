@@ -91,8 +91,36 @@ const updateAppointment = async (req, res) => {
         }
         res.json(Appointments)
     }
+    const getAppointmentsByDate = async (req, res) => {
+        try {
+            const { date } = req.params; // התאריך שמתקבל מהלקוח
+            if (!date) {
+                return res.status(400).json({ message: 'Date is required' });
+            }
     
-
+            // המרה של התאריך לאובייקט Date כדי להשוות
+            const selectedDate = new Date(date);
+            selectedDate.setHours(0, 0, 0, 0);
+            
+            const nextDay = new Date(selectedDate);
+            nextDay.setDate(nextDay.getDate() + 1);
+    
+            const appointments = await Appointments.find({
+                "appointment_time.date": {
+                    $gte: selectedDate,
+                    $lt: nextDay
+                }
+            }).lean();
+    
+            if (!appointments.length) {
+                return res.status(404).json({ message: 'No appointments found for this date' });
+            }
+    
+            res.json(appointments);
+        } catch (error) {
+            res.status(500).json({ message: 'Server error', error: error.message });
+        }
+    };
     
 
     module.exports = {
@@ -100,5 +128,6 @@ const updateAppointment = async (req, res) => {
         getAllAppointments,
         updateAppointment ,
         deleteAppointment,
-        getAppointmentById
+        getAppointmentById,
+        getAppointmentsByDate
         }
