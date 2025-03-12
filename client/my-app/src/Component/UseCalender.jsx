@@ -1,12 +1,30 @@
-import React, { useState } from "react";
+
+import React, { useState, useEffect } from "react";
 import { Calendar } from 'primereact/calendar';
 import axios from 'axios';
-
 
 export default function UseCalendar() {
     const [date, setDate] = useState(null);
     const [availableHours, setAvailableHours] = useState([]);
-    
+    const [userRole, setUserRole] = useState(null);
+
+    // 🟡 **בדיקת הרשאות משתמש בעת טעינת הקומפוננטה**
+    useEffect(() => {
+        const fetchUserRole = async () => {
+            try {
+                const res = await axios.get("http://localhost:7000/auth/user", {
+                    headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
+                });
+                if (res.status === 200) {
+                    setUserRole(res.data.role);
+                }
+            } catch (error) {
+                console.error("❌ שגיאה בקבלת הרשאות המשתמש:", error);
+            }
+        };
+        fetchUserRole();
+    }, []);
+
     // 🟡 **שליפת השעות הפנויות מהשרת עבור תאריך שנבחר**
     const fetchAvailableHours = async (selectedDate) => {
         if (!selectedDate) return;
@@ -21,7 +39,9 @@ export default function UseCalendar() {
             return;
         }
         try {
-            const res = await axios.get(`http://localhost:7000/appointment/${formattedDate}`);
+            const res = await axios.get(`http://localhost:7008/appointment/${formattedDate}`, {
+                headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
+            });
             if (res.status === 200) {
                 setAvailableHours(res.data);
             }
@@ -38,16 +58,22 @@ export default function UseCalendar() {
 
     return (
         <div className="card flex justify-content-center">
-            <Calendar value={date} onChange={handleDateChange} inline showWeek />
-            {availableHours.length > 0 && (
-                <div>
-                    <h3>שעות פנויות:</h3>
-                    <ul>
-                        {availableHours.map((hour, index) => (
-                            <li key={index}>{hour}</li>
-                        ))}
-                    </ul>
-                </div>
+            {userRole === "Secretary" || userRole === "Admin" ? (
+                <>
+                    <Calendar value={date} onChange={handleDateChange} inline showWeek />
+                    {availableHours.length > 0 && (
+                        <div>
+                            <h3>שעות פנויות:</h3>
+                            <ul>
+                                {availableHours.map((hour, index) => (
+                                    <li key={index}>{hour}</li>
+                                ))}
+                            </ul>
+                        </div>
+                    )}
+                </>
+            ) : (
+                <h3>אין לך הרשאה לצפות ביומן</h3>
             )}
         </div>
     );
