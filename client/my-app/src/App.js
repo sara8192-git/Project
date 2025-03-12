@@ -14,6 +14,8 @@ import 'primeicons/primeicons.css';
 import UseCalendar from './Component/UseCalender'
 import { Link, Navigate, Route, Routes } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom';
+import Login from "./Component/Login"; // קומפוננטת ההתחברות
+import { Button } from "primereact/button";
 
 
 
@@ -53,6 +55,16 @@ const items = [
         template: itemRenderer
     }
 ];
+const personalAreaButton = (
+    <Button 
+        label="כניסה לאזור האישי" 
+        icon="pi pi-user" 
+        className="p-button-outlined" 
+        onClick={() => navigate("/login")} // 📌 מעבר לדף ההתחברות
+    />
+);
+
+
 
 const start = <img alt="logo" src="https://primefaces.org/cdn/primereact/images/logo.png" height="40" className="mr-2"></img>;
 const end = (
@@ -65,11 +77,12 @@ const end = (
 return (
          <div className="App">
         <div className="card">
-        <Menubar model={items} start={start} end={end} />
+        return <Menubar model={items} end={personalAreaButton} />;
 
         </div>
             <Routes> 
                 <Route path='/UseCalendar' element={<UseCalendar/>} />
+                <Route path="/login" element={<Login />} />
             </Routes>
   
     </div>
