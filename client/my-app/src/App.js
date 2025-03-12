@@ -5,13 +5,20 @@ import { Menubar } from 'primereact/menubar';
 import { InputText } from 'primereact/inputtext';
 import { Badge } from 'primereact/badge';
 import { Avatar } from 'primereact/avatar';  
+import React, { useState } from "react";
 import { PrimeReactProvider, PrimeReactContext } from 'primereact/api';
 import 'primeicons/primeicons.css';
 import 'primereact/resources/themes/lara-light-blue/theme.css'; // או תנסה ערכה אחרת
 import 'primereact/resources/primereact.min.css'; 
 import 'primeicons/primeicons.css'; 
+import UseCalendar from './Component/UseCalender'
+import { Link, Navigate, Route, Routes } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom';
+
+
 
 function App() {
+
   const itemRenderer = (item) => (
     <a className="flex align-items-center p-menuitem-link">
         <span className={item.icon} />
@@ -20,6 +27,9 @@ function App() {
         {item.shortcut && <span className="ml-auto border-1 surface-border border-round surface-100 text-xs p-1">{item.shortcut}</span>}
     </a>
 );
+
+const navigate = useNavigate();
+
 const items = [
     {
         label: 'Home',
@@ -27,52 +37,14 @@ const items = [
     },
     {
         label: 'Features',
-        icon: 'pi pi-star'
+        icon: 'pi pi-star',
+        command: () => {
+            navigate('./UseCalendar')}
     },
     {
         label: 'Projects',
         icon: 'pi pi-search',
-        items: [
-            {
-                label: 'Core',
-                icon: 'pi pi-bolt',
-                shortcut: '⌘+S',
-                template: itemRenderer
-            },
-            {
-                label: 'Blocks',
-                icon: 'pi pi-server',
-                shortcut: '⌘+B',
-                template: itemRenderer
-            },
-            {
-                label: 'UI Kit',
-                icon: 'pi pi-pencil',
-                shortcut: '⌘+U',
-                template: itemRenderer
-            },
-            {
-                separator: true
-            },
-            {
-                label: 'Templates',
-                icon: 'pi pi-palette',
-                items: [
-                    {
-                        label: 'Apollo',
-                        icon: 'pi pi-palette',
-                        badge: 2,
-                        template: itemRenderer
-                    },
-                    {
-                        label: 'Ultima',
-                        icon: 'pi pi-palette',
-                        badge: 3,
-                        template: itemRenderer
-                    }
-                ]
-            }
-        ]
+        
     },
     {
         label: 'Contact',
@@ -91,8 +63,15 @@ const end = (
 );
 
 return (
-    <div className="card">
+         <div className="App">
+        <div className="card">
         <Menubar model={items} start={start} end={end} />
+
+        </div>
+            <Routes> 
+                <Route path='/UseCalendar' element={<UseCalendar/>} />
+            </Routes>
+  
     </div>
 )
 }
