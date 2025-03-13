@@ -16,6 +16,7 @@ import { Link, Navigate, Route, Routes } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom';
 import Login from "./Component/Login"; // קומפוננטת ההתחברות
 import { Button } from "primereact/button";
+import Register from "./Component/Register"; // יבוא קומפוננטת הרישום
 
 
 
@@ -56,15 +57,21 @@ const items = [
     }
 ];
 const personalAreaButton = (
-    <Button 
-        label="כניסה לאזור האישי" 
-        icon="pi pi-user" 
-        className="p-button-outlined" 
-        onClick={() => navigate("/login")} // 📌 מעבר לדף ההתחברות
-    />
+    <div className="flex gap-2">
+        <Button 
+            label="כניסה לאזור האישי" 
+            icon="pi pi-user" 
+            className="p-button-outlined" 
+            onClick={() => navigate("/login")} 
+        />
+        <Button 
+            label="הצטרפות לטיפת חלב" 
+            icon="pi pi-user-plus" 
+            className="p-button-primary" 
+            onClick={() => navigate("/register")} 
+        />
+    </div>
 );
-
-
 
 const start = <img alt="logo" src="https://primefaces.org/cdn/primereact/images/logo.png" height="40" className="mr-2"></img>;
 const end = (
@@ -77,12 +84,14 @@ const end = (
 return (
          <div className="App">
         <div className="card">
-        return <Menubar model={items} end={personalAreaButton} />;
+         <Menubar model={items} end={personalAreaButton} />
 
         </div>
             <Routes> 
                 <Route path='/UseCalendar' element={<UseCalendar/>} />
                 <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} /> {/* נתיב חדש להרשמה */}
+
             </Routes>
   
     </div>
