@@ -24,6 +24,7 @@ export default function Login() {
             if (response.status === 200) {
                 const token = response.data.token;
                 localStorage.setItem("token", token); // 🔒 שמירת הטוקן ב-localStorage
+                //להעביר לניתוב של דף הבית או האזור האישי
                 navigate("/personal-area"); // ⬅️ מעבר לאזור האישי לאחר התחברות מוצלחת
             }
         } catch (error) {
