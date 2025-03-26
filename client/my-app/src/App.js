@@ -17,7 +17,7 @@ import { useNavigate } from 'react-router-dom';
 import Login from "./Component/Login"; // קומפוננטת ההתחברות
 import { Button } from "primereact/button";
 import Register from "./Component/Register"; // יבוא קומפוננטת הרישום
-
+import Home from "./Component/Home"; 
 
 
 function App() {
@@ -36,7 +36,9 @@ const navigate = useNavigate();
 const items = [
     {
         label: 'Home',
-        icon: 'pi pi-home'
+        icon: 'pi pi-home',
+        command: () => {
+            navigate('./Home')}
     },
     {
         label: 'Features',
@@ -88,6 +90,7 @@ return (
 
         </div>
             <Routes> 
+                <Route path='/Home' element={<Home/>} />
                 <Route path='/UseCalendar' element={<UseCalendar/>} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} /> {/* נתיב חדש להרשמה */}
