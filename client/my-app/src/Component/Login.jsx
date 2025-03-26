@@ -4,10 +4,13 @@ import axios from "axios";
 import { InputText } from "primereact/inputtext";
 import { Password } from "primereact/password";
 import { Button } from "primereact/button";
+import { useDispatch, useSelector } from 'react-redux';
+import { setToken, logOut } from '../../redux/tokenSlice'
 
 export default function Login() {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
+    const dispatch = useDispatch();
     const [error, setError] = useState("");
     const navigate = useNavigate(); // 🔹 מאפשר ניווט לדפים אחרים
 
@@ -22,10 +25,9 @@ export default function Login() {
             });
 
             if (response.status === 200) {
-                const token = response.data.token;
-                localStorage.setItem("token", token); // 🔒 שמירת הטוקן ב-localStorage
-                //להעביר לניתוב של דף הבית או האזור האישי
-                navigate("/personal-area"); // ⬅️ מעבר לאזור האישי לאחר התחברות מוצלחת
+                dispatch(setToken(res.data.accessToken))
+              //שליחה לפי תפקיד
+
             }
         } catch (error) {
             setError("שם משתמש או סיסמה שגויים");
@@ -49,4 +51,25 @@ export default function Login() {
             </form>
         </div>
     );
-}
+}//קבלת הטוקן בכל מקום רצוי
+// const accesstoken=useSelector((state)=>state.token.token)
+
+//יציאת משתמש מסקנה: להפעיל רק ע"י כפתור ולא ע"י רפשרוש
+// useEffect(()=>{
+//     dispatch(logOut())
+
+// },[])
+ //חילוץ
+//  const decodeToken = (token) => {
+//     if (!token) {
+//         throw new Error('No token provided');
+//     }
+    
+//     try {
+//         const decoded = jwtDecode(token);
+//         return decoded; // Returns the content of the token
+//     } catch (error) {
+//         console.error('Token is invalid or expired', error);
+//         return null;
+//     }
+// };
