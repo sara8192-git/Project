@@ -3,7 +3,7 @@ const Users = require("../models/User")
 const creatNewUsers = async (req, res) => {
     try {
         const { identity, name, email, password, role } = req.body
-        if (!identity || !name || !email || !password || !role) {
+        if (!identity || !name || !email || !password) {
             return res.status(400).json({ message: 'All fields (identity, name, email, password, role) are required' })
         }
 
