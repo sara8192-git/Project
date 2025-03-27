@@ -24,11 +24,11 @@ export default function Login() {
                 password
             });
 
-            if (response.status === 200) {
-                dispatch(setToken(res.data.accessToken))
-              //שליחה לפי תפקיד
+            // if (response.status === 200) {
+            //     dispatch(setToken(res.data.accessToken))
+            //   //שליחה לפי תפקיד
 
-            }
+            // }
         } catch (error) {
             setError("שם משתמש או סיסמה שגויים");
         }
