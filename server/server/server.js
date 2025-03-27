@@ -8,15 +8,15 @@ const nodemailer = require("nodemailer");
 
 const app = express();
 connectDB();
-const PORT = process.env.PORT || 7000;
+const PORT = process.env.PORT || 7002;
 
 app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.static("public"));
 
-app.get("/", (req, res) => {
-    res.send("This is home page");
-});
+// app.get("/", (req, res) => {
+//     res.send("This is home page");
+// });
 
 // הגדרת הטרנספורטר לשליחת מיילים
 const transporter = nodemailer.createTransport({

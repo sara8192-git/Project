@@ -93,6 +93,8 @@ const getAppointmentById = async (req, res) => {
     res.json(Appointments)
 }
 const getAppointmentsByDate = async (req, res) => {
+
+
     try {
         // const token = req.headers['authorization']?.split(' ')[1]; // 'Bearer <token>'
         // if (!token) {
@@ -104,6 +106,7 @@ const getAppointmentsByDate = async (req, res) => {
         // if (decoded.role !== 'parent') { // אם המשתמש אינו הורה
         //     return res.status(403).json({ message: 'Forbidden: You are not authorized' });
         // }
+      
         const { date } = req.params; // התאריך שמתקבל מהלקוח
         if (!date) {
             return res.status(400).json({ message: 'Date is required' });
@@ -112,17 +115,14 @@ const getAppointmentsByDate = async (req, res) => {
         // המרה של התאריך לאובייקט Date כדי להשוות
         const selectedDate = new Date(date);
         selectedDate.setHours(0, 0, 0, 0);
-
         const nextDay = new Date(selectedDate);
         nextDay.setDate(nextDay.getDate() + 1);
+ 
 
-        const appointments = await Appointments.find({
-            "appointment_time.date": {
-                $gte: selectedDate,
-                $lt: nextDay
-            }
+        const appointments = await Appointment.find({
+            "appointment_time.date":selectedDate  
         }).lean();
-
+   console.log(appointments);
         if (!appointments.length) {
             return res.status(404).json({ message: 'No appointments found for this date' });
         }

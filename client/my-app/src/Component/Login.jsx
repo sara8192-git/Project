@@ -5,7 +5,7 @@ import { InputText } from "primereact/inputtext";
 import { Password } from "primereact/password";
 import { Button } from "primereact/button";
 import { useDispatch, useSelector } from 'react-redux';
-import { setToken, logOut } from '../../redux/tokenSlice'
+import { setToken, logOut } from '../redux/tokenSlice'
 
 export default function Login() {
     const [username, setUsername] = useState("");
@@ -19,16 +19,21 @@ export default function Login() {
         setError(""); // איפוס שגיאות קודמות
 
         try {
-            const response = await axios.post("http://localhost:7000/auth/login", {
-                username,
+            const response = await axios.post("http://localhost:7002/auth/login", {
+               email: username,//לשנות לemail
                 password
             });
 
-            // if (response.status === 200) {
-            //     dispatch(setToken(res.data.accessToken))
-            //   //שליחה לפי תפקיד
+            if (response.status === 200) {
+                console.log(response.data.user);
+                dispatch(setToken({token:response.data.accessToken,user:response.data.user}))
+                alert("aaaa")
+                if(response.data.user.role=="Parent"){
+                    navigate('./parent')
+                }
+              //שליחה לפי תפקיד
 
-            // }
+            }
         } catch (error) {
             setError("שם משתמש או סיסמה שגויים");
         }

@@ -13,7 +13,7 @@ router.use(verifyJWT)
 // router.post("/", secretaryMW, NurseScheduleControllers.createNewNurseSchedule)
 // router.delete("/:_id", secretaryMW, NurseScheduleControllers.deleteNurseSchedule)
 // router.put("/",  nurseMW, NurseScheduleControllers.updateNurseSchedule)
-router.post("/", secretaryMW, NurseScheduleControllers.createScheduleForNurse);
+router.post("/", nurseMW, NurseScheduleControllers.createScheduleForNurse);
 router.get("/available-slots", nurseMW, NurseScheduleControllers.getAvailableSlots);
 router.post("/book-slot", nurseMW, NurseScheduleControllers.bookSlot);
 

@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 const {format}=require('date-fns')
 const NurseScheduleSchema = new mongoose.Schema({
-    nurse_id:{
+    identity:{
         type: mongoose.Schema.Types.ObjectId,
         required: true , 
         ref: "User"

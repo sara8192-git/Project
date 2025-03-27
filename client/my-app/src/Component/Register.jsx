@@ -35,7 +35,7 @@ const Register = () => {
 
     const handleRegister = async () => {
         try {
-            const response = await fetch("http://localhost:7000/auth/register", {
+            const response = await fetch("http://localhost:7002/auth/register", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({

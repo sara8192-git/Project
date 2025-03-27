@@ -30,4 +30,4 @@ const AppointmentsSchema = new mongoose.Schema({
    }
 } ,{ timestamps: true })
 
-module.exports= mongoose.model('Appointments', AppointmentsSchema)
+module.exports= mongoose.model('Appointment', AppointmentsSchema)

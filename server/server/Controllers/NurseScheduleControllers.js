@@ -60,32 +60,32 @@ const NurseSchedule = require('../models/NurseSchedule')
 //     const deleteNurseSchedule = async (req, res) => {
 //         try {
 //             const { _id } = req.params
-    
+
 //             if (!_id) {
 //                 return res.status(400).json({ message: 'Schedule ID is required' })
 //             }
-    
+
 //             const schedule = await NurseSchedule.findById(_id).exec()
 //             if (!schedule) {
 //                 return res.status(400).json({ message: 'Schedule not found' })
 //             }
-    
+
 //             await schedule.deleteOne()
 //             return res.status(200).json({ message: `Schedule with ID ${_id} deleted` })
 //         } catch (error) {
 //             return res.status(500).json({ message: 'Error deleting nurse schedule', error })
 //         }
 //     }
-    
+
 
 //     const getNurseScheduleById = async (req, res) => {
 //         try {
 //             const { _id } = req.params
-    
+
 //             if (!_id) {
 //                 return res.status(400).json({ message: 'Schedule ID is required' })
 //             }
-    
+
 //             const schedule = await NurseSchedule.findById(_id).lean()
 //             if (!schedule) {
 //                 return res.status(400).json({ message: 'No schedule found' })
@@ -115,48 +115,54 @@ const NurseSchedule = require('../models/NurseSchedule')
 // }
 // פונקציה ליצירת שעות עבודה (חצי שעה הפרש)
 const generateTimeSlots = (startTime, endTime, interval = 30) => {
-    let slots = [];
-    let currentTime = startTime;
+    const [startHours, startMinutes] = startTime.split(':').map(Number);
+    const [endHours, endMinutes] = endTime.split(':').map(Number);
 
-    while (currentTime < endTime) {
+    let starttime = startHours * 60 + startMinutes; // in minutes
+    let endtime = endHours * 60 + endMinutes; // in minutes
+    let currentTime = starttime;
+
+    const slots = [];
+    while (currentTime < endtime) {
         let hours = Math.floor(currentTime / 60);
         let minutes = currentTime % 60;
         let formattedTime = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
-        
+
         slots.push({ time: formattedTime, is_booked: false });
         currentTime += interval;
     }
-
+  
     return slots;
 };
-// 🎯 יצירת מערכת שעות לאחות
+//  יצירת מערכת שעות לאחות
 const createScheduleForNurse = async (req, res) => {
     try {
-        const { nurseId, workingDay, startTime, endTime } = req.body;
-
+        const { identity, workingDay, startTime, endTime } = req.body;
         // בדיקות ולידציה
-        if (!nurseId || !workingDay || startTime === undefined || endTime === undefined) {
+        if (!identity || !workingDay || startTime === undefined || endTime === undefined) {
             return res.status(400).json({ message: "חובה לספק את כל השדות: nurseId, workingDay, startTime, endTime" });
         }
 
-        if (isNaN(startTime) || isNaN(endTime) || startTime < 0 || startTime >= 1440 || endTime <= 0 || endTime > 1440) {
-            return res.status(400).json({ message: "שעות העבודה חייבות להיות בטווח 0-1440 דקות." });
-        }
+
+        // if (isNaN(startTime) || isNaN(endTime) || startTime < 0 || startTime >= 1440 || endTime <= 0 || endTime > 1440) {
+        //     return res.status(400).json({ message: "שעות העבודה חייבות להיות בטווח 0-1440 דקות." });
+        // }
 
         if (startTime >= endTime) {
             return res.status(400).json({ message: "שעת הסיום חייבת להיות אחרי שעת ההתחלה." });
         }
 
         // בדיקה אם כבר קיימת מערכת שעות לאותו יום
-        const existingSchedule = await NurseSchedule.findOne({ nurse_id: nurseId, working_day: new Date(workingDay) });
+        const existingSchedule = await NurseSchedule.findOne({ identity: identity, working_day: new Date(workingDay) });
         if (existingSchedule) {
             return res.status(400).json({ message: "כבר קיימת מערכת שעות לאחות בתאריך זה." });
         }
 
         const availableSlots = generateTimeSlots(startTime, endTime);
+        console.log(availableSlots);
 
         const schedule = new NurseSchedule({
-            nurse_id: nurseId,
+            identity: identity,
             working_day: new Date(workingDay),
             available_slots: availableSlots
         });
@@ -223,15 +229,15 @@ const bookSlot = async (req, res) => {
     }
 };
 
-    module.exports = {
-        generateTimeSlots,
-        createScheduleForNurse,
-        getAvailableSlots,
-        bookSlot
-//         createNewNurseSchedule,
-//          getAllNurseSchedule,
-//          updateNurseSchedule ,
-//          deleteNurseSchedule,
-//          getNurseScheduleById,
-//          getSchedulesByNurseId//רק הוספתי פה בלי ברוטר והמידל...
-        }
+module.exports = {
+    generateTimeSlots,
+    createScheduleForNurse,
+    getAvailableSlots,
+    bookSlot
+    //         createNewNurseSchedule,
+    //          getAllNurseSchedule,
+    //          updateNurseSchedule ,
+    //          deleteNurseSchedule,
+    //          getNurseScheduleById,
+    //          getSchedulesByNurseId//רק הוספתי פה בלי ברוטר והמידל...
+}

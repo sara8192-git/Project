@@ -1,6 +1,6 @@
 import logo from './logo.svg';
 import './App.css';
-
+import './flags.css'
 import { Menubar } from 'primereact/menubar';
 import { InputText } from 'primereact/inputtext';
 import { Badge } from 'primereact/badge';
@@ -18,7 +18,7 @@ import Login from "./Component/Login"; // קומפוננטת ההתחברות
 import { Button } from "primereact/button";
 import Register from "./Component/Register"; // יבוא קומפוננטת הרישום
 import Home from "./Component/Home"; 
-
+import Parent from './Component/Parent'
 
 function App() {
 
@@ -94,6 +94,7 @@ return (
                 <Route path='/UseCalendar' element={<UseCalendar/>} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} /> {/* נתיב חדש להרשמה */}
+                <Route path="/parent" element={<Parent />} /> {/* נתיב חדש להרשמה */}
 
             </Routes>
   
