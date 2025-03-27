@@ -11,14 +11,18 @@ const NurseScheduleSchema = new mongoose.Schema({
         format:('dd-MM-yyyy'),
         required: true
     }, 
-    satrt_time:{
-        type: Number,
-        required: true 
-    }, 
-    end_time:{
-        type: Number,
-        required: true 
-    }
+    available_slots: [{  // מערך של שעות פנויות 
+        time: String, // למשל: "09:00"
+        is_booked: { type: Boolean, default: false }
+    }]
+    // satrt_time:{
+    //     type: Number,
+    //     required: true 
+    // }, 
+    // end_time:{
+    //     type: Number,
+    //     required: true 
+    // }
 }, { timestamps: true })
 
 module.exports= mongoose.model('NurseSchedule', NurseScheduleSchema)
