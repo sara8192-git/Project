@@ -87,10 +87,7 @@ const Register = () => {
                         <small>הסיסמה חייבת לכלול אות גדולה, אות קטנה ומספר</small>
                     </div>
 
-                    <div className="field">
-                        <label htmlFor="role">תפקיד</label>
-                        <Dropdown id="role" value={formData.role} options={roles} onChange={(e) => handleChange(e, "role")} placeholder="בחר תפקיד" />
-                    </div>
+                   
 
                     <Button label="הצטרפות" icon="pi pi-user-plus" className="p-button-success w-full mt-3" onClick={handleRegister} />
                 </div>
