@@ -23,7 +23,6 @@ export default function UseCalendar() {
             console.error("❌ לא נמצא טוקן, יש להתחבר!");
             return;
         }
-
         // 🟡 בהנחה שהשרת מחזיר את השעות הפנויות לפי אחות ו-תאריך:
         try {
             
@@ -33,14 +32,14 @@ export default function UseCalendar() {
             
 
             if (res.status === 200) {
-                setAvailableHours(res.data); // 🟡 השעות הפנויות נשמרות במצב
+                setAvailableHours(res.data); // השעות הפנויות נשמרות במצב
             }
         } catch (error) {
             console.error("❌ שגיאה בשליפת השעות הפנויות:", error);
         }
     };
 
-    // 🟡 **כאשר המשתמש לוחץ על תאריך בלוח השנה → מופעלת הפונקציה הזו**
+    //  **כאשר המשתמש לוחץ על תאריך בלוח השנה → מופעלת הפונקציה הזו**
     const handleDateChange = (e) => {
         setDate(e.value);  // 🟡 שמירת התאריך שנבחר
         fetchAvailableHours(e.value);  // 🟡 קריאה לפונקציה שמביאה שעות פנויות

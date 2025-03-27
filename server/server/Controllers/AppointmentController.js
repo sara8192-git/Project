@@ -96,33 +96,35 @@ const getAppointmentsByDate = async (req, res) => {
 
 
     try {
-        // const token = req.headers['authorization']?.split(' ')[1]; // 'Bearer <token>'
-        // if (!token) {
-        //     return res.status(401).json({ message: 'No token provided' }); // אם לא קיים טוקן
-        // }
-
-        // // פענוח הטוקן
-        // const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY); // ודא שיש לך את הסוד במשתני סביבה
-        // if (decoded.role !== 'parent') { // אם המשתמש אינו הורה
-        //     return res.status(403).json({ message: 'Forbidden: You are not authorized' });
-        // }
-      
-        const { date } = req.params; // התאריך שמתקבל מהלקוח
-        if (!date) {
-            return res.status(400).json({ message: 'Date is required' });
+        const token = req.headers['authorization']?.split(' ')[1]; // 'Bearer <token>'
+        if (!token) {
+            return res.status(401).json({ message: 'No token provided' }); // אם לא קיים טוקן
         }
 
+
+        jwt.verify(token, 'your-secret-key', (err, decoded) => {
+            if (err) {
+                return res.status(401).json({ message: 'Unauthorized' });
+            }
+
+            // כאן הטוקן פוענח בהצלחה
+            console.log(decoded); // מכיל את המידע המפורק מהטוקן
+            // אתה יכול לשמור את המידע ב-request אם יש צורך
+            req.user = decoded;
+            // עכשיו תוכל להמשיך עם הלוגיקה שלך
+        });
+        
         // המרה של התאריך לאובייקט Date כדי להשוות
         const selectedDate = new Date(date);
         selectedDate.setHours(0, 0, 0, 0);
         const nextDay = new Date(selectedDate);
         nextDay.setDate(nextDay.getDate() + 1);
- 
+
 
         const appointments = await Appointment.find({
-            "appointment_time.date":selectedDate  
+            "appointment_time.date": selectedDate
         }).lean();
-   console.log(appointments);
+        console.log(appointments);
         if (!appointments.length) {
             return res.status(404).json({ message: 'No appointments found for this date' });
         }
