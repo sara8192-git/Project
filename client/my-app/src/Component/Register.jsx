@@ -20,13 +20,7 @@ const Register = () => {
     });
     const toast = useRef(null);
     
-    const roles = [
-        { label: "Secretary", value: "Secretary" },
-        { label: "Parent", value: "Parent" },
-        { label: "Nurse", value: "Nurse" },
-        { label: "Admin", value: "Admin" }
-    ];
-
+    
     const emailDomains = ["@gmail.com", "@yahoo.com", "@outlook.com", "@hotmail.com"];
 
     const handleChange = (e, field) => {

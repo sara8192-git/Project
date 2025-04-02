@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setToken, logOut } from '../redux/tokenSlice'
 
 export default function Login() {
-    const [username, setUsername] = useState("");
+    const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const dispatch = useDispatch();
     const [error, setError] = useState("");
@@ -20,14 +20,14 @@ export default function Login() {
 
         try {
             const response = await axios.post("http://localhost:7002/auth/login", {
-               email: username,//לשנות לemail
+               email,
                 password
             });
 
             if (response.status === 200) {
-                console.log(response.data.user);
+                console.log(response.data.token);
                 dispatch(setToken({token:response.data.accessToken,user:response.data.user}))
-                alert("aaaa")
+                alert("התחברת בהצלחה!")
                 if(response.data.user.role=="Parent"){
                     navigate('./parent')
                 }
@@ -45,7 +45,7 @@ export default function Login() {
             <form onSubmit={handleLogin} className="p-fluid">
                 <div className="p-field">
                     <label>שם משתמש</label>
-                    <InputText value={username} onChange={(e) => setUsername(e.target.value)} />
+                    <InputText value={email} onChange={(e) => setEmail(e.target.value)} />
                 </div>
                 <div className="p-field">
                     <label>סיסמה</label>

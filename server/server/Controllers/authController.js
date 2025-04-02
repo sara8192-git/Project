@@ -3,8 +3,9 @@ const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
 const login = async (req, res) => {
     try {
-        const { email, password } = req.body
 
+        const { email, password } = req.body
+      
         if (!email || !password) {
             return res.status(400).json({ message: 'Both identity and password are required' })
         }
@@ -25,9 +26,12 @@ const login = async (req, res) => {
             role: foundUser[0].role,
             email: foundUser[0].email
         }
+ 
         const accessToken = jwt.sign(userInfo, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1h' })
+
         res.json({ accessToken,user:foundUser[0]})
     } catch (error) {
+        console.error("❌ שגיאה במהלך לוגין:", error);
         return res.status(500).json({ message: 'Error during login', error })
     }
 }
