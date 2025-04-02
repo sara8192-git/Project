@@ -93,15 +93,11 @@ const getAppointmentById = async (req, res) => {
     res.json(Appointments)
 }
 const getAppointmentsByDate = async (req, res) => {
-
-
     try {
         const token = req.headers['authorization']?.split(' ')[1]; // 'Bearer <token>'
         if (!token) {
             return res.status(401).json({ message: 'No token provided' }); // אם לא קיים טוקן
         }
-
-
         jwt.verify(token, 'your-secret-key', (err, decoded) => {
             if (err) {
                 return res.status(401).json({ message: 'Unauthorized' });
@@ -119,8 +115,6 @@ const getAppointmentsByDate = async (req, res) => {
         selectedDate.setHours(0, 0, 0, 0);
         const nextDay = new Date(selectedDate);
         nextDay.setDate(nextDay.getDate() + 1);
-
-
         const appointments = await Appointment.find({
             "appointment_time.date": selectedDate
         }).lean();
@@ -128,8 +122,7 @@ const getAppointmentsByDate = async (req, res) => {
         if (!appointments.length) {
             return res.status(404).json({ message: 'No appointments found for this date' });
         }
-
-        res.json(appointments);
+        return res.json(appointments);
     } catch (error) {
         res.status(500).json({ message: 'Server error', error: error.message });
     }

@@ -1,4 +1,5 @@
 const NurseSchedule = require('../models/NurseSchedule')
+const mongoose = require("mongoose");
 
 // const createNewNurseSchedule = async (req, res) => {
 //     try {
@@ -151,12 +152,25 @@ const createScheduleForNurse = async (req, res) => {
         if (startTime >= endTime) {
             return res.status(400).json({ message: "שעת הסיום חייבת להיות אחרי שעת ההתחלה." });
         }
+        // 🟡 בדיקת תקינות ObjectId
+        if (!mongoose.Types.ObjectId.isValid(identity)) { 
+            return res.status(400).json({ message: "ה-identity שסופק אינו ObjectId חוקי" }); 
+        }
+        // 🟡 המרת identity ל-ObjectId
+        const nurseId = new mongoose.Types.ObjectId(identity);
+
+        // 🟡 המרת workingDay לתאריך תקין
+        const formattedDate = new Date(workingDay);
+        if (isNaN(formattedDate.getTime())) { 
+            return res.status(400).json({ message: "תאריך לא תקין. יש להזין תאריך בפורמט YYYY-MM-DD" }); 
+        }
 
         // בדיקה אם כבר קיימת מערכת שעות לאותו יום
-        const existingSchedule = await NurseSchedule.findOne({ identity: identity, working_day: new Date(workingDay) });
-        if (existingSchedule) {
-            return res.status(400).json({ message: "כבר קיימת מערכת שעות לאחות בתאריך זה." });
-        }
+        
+    // const existingSchedule = await NurseSchedule.findOne({ identity: identity, working_day: new Date(workingDay) });
+    //     if (existingSchedule) {
+    //         return res.status(400).json({ message: "כבר קיימת מערכת שעות לאחות בתאריך זה." });
+    //     }
 
         const availableSlots = generateTimeSlots(startTime, endTime);
         console.log(availableSlots);
@@ -221,7 +235,7 @@ const bookSlot = async (req, res) => {
         }
 
         schedule.available_slots[slotIndex].is_booked = true;
-        await schedule.save();
+        await schedule.savFe();
 
         res.status(200).json({ message: "התור נשמר בהצלחה!" });
     } catch (error) {
