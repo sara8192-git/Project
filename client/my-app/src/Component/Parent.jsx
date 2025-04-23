@@ -7,34 +7,44 @@ import { Button } from "primereact/button";
 import { useDispatch, useSelector } from 'react-redux';
 import { setToken, logOut } from '../redux/tokenSlice'
 import { Menubar } from 'primereact/menubar';
+import BookedAppointmentParent from ".//BookedAppointmentParent"
+import UseCalendar from './/UseCalender'
+import {  Route, Routes } from 'react-router-dom'
 
-export default function Login() {
-   
+export default function Parent() {
+
     const navigate = useNavigate(); // 🔹 מאפשר ניווט לדפים אחרים
     const items = [
         {
             label: 'Home',
             icon: 'pi pi-home',
             command: () => {
-                navigate('./Home')}
+                navigate('./Home')
+            }
         },
         {
             label: 'Features',
             icon: 'pi pi-star',
             command: () => {
-                navigate('./UseCalendar')}
+                navigate('/parent/UseCalendar')
+            }
         },
         {
             label: 'Projects',
             icon: 'pi pi-search',
-            
+            command: () => {
+                navigate('/parent/BookedAppointmentParent')
+            }
         }
     ];
-    
+
     return (
         <div className="flex flex-column align-items-center">
-                     <Menubar model={items}  />
-
+            <Menubar model={items} />
+            <Routes>
+                <Route path='/BookedAppointmentParent' element={<BookedAppointmentParent />} />
+                <Route path='/UseCalendar' element={<UseCalendar />} />
+            </Routes>
         </div>
     );
 }

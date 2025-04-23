@@ -29,7 +29,7 @@ export default function Login() {
                 dispatch(setToken({token:response.data.accessToken,user:response.data.user}))
                 alert("התחברת בהצלחה!")
                 if(response.data.user.role=="Parent"){
-                    navigate('./parent')
+                    navigate('/parent')
                 }
               //שליחה לפי תפקיד
 
