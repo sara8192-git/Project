@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { Calendar } from 'primereact/calendar';
-import axios from 'axios';
+import axios from "axios";
 import { useDispatch, useSelector } from 'react-redux';
 
 export default function UseCalendar() {
     const [date, setDate] = useState(null);
-    const [availableHours, setAvailableHours] = useState([]);
+    const [availableHours, setAvailableHours] = useState([]);//שעות התורים לתאריך
     const [userRole, setUserRole] = useState(null);
     const [selectedTime, setSelectedTime] = useState(null); // זמן שנבחר
- const role=useSelector((state)=>state.token.user.role)
- const token=useSelector((state)=>state.token.token)
+    const role = useSelector((state) => state.token.user.role)
+    const token = useSelector((state) => state.token.token)
 
 
 
@@ -25,17 +25,23 @@ export default function UseCalendar() {
         }
         // 🟡 בהנחה שהשרת מחזיר את השעות הפנויות לפי אחות ו-תאריך:
         try {
-            
-            const res = await axios.get(`http://localhost:7002/appointment/date/${formattedDate}`, {
-                headers: { Authorization: `Bearer ${token}` }
+
+            const res = await axios.get(`http://localhost:7002/nurseScheduler/${formattedDate}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                }
             });
-            
 
             if (res.status === 200) {
-                if(res==null)
+                const availableSlots = res.data; // קבלת הנתונים
+
+
+                if (availableSlots.length == 0)
                     console.log("אין שעות עבודה ביום זה😮‍💨")
-                else
-                  setAvailableHours(res.data); // השעות הפנויות נשמרות במצב
+                else {
+                    setAvailableHours(availableSlots); // השעות הפנויות נשמרות במצב
+                    console.log(availableSlots);
+                }
             }
         } catch (error) {
             console.error("❌ שגיאה בשליפת השעות הפנויות:", error);
@@ -84,16 +90,20 @@ export default function UseCalendar() {
                         <div>
                             <h3>שעות פנויות:</h3>
                             <ul>
-                                {availableHours.map((hour, index) => (
-                                    <li key={index}>
-                                        <button
-                                            onClick={() => setSelectedTime(hour)}  // 🟡 בחר שעה
-                                            style={{ backgroundColor: selectedTime === hour ? 'lightblue' : 'white' }}
-                                        >
-                                            {hour}
-                                        </button>
-                                    </li>
-                                ))}
+                                {availableHours.map((hour, index) => {
+                                    const hours = availableHours[index];
+                                    return (
+                                        <li key={index}>
+                                            <button
+                                                onClick={() => setSelectedTime(hours)}  // 🟡 בחר שעה
+                                                className={availableHours.includes(index) ? "p-button-success" : "p-button-secondary"}
+                                                style={{ backgroundColor: selectedTime === hour ? 'lightblue' : 'white' }}
+                                            >
+                                                {hour}
+                                            </button>
+                                        </li>
+                                    )
+                                })}
                             </ul>
                         </div>
                     )}

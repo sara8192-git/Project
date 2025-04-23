@@ -26,8 +26,8 @@ const login = async (req, res) => {
             role: foundUser[0].role,
             email: foundUser[0].email
         }
- 
-        const accessToken = jwt.sign(userInfo, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1h' })
+        // { expiresIn: '1h' }להוסיף אם רוצים הגבלת זמן לטוקן
+        const accessToken = jwt.sign(userInfo, process.env.ACCESS_TOKEN_SECRET)
 
         res.json({ accessToken,user:foundUser[0]})
     } catch (error) {

@@ -132,7 +132,7 @@ const generateTimeSlots = (startTime, endTime, interval = 30) => {
         slots.push({ time: formattedTime, is_booked: false });
         currentTime += interval;
     }
-  
+
     return slots;
 };
 //  יצירת מערכת שעות לאחות
@@ -153,24 +153,24 @@ const createScheduleForNurse = async (req, res) => {
             return res.status(400).json({ message: "שעת הסיום חייבת להיות אחרי שעת ההתחלה." });
         }
         // 🟡 בדיקת תקינות ObjectId
-        if (!mongoose.Types.ObjectId.isValid(identity)) { 
-            return res.status(400).json({ message: "ה-identity שסופק אינו ObjectId חוקי" }); 
+        if (!mongoose.Types.ObjectId.isValid(identity)) {
+            return res.status(400).json({ message: "ה-identity שסופק אינו ObjectId חוקי" });
         }
         // 🟡 המרת identity ל-ObjectId
         const nurseId = new mongoose.Types.ObjectId(identity);
 
         // 🟡 המרת workingDay לתאריך תקין
         const formattedDate = new Date(workingDay);
-        if (isNaN(formattedDate.getTime())) { 
-            return res.status(400).json({ message: "תאריך לא תקין. יש להזין תאריך בפורמט YYYY-MM-DD" }); 
+        if (isNaN(formattedDate.getTime())) {
+            return res.status(400).json({ message: "תאריך לא תקין. יש להזין תאריך בפורמט YYYY-MM-DD" });
         }
 
         // בדיקה אם כבר קיימת מערכת שעות לאותו יום
-        
-    // const existingSchedule = await NurseSchedule.findOne({ identity: identity, working_day: new Date(workingDay) });
-    //     if (existingSchedule) {
-    //         return res.status(400).json({ message: "כבר קיימת מערכת שעות לאחות בתאריך זה." });
-    //     }
+
+        // const existingSchedule = await NurseSchedule.findOne({ identity: identity, working_day: new Date(workingDay) });
+        //     if (existingSchedule) {
+        //         return res.status(400).json({ message: "כבר קיימת מערכת שעות לאחות בתאריך זה." });
+        //     }
 
         const availableSlots = generateTimeSlots(startTime, endTime);
         console.log(availableSlots);
@@ -188,19 +188,29 @@ const createScheduleForNurse = async (req, res) => {
     }
 };
 // 🎯 שליפת שעות פנויות של אחות ביום מסוים
+
 const getAvailableSlots = async (req, res) => {
+
+
     try {
-        const { nurseId, date } = req.query;
+        const { identity, working_day } = req.params;
 
-        // בדיקות ולידציה
-        if (!nurseId || !date) {
-            return res.status(400).json({ message: "יש לספק מזהה אחות ותאריך." });
+
+        if (!identity || !working_day) {
+            return res.status(400).json({ message: "יש לספק מזהה אחות ויום עבודה." });
         }
-
-        const schedule = await NurseSchedule.findOne({ nurse_id: nurseId, working_day: new Date(date) });
+        console.log(working_day + "   " + new Date(working_day + 'T00:00:00Z'));
+        console.log(working_day + "T00:00:00.000+00:00");
+        const dateToCheck = new Date(working_day);//+ 'T00:00:00Z'
+        console.log(dateToCheck);
+        // const schedule = await NurseSchedule.findOne({ _id: _id, working_day: new Date(working_day+ 'T00:00:00Z') });
+        const schedule = await NurseSchedule.findOne({
+            identity: identity,
+            working_day: dateToCheck
+        });
 
         if (!schedule) {
-            return res.status(404).json({ message: "לא נמצאה מערכת שעות לאחות בתאריך זה." });
+            return res.status(404).json({ message: "לא נמצאה מערכת שעות לאחות ביום זה." });
         }
 
         const availableSlots = schedule.available_slots.filter(slot => !slot.is_booked);
@@ -209,6 +219,7 @@ const getAvailableSlots = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
+
 // 🎯 הזמנת שעה מסוימת (עדכון סטטוס)
 const bookSlot = async (req, res) => {
     try {
@@ -243,11 +254,45 @@ const bookSlot = async (req, res) => {
     }
 };
 
+
+const getAvailablebyDate = async (req, res) => {
+
+
+    try {
+        const { working_day } = req.params;
+
+
+        if (!working_day) {
+            return res.status(400).json({ message: "יש לספק מזהה אחות ויום עבודה." });
+        }
+
+        const dateToCheck = new Date(working_day);//+ 'T00:00:00Z'
+
+        // const schedule = await NurseSchedule.findOne({ _id: _id, working_day: new Date(working_day+ 'T00:00:00Z') });
+        const schedule = await NurseSchedule.find({
+            working_day: dateToCheck
+        });
+
+        if (!schedule) {
+            return res.status(404).json({ message: "לא נמצאה מערכת שעות לאחות ביום זה." });
+        }
+        console.log(working_day);
+        const availableSlots = schedule.map(schedule => ({
+            identity: schedule.identity,
+            available_slots: schedule.available_slots.filter(slot => !slot.is_booked)
+        }));
+         return res.status(200).json(availableSlots);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
 module.exports = {
     generateTimeSlots,
     createScheduleForNurse,
     getAvailableSlots,
-    bookSlot
+    bookSlot,
+    getAvailablebyDate
     //         createNewNurseSchedule,
     //          getAllNurseSchedule,
     //          updateNurseSchedule ,

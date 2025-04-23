@@ -8,7 +8,7 @@ const NurseScheduleSchema = new mongoose.Schema({
     }, 
     working_day:{
         type: Date, 
-        format:('dd-MM-yyyy'),
+        format:('YYYY-MM-DD'),
         required: true
     }, 
     available_slots: [{  // מערך של שעות פנויות 
