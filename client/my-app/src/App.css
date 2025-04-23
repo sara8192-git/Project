@@ -27,7 +27,15 @@
 .App-link {
   color: #61dafb;
 }
+.custom-listbox .p-listbox-list .p-listbox-item {
+  color: black; /* ⭐️ צבע טקסט שחור */
+}
 
+.custom-listbox .p-listbox-list .p-listbox-item.p-highlight {
+  background-color: #fff8b3 !important; /* ⭐️ רקע צהוב לשורה שנבחרה */
+  color: black; /* ⭐️ טקסט נשאר שחור גם כשהשורה נבחרת */
+  font-weight: bold;
+}
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);

@@ -2,6 +2,9 @@ import React, { useState, useEffect } from "react";
 import { Calendar } from 'primereact/calendar';
 import axios from "axios";
 import { useDispatch, useSelector } from 'react-redux';
+import { Card } from 'primereact/card';         
+import { Button } from 'primereact/button';           
+import { ListBox } from 'primereact/listbox';
 
 export default function UseCalendar() {
     const [date, setDate] = useState(null);
@@ -33,11 +36,18 @@ export default function UseCalendar() {
             });
 
             if (res.status === 200) {
-                const availableSlots = res.data.flatMap(schedule => 
-                    schedule.available_slots.map(slot => slot.time)
-                  );; // קבלת הנתונים
+                // const availableSlots = res.data.flatMap(schedule => 
+                //     schedule.available_slots.map(slot => slot.time)
+                //   );; // קבלת הנתונים
 
-                 console.log(formattedDate)
+                //  console.log(formattedDate)
+                const availableSlots = res.data.flatMap(schedule => 
+                    schedule.available_slots.map(slot => ({
+                        label: slot.time,
+                        value: slot.time
+                    }))
+                );
+                    
                 if (availableSlots.length == 0)
                    { alert("אין שעות עבודה ביום זה😮‍💨")
                     console.log("אין שעות עבודה ביום זה😮‍💨")}
@@ -53,8 +63,10 @@ export default function UseCalendar() {
 
     //  **כאשר המשתמש לוחץ על תאריך בלוח השנה → מופעלת הפונקציה הזו**
     const handleDateChange = (e) => {
-        setDate(e.value);  // 🟡 שמירת התאריך שנבחר
-        fetchAvailableHours(e.value);  // 🟡 קריאה לפונקציה שמביאה שעות פנויות
+        setDate(e.value);            // שמירת התאריך שנבחר
+        setAvailableHours([]);       // ניקוי השעות של היום הקודם
+        setSelectedTime(null);       // ניקוי הבחירה של היום הקודם
+        fetchAvailableHours(e.value); // קריאה לפונקציה שמביאה שעות פנויות
     };
 
     // 🟡 **פונקציה להזמנת תור**
@@ -85,41 +97,51 @@ export default function UseCalendar() {
     };
 
     return (
-        <div className="card flex justify-content-center">
-            {role === "Secretary" || role === "Admin" || role === "Parent" ? (
-                <>
-                    <Calendar value={date} onChange={handleDateChange} inline showWeek />
-                    {availableHours.length > 0 && (
-                        <div>
-                            <h3>שעות פנויות:</h3>
-                            <ul>
-                                {availableHours.map((hour, index) => {
-                                    const hours = availableHours[index];
-                                    return (
-                                        <li key={index}>
-                                            <button
-                                                onClick={() => setSelectedTime(hours)}  // 🟡 בחר שעה
-                                                className={availableHours.includes(index) ? "p-button-success" : "p-button-secondary"}
-                                                style={{ backgroundColor: selectedTime === hour ? 'lightblue' : 'white' }}
-                                            >
-                                                {hour}
-                                            </button>
-                                        </li>
-                                    )
-                                })}
-                            </ul>
-                        </div>
-                    )}
-                    {selectedTime && (
-                        <div>
-                            <h4>בחרת את השעה: {selectedTime}</h4>
-                            <button onClick={handleBookSlot}>הזמן תור</button>
-                        </div>
-                    )}
-                </>
-            ) : (
-                <h3>אין לך הרשאה לצפות ביומן</h3>  // 🟡 הודעה למי שאין לו הרשאה
-            )}
-        </div>
-    );
+        <div className="card flex flex-column align-items-center justify-content-center">
+        {role === "Secretary" || role === "Admin" || role === "Parent" ? (
+            <>
+                <Calendar value={date} onChange={handleDateChange} inline showWeek />
+
+                {availableHours.length > 0 && (
+                    <div className="mt-4 w-full md:w-20rem">
+                        <h4>שעות פנויות:</h4>
+                        <ListBox
+                            value={selectedTime}
+                            onChange={(e) => setSelectedTime(e.value)}
+                            options={availableHours}
+                            optionLabel="label"
+                            className="w-full custom-listbox"    
+                            listStyle={{ maxHeight: '250px' }}
+                            itemTemplate={(option) => (
+                                <div style={{ color: 'black' }}>
+                                    {option.label}
+                                </div>
+                            )}
+                        />
+                    </div>
+                )}
+
+                {selectedTime && (
+                    <div className="mt-4">
+                        <h4>בחרת את השעה: <span style={{ color: 'gold' }}>{selectedTime}</span></h4>
+                        <Button
+                            label="הזמן תור"
+                            icon="pi pi-calendar-plus"
+                            className="p-button-warning mr-2"
+                            onClick={handleBookSlot}
+                        />
+                        <Button
+                            label="בטל תור"
+                            icon="pi pi-times"
+                            className="p-button-danger"
+                            onClick={() => setSelectedTime(null)}
+                        />
+                    </div>
+                )}
+            </>
+        ) : (
+            <h3>אין לך הרשאה לצפות ביומן</h3>
+        )}
+    </div>
+);
 }
