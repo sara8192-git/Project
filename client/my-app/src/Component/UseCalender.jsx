@@ -33,11 +33,14 @@ export default function UseCalendar() {
             });
 
             if (res.status === 200) {
-                const availableSlots = res.data; // קבלת הנתונים
+                const availableSlots = res.data.flatMap(schedule => 
+                    schedule.available_slots.map(slot => slot.time)
+                  );; // קבלת הנתונים
 
-
+                 console.log(formattedDate)
                 if (availableSlots.length == 0)
-                    console.log("אין שעות עבודה ביום זה😮‍💨")
+                   { alert("אין שעות עבודה ביום זה😮‍💨")
+                    console.log("אין שעות עבודה ביום זה😮‍💨")}
                 else {
                     setAvailableHours(availableSlots); // השעות הפנויות נשמרות במצב
                     console.log(availableSlots);

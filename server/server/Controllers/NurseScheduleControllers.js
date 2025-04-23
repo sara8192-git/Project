@@ -139,6 +139,7 @@ const generateTimeSlots = (startTime, endTime, interval = 30) => {
 const createScheduleForNurse = async (req, res) => {
     try {
         const { identity, workingDay, startTime, endTime } = req.body;
+        console.log(identity,workingDay,startTime,endTime)
         // בדיקות ולידציה
         if (!identity || !workingDay || startTime === undefined || endTime === undefined) {
             return res.status(400).json({ message: "חובה לספק את כל השדות: nurseId, workingDay, startTime, endTime" });
