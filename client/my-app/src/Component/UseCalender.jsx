@@ -32,7 +32,10 @@ export default function UseCalendar() {
             
 
             if (res.status === 200) {
-                setAvailableHours(res.data); // השעות הפנויות נשמרות במצב
+                if(res==null)
+                    console.log("אין שעות עבודה ביום זה😮‍💨")
+                else
+                  setAvailableHours(res.data); // השעות הפנויות נשמרות במצב
             }
         } catch (error) {
             console.error("❌ שגיאה בשליפת השעות הפנויות:", error);

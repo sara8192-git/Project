@@ -5,6 +5,7 @@ const parentMW = require("../middleware/parentMW")
 const verifyJWT = require("../middleware/verifyJWT")
 
 const AppointmentController = require("../Controllers/AppointmentController")
+
 router.use(verifyJWT)
 router.get("/", parentMW, AppointmentController.getAllAppointments)
 router.get("/date/:date",  parentMW, AppointmentController.getAppointmentsByDate)

@@ -19,7 +19,7 @@ const Register = () => {
         emailDomain: "@gmail.com"
     });
     const toast = useRef(null);
-    
+
     
     const emailDomains = ["@gmail.com", "@yahoo.com", "@outlook.com", "@hotmail.com"];
 

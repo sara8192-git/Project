@@ -45,8 +45,8 @@ const sendWelcomeEmail = async (email, name) => {
 };
 
 // חיבור לנתיבים
-app.use("/user", require("./Routes/UserRoure"));
-app.use("/appointment", require("./Routes/AppointmentRoure"));
+app.use("/user", require("./Routes/UserRout"));
+app.use("/appointment", require("./Routes/AppointmentRout"));
 app.use("/baby", require("./Routes/BabiesRout"));
 app.use("/testResults", require("./Routes/TestResultRout"));
 app.use("/auth", require("./Routes/authRoutes"));

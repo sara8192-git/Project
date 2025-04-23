@@ -93,40 +93,57 @@ const getAppointmentById = async (req, res) => {
     res.json(Appointments)
 }
 const getAppointmentsByDate = async (req, res) => {
+    console.log("the token:");
+    console.log(req.headers['authorization']);
     try {
+        
         const token = req.headers['authorization']?.split(' ')[1]; // 'Bearer <token>'
         if (!token) {
             return res.status(401).json({ message: 'No token provided' }); // אם לא קיים טוקן
         }
-        jwt.verify(token, 'your-secret-key', (err, decoded) => {
+
+        jwt.verify(token, 'your-secret-key', async (err, decoded) => { // הוספתי `async`
+            console.log("Decoded token:", decoded);  // הצגת המידע מהטוקן
+
             if (err) {
                 return res.status(401).json({ message: 'Unauthorized' });
             }
 
-            // כאן הטוקן פוענח בהצלחה
-            console.log(decoded); // מכיל את המידע המפורק מהטוקן
-            // אתה יכול לשמור את המידע ב-request אם יש צורך
-            req.user = decoded;
-            // עכשיו תוכל להמשיך עם הלוגיקה שלך
+            req.user = decoded; // שמירת המידע על המשתמש מהטוקן
+
+            // ✅ עכשיו נוודא שהתאריך נשלח בבקשה
+            const { date } = req.params;
+            if (!date) {
+                return res.status(400).json({ message: "Date parameter is required" });
+            }
+
+            // ✅ המרה של התאריך לפורמט Date כדי לבצע השוואה תקינה
+            const selectedDate = new Date(date);
+            selectedDate.setHours(0, 0, 0, 0);
+            
+            const nextDay = new Date(selectedDate);
+            nextDay.setDate(nextDay.getDate() + 1);
+
+            // ✅ חיפוש תורים בתאריך הנתון
+            const appointments = await Appointment.find({
+                appointment_time: { $gte: selectedDate, $lt: nextDay } // משתמשים בטווח תאריכים
+            }).lean();
+
+            console.log("Appointments found:", appointments); // 🔥 הדפסה לדיבוג
+
+            if (!appointments.length) {
+                return res.status(404).json({ message: 'No appointments found for this date' });
+            }
+
+            return res.json(appointments);
         });
-        
-        // המרה של התאריך לאובייקט Date כדי להשוות
-        const selectedDate = new Date(date);
-        selectedDate.setHours(0, 0, 0, 0);
-        const nextDay = new Date(selectedDate);
-        nextDay.setDate(nextDay.getDate() + 1);
-        const appointments = await Appointment.find({
-            "appointment_time.date": selectedDate
-        }).lean();
-        console.log(appointments);
-        if (!appointments.length) {
-            return res.status(404).json({ message: 'No appointments found for this date' });
-        }
-        return res.json(appointments);
+
     } catch (error) {
-        res.status(500).json({ message: 'Server error', error: error.message });
+        console.error("Error in getAppointmentsByDate:", error); // 🔥 דיבוג
+        return res.status(500).json({ message: 'Server error', error: error.message });
     }
 };
+
 
 
 module.exports = {
