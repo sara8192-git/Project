@@ -4,18 +4,13 @@ const jwt = require('jsonwebtoken'); // ודא שהחבילה מותקנת
 // יצירת תור חדש
 const createNewAppointments = async (req, res) => {
     try {
-        const { appointment_time, status, user_id } = req.body;
-        // בדיקה אם יש תור קיים באותו זמן
-        const existingAppointment = await Appointment.findOne({ appointment_time });
-        if (existingAppointment) {
-            return res.status(400).json({ message: 'Appointment already exists at this time' });
-        }
+        const { appointment_time, nurse_id, baby_id } = req.body;
 
         // יצירת תור חדש
         const appointment = new Appointment({
+            baby_id,
             appointment_time,
-            status,
-            user_id,
+            nurse_id,
         });
 
         await appointment.save();
@@ -144,7 +139,21 @@ const getAppointmentsByDate = async (req, res) => {
     }
 };
 
+const getAppointmentByNurseId = async (req, res) => {
+    const { nurse_id } = req.params
+    
+    if (!nurse_id) {
+        return res.status(400).json({ message: "יש לספק מזהה אחות  ." });
+    }
 
+    // Get single task from MongoDB
+    const Appointments = await Appointment.find({nurse_id:nurse_id});
+    // If no tasks
+    if (!Appointments ) {
+        return res.status(400).json({ message: 'No Appointment found' })
+    }
+    res.json(Appointments)
+}
 
 module.exports = {
     createNewAppointments,
@@ -152,5 +161,6 @@ module.exports = {
     updateAppointment,
     deleteAppointment,
     getAppointmentById,
-    getAppointmentsByDate
+    getAppointmentsByDate,
+    getAppointmentByNurseId
 }

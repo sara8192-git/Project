@@ -18,6 +18,7 @@ import { Button } from "primereact/button";
 import Register from "./Component/Register"; // יבוא קומפוננטת הרישום
 import Home from "./Component/Home"; 
 import Parent from './Component/Parent'
+import Nurse from "./Component/Nurse"
 function App() {
 
   const itemRenderer = (item) => (
@@ -70,6 +71,7 @@ return (
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} /> {/* נתיב חדש להרשמה */}
                 <Route path="/parent/*" element={<Parent />} /> {/* נתיב חדש להרשמה */}
+                <Route path="/Nurse/*" element={<Nurse />} /> {/* נתיב חדש להרשמה */}
 
             </Routes>
   
