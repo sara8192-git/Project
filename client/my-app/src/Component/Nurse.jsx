@@ -7,11 +7,10 @@ import { Button } from "primereact/button";
 import { useDispatch, useSelector } from 'react-redux';
 import { setToken, logOut } from '../redux/tokenSlice'
 import { Menubar } from 'primereact/menubar';
-import BookedAppointmentParent from ".//BookedAppointmentParent"
-import UseCalendar from './/UseCalender'
+import QueueSummaryNurse from './/QueueSummaryNurse'
 import {  Route, Routes } from 'react-router-dom'
 
-export default function Parent() {
+export default function Nurse() {
 
     const navigate = useNavigate(); // 🔹 מאפשר ניווט לדפים אחרים
     const items = [
@@ -23,10 +22,10 @@ export default function Parent() {
             }
         },
         {
-            label: 'Features',
+            label: 'QueueSummaryNurse',
             icon: 'pi pi-star',
             command: () => {
-                navigate('/parent/UseCalendar')
+                navigate('/nurse/QueueSummaryNurse')
             }
         },
         {
@@ -42,8 +41,7 @@ export default function Parent() {
         <div className="flex flex-column align-items-center">
             <Menubar model={items} />
             <Routes>
-                <Route path='/BookedAppointmentParent' element={<BookedAppointmentParent />} />
-                <Route path='/UseCalendar' element={<UseCalendar />} />
+                <Route path='/QueueSummaryNurse' element={<QueueSummaryNurse />} />
             </Routes>
         </div>
     );

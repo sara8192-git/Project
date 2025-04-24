@@ -26,10 +26,14 @@ export default function Login() {
 
             if (response.status === 200) {
                 console.log(response.data.token);
+
                 dispatch(setToken({token:response.data.accessToken,user:response.data.user}))
                 alert("התחברת בהצלחה!")
                 if(response.data.user.role=="Parent"){
-                    navigate('./parent')
+                    navigate('/parent')
+                }
+                else if(response.data.user.role=="Nurse"){
+                    navigate('/nurse')
                 }
               //שליחה לפי תפקיד
 

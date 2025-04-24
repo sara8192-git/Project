@@ -11,7 +11,6 @@ import 'primeicons/primeicons.css';
 import 'primereact/resources/themes/lara-light-blue/theme.css'; // או תנסה ערכה אחרת
 import 'primereact/resources/primereact.min.css'; 
 import 'primeicons/primeicons.css'; 
-import UseCalendar from './Component/UseCalender'
 import { Link, Navigate, Route, Routes } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom';
 import Login from "./Component/Login"; // קומפוננטת ההתחברות
@@ -19,7 +18,7 @@ import { Button } from "primereact/button";
 import Register from "./Component/Register"; // יבוא קומפוננטת הרישום
 import Home from "./Component/Home"; 
 import Parent from './Component/Parent'
-
+import Nurse from "./Component/Nurse"
 function App() {
 
   const itemRenderer = (item) => (
@@ -34,29 +33,7 @@ function App() {
 const navigate = useNavigate();
 
 const items = [
-    {
-        label: 'Home',
-        icon: 'pi pi-home',
-        command: () => {
-            navigate('./Home')}
-    },
-    {
-        label: 'Features',
-        icon: 'pi pi-star',
-        command: () => {
-            navigate('./UseCalendar')}
-    },
-    {
-        label: 'Projects',
-        icon: 'pi pi-search',
-        
-    },
-    {
-        label: 'Contact',
-        icon: 'pi pi-envelope',
-        badge: 3,
-        template: itemRenderer
-    }
+   
 ];
 const personalAreaButton = (
     <div className="flex gap-2">
@@ -91,10 +68,10 @@ return (
         </div>
             <Routes> 
                 <Route path='/Home' element={<Home/>} />
-                <Route path='/UseCalendar' element={<UseCalendar/>} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} /> {/* נתיב חדש להרשמה */}
-                <Route path="/parent" element={<Parent />} /> {/* נתיב חדש להרשמה */}
+                <Route path="/parent/*" element={<Parent />} /> {/* נתיב חדש להרשמה */}
+                <Route path="/Nurse/*" element={<Nurse />} /> {/* נתיב חדש להרשמה */}
 
             </Routes>
   

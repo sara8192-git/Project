@@ -10,6 +10,7 @@ console.log(appointment_time, nurse_id, babyId);
         // יצירת תור חדש
         const appointment = new Appointment({
             baby_id:babyId,
+            baby_id,
             appointment_time,
             nurse_id,
         });
@@ -146,7 +147,21 @@ const getAppointmentsByDate = async (req, res) => {
     }
 };
 
+const getAppointmentByNurseId = async (req, res) => {
+    const { nurse_id } = req.params
+    
+    if (!nurse_id) {
+        return res.status(400).json({ message: "יש לספק מזהה אחות  ." });
+    }
 
+    // Get single task from MongoDB
+    const Appointments = await Appointment.find({nurse_id:nurse_id});
+    // If no tasks
+    if (!Appointments ) {
+        return res.status(400).json({ message: 'No Appointment found' })
+    }
+    res.json(Appointments)
+}
 
 module.exports = {
     createNewAppointments,
@@ -154,5 +169,6 @@ module.exports = {
     updateAppointment,
     cancelAppointment,
     getAppointmentById,
-    getAppointmentsByDate
+    getAppointmentsByDate,
+    getAppointmentByNurseId
 }
