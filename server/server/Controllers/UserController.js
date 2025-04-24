@@ -108,6 +108,25 @@ const getUserById = async (req, res) => {
         return res.status(500).json({ message: 'Error fetching user', error })
     }
 }
+const getMyBabies = async (req, res) => {
+    try {
+        const { parentId } = req.params;
+        const user = await Users.findById(parentId)
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        res.status(200).json(user.babies);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Something went wrong' });
+    }
+};
+ 
+
+  
+
 
 
 module.exports = {
@@ -115,6 +134,7 @@ module.exports = {
     creatNewUsers,
     getUserById,
     updateUser,
-    deleteUser
+    deleteUser,
+    getMyBabies
     
 }

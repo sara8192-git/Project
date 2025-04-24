@@ -16,7 +16,9 @@ router.use(verifyJWT)
 // router.put("/",  nurseMW, NurseScheduleControllers.updateNurseSchedule)
 router.post("/", nurseMW, NurseScheduleControllers.createScheduleForNurse);
 router.get("/availableslots/:identity/:working_day", nurseMW, NurseScheduleControllers.getAvailableSlots);
-router.post("/book-slot", nurseMW, NurseScheduleControllers.bookSlot);
+router.put("/book-slot", NurseScheduleControllers.bookSlot);
 router.get("/:working_day", parentMW, NurseScheduleControllers.getAvailablebyDate);
+router.patch('/cancel-slot', NurseScheduleControllers.cancelSlot);
+// router.patch('/book-slot', NurseScheduleControllers.bookTimeSlot);
 
 module.exports = router

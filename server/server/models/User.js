@@ -21,8 +21,11 @@ const UserSchema = new mongoose.Schema({
         enum: ['Secretary','Parent','Nurse','Admin'] ,
         default: 'Parent' 
 
-        }
-  
+        },
+        babies: [{
+            type: mongoose.Schema.Types.ObjectId, // שדה זה יהיה מזהה של תינוק
+            ref: 'Babies' // הפנייה לקולקציית התינוקות
+        }]
 }
 ,{timestamps:true})
 

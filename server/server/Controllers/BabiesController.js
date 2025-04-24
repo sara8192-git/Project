@@ -1,24 +1,38 @@
+ 
 
-  
-
+const User = require("../models/User")
 const Babies = require("../models/Babies")
 
-const creatNewBabie = async (req, res) => {
+const creatNewBaby = async (req, res) => {
     try {
         const { identity, name, dob, parent_id } = req.body
         if (!identity || !name || !dob || !parent_id)
             return res.status(400).json({ message: 'Mandatory fields are required' })
         const baby = await Babies.create({ identity, name, dob, parent_id })
         if (baby) {
-            return res.status(201).json({ message: 'New baby created' })
+            const parent = await User.findById(parent_id);
+            if (parent) {
+                parent.babies.push(baby._id);
+                await parent.save();
+            }
+            return res.status(201).json({ message: 'New baby created',baby })
         } else {
             return res.status(400).json({ message: 'Invalid baby' })
         }
     } catch (error) {
-        return res.status(500).json({ message: 'Error creating baby', error })
+        console.error("Error creating baby:", error);
+        return res.status(500).json({ message: 'Error creating baby', error: error.message });
     }
 }
-
+const getBabiesByParent = async (req, res) => {
+    try {
+        const { parentId } = req.params;
+        const babies = await Babies.find({ parent_id: parentId });
+        res.status(200).json(babies);
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching babies', error });
+    }
+}
 const getAllBabies = async (req, res) => {
     try {
         const babies = await Babies.find().lean()
@@ -88,10 +102,11 @@ const getBabiesById = async (req, res) => {
 
 
 module.exports = {
-    creatNewBabie,
+    creatNewBaby,
     getAllBabies,
     updateBabies,
     deleteBaby,
-    getBabiesById  
+    getBabiesById,
+    getBabiesByParent
 }
 

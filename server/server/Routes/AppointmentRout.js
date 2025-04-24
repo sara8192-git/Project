@@ -11,6 +11,6 @@ router.get("/", parentMW, AppointmentController.getAllAppointments)
 router.get("/date/:date",  parentMW, AppointmentController.getAppointmentsByDate)
 router.get("/:id",  parentMW, AppointmentController.getAppointmentById)
 router.post("/",  parentMW, AppointmentController.createNewAppointments)
-router.delete("/:_id",  parentMW, AppointmentController.deleteAppointment)
+router.patch("/cancel/:_id",  parentMW, AppointmentController.cancelAppointment)
 router.put("/",  parentMW, AppointmentController.updateAppointment)
 module.exports = router

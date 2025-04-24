@@ -1,10 +1,6 @@
 const mongoose = require('mongoose')
 const {format}=require('date-fns')
-const AppointmentsSchema = new mongoose.Schema({
-    identity:{
-        type: String, 
-        required: true
-    }, 
+const AppointmentsSchema = new mongoose.Schema({ 
     baby_id:{
         type: mongoose.Schema.Types.ObjectId,
         required: true, 
@@ -24,7 +20,7 @@ const AppointmentsSchema = new mongoose.Schema({
         default: 'pending' 
         },
    appointment_time:{
-        time:{ type:Number ,require: true  },
+        time:{ type:String ,require: true  },
         date:{ type:Date , format:("dd-MM-yy") ,require: true  }
 
    }

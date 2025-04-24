@@ -2,20 +2,16 @@ const Appointment = require('../models/Appointments')
 const jwt = require('jsonwebtoken'); // ודא שהחבילה מותקנת
 
 // יצירת תור חדש
+// יצירת תור חדש
 const createNewAppointments = async (req, res) => {
     try {
-        const { appointment_time, status, user_id } = req.body;
-        // בדיקה אם יש תור קיים באותו זמן
-        const existingAppointment = await Appointment.findOne({ appointment_time });
-        if (existingAppointment) {
-            return res.status(400).json({ message: 'Appointment already exists at this time' });
-        }
-
+        const { appointment_time, nurse_id, babyId } = req.body;
+console.log(appointment_time, nurse_id, babyId);
         // יצירת תור חדש
         const appointment = new Appointment({
+            baby_id:babyId,
             appointment_time,
-            status,
-            user_id,
+            nurse_id,
         });
 
         await appointment.save();
@@ -60,10 +56,11 @@ const updateAppointment = async (req, res) => {
     }
 };
 
-const deleteAppointment = async (req, res) => {
+const cancelAppointment = async (req, res) => {
     try {
         const { _id } = req.body;
-
+        const token = req.headers['authorization']?.split(' ')[1];
+        const decoded = jwt.verify(token, 'your-secret-key');
         if (!_id) {
             return res.status(400).json({ message: 'Appointment ID is required' });
         }
@@ -73,12 +70,17 @@ const deleteAppointment = async (req, res) => {
         if (!appointment) {
             return res.status(400).json({ message: 'Appointment not found' });
         }
-
-        // מחיקת התור
-        await Appointment.deleteOne({ _id });
-        return res.status(200).json({ message: 'Appointment deleted successfully' });
+        // בדיקה שהיוזר הוא הבעלים של התור
+        if (appointment.user_id.toString() !== decoded.userId) {
+            return res.status(403).json({ message: 'You are not authorized to cancel this appointment' });
+        }
+        // עדכון סטטוס
+        appointment.status = 'מבוטל';
+        await appointment.save();
+        return res.status(200).json({ message: 'Appointment change status' });
     } catch (error) {
-        return res.status(500).json({ message: 'Error deleting appointment', error });
+        console.error("Error in cancelAppointment:", error);
+        return res.status(500).json({ message: 'Error canceling appointment', error });
     }
 };
 
@@ -96,7 +98,7 @@ const getAppointmentsByDate = async (req, res) => {
     console.log("the token:");
     console.log(req.headers['authorization']);
     try {
-        
+
         const token = req.headers['authorization']?.split(' ')[1]; // 'Bearer <token>'
         if (!token) {
             return res.status(401).json({ message: 'No token provided' }); // אם לא קיים טוקן
@@ -120,7 +122,7 @@ const getAppointmentsByDate = async (req, res) => {
             // ✅ המרה של התאריך לפורמט Date כדי לבצע השוואה תקינה
             const selectedDate = new Date(date);
             selectedDate.setHours(0, 0, 0, 0);
-            
+
             const nextDay = new Date(selectedDate);
             nextDay.setDate(nextDay.getDate() + 1);
 
@@ -150,7 +152,7 @@ module.exports = {
     createNewAppointments,
     getAllAppointments,
     updateAppointment,
-    deleteAppointment,
+    cancelAppointment,
     getAppointmentById,
     getAppointmentsByDate
 }
