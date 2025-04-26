@@ -10,7 +10,6 @@ console.log(appointment_time, nurse_id, babyId);
         // יצירת תור חדש
         const appointment = new Appointment({
             baby_id:babyId,
-            baby_id,
             appointment_time,
             nurse_id,
         });

@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setToken, logOut } from '../redux/tokenSlice'
 import { Menubar } from 'primereact/menubar';
 import BookedAppointmentParent from ".//BookedAppointmentParent"
-import UseCalendar from './/UseCalender'
+import UseCalendar from './UseCalendar';
 import {  Route, Routes } from 'react-router-dom'
 
 export default function Parent() {
