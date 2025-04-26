@@ -1,5 +1,6 @@
 const NurseSchedule = require('../models/NurseSchedule')
 const mongoose = require("mongoose");
+const { format } = require('date-fns');
 
 // const createNewNurseSchedule = async (req, res) => {
 //     try {
@@ -139,7 +140,7 @@ const generateTimeSlots = (startTime, endTime, interval = 30) => {
 const createScheduleForNurse = async (req, res) => {
     try {
         const { identity, workingDay, startTime, endTime } = req.body;
-        console.log(identity,workingDay,startTime,endTime)
+        console.log(identity, workingDay, startTime, endTime)
         // בדיקות ולידציה
         if (!identity || !workingDay || startTime === undefined || endTime === undefined) {
             return res.status(400).json({ message: "חובה לספק את כל השדות: nurseId, workingDay, startTime, endTime" });
@@ -230,8 +231,12 @@ const bookSlot = async (req, res) => {
         if (!nurseId || !date || !selectedTime) {
             return res.status(400).json({ message: "יש לספק מזהה אחות, תאריך ושעת תור." });
         }
+        console.log("kkkkkkkkk");
+        const formattedDate = format(new Date(date), 'yyyy-MM-dd');
+        console.log(nurseId, formattedDate);
 
-        const schedule = await NurseSchedule.findOne({ nurse_id: nurseId, working_day: new Date(date) });
+        const schedule = await NurseSchedule.findOne({ identity: nurseId, working_day: new Date(formattedDate) });
+        console.log(schedule);
 
         if (!schedule) {
             return res.status(404).json({ message: "לא נמצאה מערכת שעות לאחות בתאריך זה." });
@@ -247,7 +252,7 @@ const bookSlot = async (req, res) => {
         }
 
         schedule.available_slots[slotIndex].is_booked = true;
-        await schedule.savFe();
+        await schedule.save();
 
         res.status(200).json({ message: "התור נשמר בהצלחה!" });
     } catch (error) {
@@ -282,7 +287,7 @@ const getAvailablebyDate = async (req, res) => {
             identity: schedule.identity,
             available_slots: schedule.available_slots.filter(slot => !slot.is_booked)
         }));
-         return res.status(200).json(availableSlots);
+        return res.status(200).json(availableSlots);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }

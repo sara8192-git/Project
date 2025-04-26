@@ -5,10 +5,10 @@ const mongoose = require("mongoose");
 const corsOptions = require("./config/corsOptions");
 const connectDB = require("./config/dbConn");
 const nodemailer = require("nodemailer");
-
+const multer = require("multer")
 const app = express();
 connectDB();
-const PORT = process.env.PORT || 7002;
+const  PORT = process.env.PORT || 7002;
 
 app.use(cors(corsOptions));
 app.use(express.json());

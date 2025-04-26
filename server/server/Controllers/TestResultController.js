@@ -1,20 +1,54 @@
 const TestResults = require("../models/TestResults")
+const multer = require('multer');
+const path = require('path');
 
+const fileTypes = ['image/jpeg', 'image/png', 'application/pdf']; // הוסיפו סוגי קבצים נוספים אם רוצים
+
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+      cb(null, './uploads/');
+    },
+    filename: function (req, file, cb) {
+      cb(null, Date.now() + path.extname(file.originalname));
+    }
+  });
+ 
+  const upload = multer({
+    storage: storage,
+    fileFilter: (req, file, cb) => {
+      if (!fileTypes.includes(file.mimetype)) {
+        return cb(new Error('File type not allowed'), false);
+      }
+      cb(null, true);
+    },
+  }).single('file');
+  
 const creatTestResults = async (req, res) => {
     try {
-        const { patient_id, test_type, result, date } = req.body
-        if (!patient_id || !test_type || !result || !date) {
+        const { baby_id, nurse_id, test_date, result } = req.body
+        if (!baby_id || !nurse_id || !test_date || !result) {
             return res.status(400).json({ message: 'patient_id, test_type, result, and date are required' })
         }
-
-        // בדיקת קיום תוצאה קודמת עבור החולה
-        const existingResult = await TestResult.findOne({ patient_id, test_type, date })
-        if (existingResult) {
-            return res.status(400).json({ message: 'Test result already exists for this patient on this date' })
+        let filePath = null;
+        if (req.result) {
+            filePath = req.result.path;
         }
+        // בדיקת קיום תוצאה קודמת עבור החולה
+        // const existingResult = await TestResults.findOne({ patient_id, test_type, date })
+        // if (existingResult) {
+        //     return res.status(400).json({ message: 'Test result already exists for this patient on this date' })
+        // }
+        const newTestResult = new TestResults({
+            baby_id,
+            nurse_id,
+            test_date,
+            result:filePath,
+        });
+        const savedTestResult = await newTestResult.save();
+        res.status(201).json(savedTestResult);
 
-        const testResult = await TestResult.create({ patient_id, test_type, result, date })
-        return res.status(201).json({ message: 'New test result created', testResult })
+        // const testResult = await TestResults.create({ patient_id, test_type, result, date })
+        // return res.status(201).json({ message: 'New test result created', testResult })
     } catch (error) {
         return res.status(500).json({ message: 'Error creating test result', error })
     }
@@ -22,7 +56,7 @@ const creatTestResults = async (req, res) => {
 
 const getAllTestResults = async (req, res) => {
     try {
-        const testResults = await TestResult.find().lean()
+        const testResults = await TestResults.find().lean()
         if (!testResults?.length) {
             return res.status(400).json({ message: 'No test results found' })
         }
@@ -41,7 +75,7 @@ const updateTestResults = async (req, res) => {
             return res.status(400).json({ message: 'Test result ID is required' })
         }
 
-        const testResult = await TestResult.findById(_id).exec()
+        const testResult = await TestResults.findById(_id).exec()
         if (!testResult) {
             return res.status(400).json({ message: 'Test result not found' })
         }
@@ -68,7 +102,7 @@ const deleteTestResults = async (req, res) => {
             return res.status(400).json({ message: 'Test result ID is required' })
         }
 
-        const testResult = await TestResult.findById(_id).exec()
+        const testResult = await TestResults.findById(_id).exec()
         if (!testResult) {
             return res.status(400).json({ message: 'Test result not found' })
         }
@@ -89,7 +123,7 @@ const getTestResultById = async (req, res) => {
             return res.status(400).json({ message: 'Test result ID is required' })
         }
 
-        const testResult = await TestResult.findById(_id).lean()
+        const testResult = await TestResults.findById(_id).lean()
         if (!testResult) {
             return res.status(400).json({ message: 'No test result found' })
         }
