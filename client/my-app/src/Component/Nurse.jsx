@@ -32,7 +32,7 @@ export default function Nurse() {
             label: 'Projects',
             icon: 'pi pi-search',
             command: () => {
-                navigate('/parent/BookedAppointmentParent')
+                navigate('/nurse/BookedAppointmentParent')
             }
         }
     ];
