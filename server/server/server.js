@@ -5,6 +5,7 @@ const mongoose = require("mongoose");
 const corsOptions = require("./config/corsOptions");
 const connectDB = require("./config/dbConn");
 const nodemailer = require("nodemailer");
+<<<<<<< HEAD
 const messageRoutes = require('./Routes/messageRoutes');
 const chatRoomRoutes = require('./Routes/chatRoomRoutes');
 
@@ -30,6 +31,12 @@ io.on('connection', (socket) => {
   });
    io.to(chatRoomId).emit('newMessage', message);
 const PORT = process.env.PORT || 7002;
+=======
+const multer = require("multer")
+const app = express();
+connectDB();
+const  PORT = process.env.PORT || 7002;
+>>>>>>> ad56d7ae2a2e90b6d68df4cb227e03ea521fd69f
 
 app.use(cors(corsOptions));
 app.use(express.json());

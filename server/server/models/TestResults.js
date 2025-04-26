@@ -12,13 +12,13 @@ const TestResultsSchema = new mongoose.Schema({
         ref: "User"
     }, 
     test_date:{
-        time:{ type: Number, required: true },
+        time:{ type: String, required: true },
         day :{ type: Date, format:('dd-MM-yyyy'), required: true }
        
     },
     result:{
         //object
-        type: Number, 
+        type: String, 
         required: true 
     }
 }

@@ -16,6 +16,8 @@ export default function UseCalendar() {
     const [selectedTime, setSelectedTime] = useState(null); // זמן שנבחר
     const [babies, setBabies] = useState([]);                   //⭐ תוספת - מערך תינוקות
     const [selectedBaby, setSelectedBaby] = useState(null);      //⭐ תוספת - תינוק שנבחר
+    const [NurseDetails, setNurseDetails] = useState([]);
+    const [BabyDetails, setBabyDetails] = useState([]);
 
     const role = useSelector((state) => state.token.user.role)
     const token = useSelector((state) => state.token.token)
@@ -26,7 +28,8 @@ export default function UseCalendar() {
     const fetchAvailableHours = async (selectedDate) => {
         if (!selectedDate) return;
 
-        const formattedDate = selectedDate.toISOString().split("T")[0]; //  המרת התאריך לפורמט YYYY-MM-DD  
+        const formattedDate = selectedDate.toLocaleDateString('en-CA'); // תאריך בפורמט YYYY-MM-DD
+        console.log("formattedDate" + selectedDate);
 
         if (!token) {
             console.error("❌ לא נמצא טוקן, יש להתחבר!");
@@ -65,6 +68,7 @@ export default function UseCalendar() {
                 if (availableSlots.length == 0) {
                     alert("אין שעות עבודה ביום זה😮‍💨")
                 }
+
                 else {
                     setAvailableHours(availableSlots); // השעות הפנויות נשמרות במצב
                 }
@@ -73,10 +77,42 @@ export default function UseCalendar() {
             console.error("❌ שגיאה בשליפת השעות הפנויות:", error);
         }
     };
+    const getNameNurse = async (NurseId) => {
+        try {
+            const response = await axios.get(
+                `http://localhost:7002/user/${NurseId}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+            return response.data;
+        } catch (error) {
+            console.error("שגיאה בשליפת האחות:", error);
+        }
+    };
 
+    const getNameBaby = async (BabyId) => {
+        try {
+            const response = await axios.get(
+                `http://localhost:7002/baby/${BabyId}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+            return response.data;
+        } catch (error) {
+            console.error("שגיאה בשליפת התינוק:", error);
+        }
+    };
     //  **כאשר המשתמש לוחץ על תאריך בלוח השנה → מופעלת הפונקציה הזו**
     const handleDateChange = (e) => {
         setDate(e.value);            // שמירת התאריך שנבחר
+        console.log("e.value" + e.value);
+
         setAvailableHours([]);       // ניקוי השעות של היום הקודם
         setSelectedTime(null);       // ניקוי הבחירה של היום הקודם
         fetchAvailableHours(e.value); // קריאה לפונקציה שמביאה שעות פנויות
@@ -105,7 +141,17 @@ export default function UseCalendar() {
                 console.error("❌ שגיאה בשליפת תינוקות:", err);
             }
         };
-
+        const fetchNurses = async () => {
+            const nurseData = {};
+            await Promise.all(availableHours.map(async (slot) => {
+                const nurse = await getNameNurse(slot.label); // קבלת פרטי האחות
+                nurseData[slot.label] = nurse; // עדכון המידע
+            }));
+            setNurseDetails(nurseData); // עדכון עם כל הנתונים
+        };
+        if (availableHours.length > 0) {
+            fetchNurses();
+        }
         fetchBabies();
     }, [role, token]);
 
@@ -134,7 +180,9 @@ console.log("aaaaaaaaaaaaaaaaaa");
                 baby_id: selectedBaby,   //⭐ תוספת של התינוק
                 nurse_id: timeAndId.label
             }, {
-                headers: { Authorization: `Bearer ${token}` }
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                }
             });
 
             if (res.status === 201) {
@@ -144,6 +192,7 @@ console.log("aaaaaaaaaaaaaaaaaa");
                 setAvailableHours(availableHours.filter(hour => hour.value !== selectedTime));
 
                 setSelectedAppointmentId(res.data._id); // שמירת ה-ID
+                console.log("timeAndId.label " + timeAndId.key);
 
                 // קריאה לעדכון הדגל של השעה ל-true ביומן של האחות
                 await axios.put('http://localhost:7002/nurseScheduler/book-slot', {
@@ -151,7 +200,9 @@ console.log("aaaaaaaaaaaaaaaaaa");
                     date,
                     selectedTime: timeAndId.key
                 }, {
-                    headers: { Authorization: `Bearer ${token}` }
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    }
                 });
 
             } else {
@@ -171,7 +222,9 @@ console.log("aaaaaaaaaaaaaaaaaa");
         try {
             // ביטול התור
             const res = await axios.patch(`http://localhost:7002/appointment/cancel/${selectedAppointmentId}`, null, {
-                headers: { Authorization: `Bearer ${token}` }
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                }
             });
 
             if (res.status === 200) {
@@ -180,7 +233,9 @@ console.log("aaaaaaaaaaaaaaaaaa");
                     date,
                     time: selectedTime
                 }, {
-                    headers: { Authorization: `Bearer ${token}` }
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    }
                 });
 
                 alert('התור בוטל בהצלחה');
@@ -207,7 +262,7 @@ console.log("aaaaaaaaaaaaaaaaaa");
                             <h4>שעות פנויות:</h4>
                             <ListBox
                                 value={selectedTime}
-                                onChange={(e) => {  setSelectedTime(e.value) }}
+                                onChange={(e) => { setSelectedTime(e.value) }}
                                 options={availableHours}
                                 optionLabel="label"
                                 className="w-full custom-listbox"
@@ -217,7 +272,7 @@ console.log("aaaaaaaaaaaaaaaaaa");
                                         <div style={{ color: 'black' }}>
                                             {option.key}
                                             -- ❤
-                                            {option.label}
+                                            {NurseDetails[option.label]?.name || "לא ידוע"}
                                         </div>
                                     </>
                                 )}
@@ -260,3 +315,5 @@ console.log("aaaaaaaaaaaaaaaaaa");
         </div>
     );
 }
+
+
