@@ -158,22 +158,23 @@ export default function UseCalendar() {
 
     // 🟡 **פונקציה להזמנת תור**
     const handleBookSlot = async () => {
+console.log("aaaaaaaaaaaaaaaaaa");
 
         if (!selectedTime) {
             alert('אנא בחר שעה');
             return;
         }
-
+        
         try {
-            const timeAndId = availableHours.find((e) => e.value == selectedTime)
+           const timeAndId= availableHours.find((e)=>e.value==selectedTime)
+            
             // שליחת ההזמנה
             const appointmentData = {
                 time: timeAndId.key, // הנח שהמשתנה selectedTime מכיל את השעה
                 date: new Date(date) // המרת המשתנה date לאובייקט תאריך
 
             }
-            console.log(appointmentData);
-
+            console.log("selectedBaby" + availableHours);
             const res = await axios.post('http://localhost:7002/appointment/', {
                 appointment_time: appointmentData,
                 baby_id: selectedBaby,   //⭐ תוספת של התינוק
@@ -195,7 +196,7 @@ export default function UseCalendar() {
 
                 // קריאה לעדכון הדגל של השעה ל-true ביומן של האחות
                 await axios.put('http://localhost:7002/nurseScheduler/book-slot', {
-                    nurseId: timeAndId.label,
+                    nurse_id: timeAndId.label,
                     date,
                     selectedTime: timeAndId.key
                 }, {
