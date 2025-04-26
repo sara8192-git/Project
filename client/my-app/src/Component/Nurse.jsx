@@ -8,8 +8,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setToken, logOut } from '../redux/tokenSlice'
 import { Menubar } from 'primereact/menubar';
 import QueueSummaryNurse from './/QueueSummaryNurse'
-import {  Route, Routes } from 'react-router-dom'
-
+import { Route, Routes } from 'react-router-dom'
+import ChatNurse from './ChatNurse'
 export default function Nurse() {
 
     const navigate = useNavigate(); // 🔹 מאפשר ניווט לדפים אחרים
@@ -29,6 +29,12 @@ export default function Nurse() {
             }
         },
         {
+            label:'chat with parents',
+            icon: 'pi pi-comments',
+            command: () => {
+                navigate('/nurse/chat');
+            }},
+        {
             label: 'Projects',
             icon: 'pi pi-search',
             command: () => {
@@ -42,6 +48,8 @@ export default function Nurse() {
             <Menubar model={items} />
             <Routes>
                 <Route path='/QueueSummaryNurse' element={<QueueSummaryNurse />} />
+                <Route path='/ChatNurse' element={<ChatNurse />} />
+
             </Routes>
         </div>
     );

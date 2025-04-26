@@ -5,9 +5,30 @@ const mongoose = require("mongoose");
 const corsOptions = require("./config/corsOptions");
 const connectDB = require("./config/dbConn");
 const nodemailer = require("nodemailer");
+const messageRoutes = require('./Routes/messageRoutes');
+const chatRoomRoutes = require('./Routes/chatRoomRoutes');
 
 const app = express();
 connectDB();
+const http = require('http');
+const server = http.createServer(app);
+const io = require('socket.io')(server, {
+  cors: {
+    origin: '*'
+  }
+});
+io.on('connection', (socket) => {
+    console.log('User connected:', socket.id);
+  
+    socket.on('joinRoom', (chatRoomId) => {
+      socket.join(chatRoomId);
+    });
+  
+    socket.on('sendMessage', (message) => {
+      io.to(message.chatRoomId).emit('newMessage', message);
+    });
+  });
+   io.to(chatRoomId).emit('newMessage', message);
 const PORT = process.env.PORT || 7002;
 
 app.use(cors(corsOptions));
@@ -51,11 +72,14 @@ app.use("/baby", require("./Routes/BabiesRout"));
 app.use("/testResults", require("./Routes/TestResultRout"));
 app.use("/auth", require("./Routes/authRoutes"));
 app.use("/nurseScheduler", require("./Routes/NurseScheduleroute"));
-
+app.use('/messages', messageRoutes);
+app.use('/chatrooms', chatRoomRoutes)
 // התחברות למסד נתונים והרצת השרת
 mongoose.connection.once("open", () => {
     console.log("Connected to MongoDB");
     app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+    // server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
 });
 
 mongoose.connection.on("error", err => {

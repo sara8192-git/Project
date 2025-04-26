@@ -9,6 +9,7 @@ import { setToken, logOut } from '../redux/tokenSlice'
 import { Menubar } from 'primereact/menubar';
 import BookedAppointmentParent from ".//BookedAppointmentParent"
 import UseCalendar from './UseCalendar';
+import ChatParent from './ChatParent'
 import {  Route, Routes } from 'react-router-dom'
 
 export default function Parent() {
@@ -35,7 +36,15 @@ export default function Parent() {
             command: () => {
                 navigate('/parent/BookedAppointmentParent')
             }
-        }
+        },
+        {
+            label:'chat with nurse',
+            icon: 'pi pi-comments',
+            command: () => {
+              navigate('/parent/ChatParent');
+            }
+          }
+          
     ];
 
     return (
@@ -44,6 +53,8 @@ export default function Parent() {
             <Routes>
                 <Route path='/BookedAppointmentParent' element={<BookedAppointmentParent />} />
                 <Route path='/UseCalendar' element={<UseCalendar />} />
+                <Route path='/ChatParent' element={<ChatParent />} />
+
             </Routes>
         </div>
     );
