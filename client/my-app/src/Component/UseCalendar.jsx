@@ -136,7 +136,7 @@ export default function UseCalendar() {
             console.log("selectedBaby" + availableHours);
             const res = await axios.post('http://localhost:7002/appointment/', {
                 appointment_time: appointmentData,
-                babyId: selectedBaby,   //⭐ תוספת של התינוק
+                baby_id: selectedBaby,   //⭐ תוספת של התינוק
                 nurse_id: timeAndId.label
             }, {
                 headers: { Authorization: `Bearer ${token}` }
