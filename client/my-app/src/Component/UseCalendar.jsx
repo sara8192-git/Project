@@ -133,7 +133,8 @@ export default function UseCalendar() {
                     date: new Date(date) // המרת המשתנה date לאובייקט תאריך
                 
             }
-            console.log("selectedBaby" + availableHours);
+            console.log("selectedBaby"+selectedBaby+"appointment_time"+appointmentData+"nurse_id"+timeAndId.label);
+            
             const res = await axios.post('http://localhost:7002/appointment/', {
                 appointment_time: appointmentData,
                 baby_id: selectedBaby,   //⭐ תוספת של התינוק
