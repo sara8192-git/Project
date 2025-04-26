@@ -157,6 +157,8 @@ const getAppointmentByNurseId = async (req, res) => {
     // Get single task from MongoDB
     const Appointments = await Appointment.find({nurse_id:nurse_id});
     // If no tasks
+    console.log(Appointments);
+    
     if (!Appointments ) {
         return res.status(400).json({ message: 'No Appointment found' })
     }
