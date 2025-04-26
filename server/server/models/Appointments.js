@@ -1,10 +1,6 @@
 const mongoose = require('mongoose')
 const {format}=require('date-fns')
 const AppointmentsSchema = new mongoose.Schema({
-    identity:{
-        type: String, 
-        required: true
-    }, 
     baby_id:{
         type: mongoose.Schema.Types.ObjectId,
         required: true,
