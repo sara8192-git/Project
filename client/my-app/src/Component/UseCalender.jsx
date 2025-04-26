@@ -243,7 +243,7 @@ export default function UseCalendar() {
                     )}
                     {selectedTime && (
                         <div className="mt-4">
-                            {/* <h4>בחרת את השעה: <span style={{ color: 'gold' }}>{selectedTime}</span></h4> */}
+                            <h4>בחרת את השעה: <span style={{ color: 'gold' }}>{selectedTime}</span></h4>
                             <Button
                                 label="הזמן תור"
                                 icon="pi pi-calendar-plus"
