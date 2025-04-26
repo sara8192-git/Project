@@ -10,6 +10,7 @@ export default function QueueSummaryNurse() {
     const [appointments, setAppointments] = useState([]);
     const token = useSelector((state) => state.token.token);
     const user = useSelector((state) => state.token.user);
+    const [BabyDetails, setBabyDetails] = useState([]);
 
     // const formatTime = (time) => {
     //     const hours = Math.floor(time / 60); // חישוב השעות
@@ -33,15 +34,51 @@ export default function QueueSummaryNurse() {
                 }
             );
             setAppointments(response.data);
+            console.log(response.data);
+
+            // אחרי שמביאים את התורים, נטען את כל התינוקות
+            const babyData = {};
+            await Promise.all(response.data.map(async (appt) => {
+
+                if (appt.baby_id) {
+                    const baby = await getIDBaby(appt.baby_id);
+                    if (baby) {
+                        babyData[appt.baby_id] = baby;
+
+                    }
+                }
+            }));
+
+            setBabyDetails(babyData);
+
         } catch (error) {
             console.error("שגיאה בשליפת תורים:", error);
         }
+
+
     };
 
+    const getIDBaby = async (BabyId) => {
+        try {
+            const response = await axios.get(
+                `http://localhost:7002/baby/${BabyId}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+            return response.data;
+        } catch (error) {
+            console.error("שגיאה בשליפת התינוק:", error);
+        }
+    };
+
+
     useEffect(() => {
-        console.log(user)
         if (user && user._id) {
             fetchAppointments();
+
         }
     }, [user]);
     return (
@@ -55,12 +92,11 @@ export default function QueueSummaryNurse() {
                     {appointments.map((appt) => (
                         < Card
                             key={appt._id}
-                            title={`תור אצל ${appt._id || 'אחות'} `}
                             className="col-12 md:col-6 lg:col-4 p-2"
                         >
                             <p><strong>תאריך:</strong> {appt.appointment_time?.date ? new Date(appt.appointment_time.date).toLocaleDateString('he-IL') : "לא ידוע"}</p>
                             <p><strong>שעה:</strong> {appt.appointment_time?.time || "לא ידוע"}</p>
-                            <p><strong>שם התינוק:</strong> {appt.BabyName}</p>
+                            <p><strong>תז התינוק:</strong> {BabyDetails[appt.baby_id]?.identity || "לא ידוע"}</p>
                             <p><strong>בדיקה:</strong> {appt.status}</p>
                         </Card>
                     ))}

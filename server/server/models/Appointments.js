@@ -24,7 +24,7 @@ const AppointmentsSchema = new mongoose.Schema({
         default: 'pending' 
         },
    appointment_time:{
-        time:{ type:Number ,require: true  },
+        time:{ type:String ,require: true  },
         date:{ type:Date , format:("dd-MM-yy") ,require: true  }
 
     }
