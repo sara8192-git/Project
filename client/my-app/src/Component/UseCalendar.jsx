@@ -40,7 +40,6 @@ export default function UseCalendar() {
                     Authorization: `Bearer ${token}`,
                 }
             });
-            console.log(res);
             if (res.status === 200) {
                 // const availableSlots = res.data.flatMap(schedule => 
                 //     schedule.available_slots.map(slot => slot.time)
@@ -53,23 +52,21 @@ export default function UseCalendar() {
                 //         value: slot.time
                 //     }))
                 // );
-                const availableSlots = res.data.flatMap((schedule,index) =>
+                const availableSlots = res.data.flatMap((schedule, index) =>
 
-                    schedule.available_slots.map((slot,i) => ({
-                        key:slot.time,
-                        value:  (index+1)*(i+48),
-                        label:schedule.identity 
-                       
+                    schedule.available_slots.map((slot, i) => ({
+                        key: slot.time,
+                        value: (index + 1) * (i + 48),
+                        label: schedule.identity
+
                         // identity: schedule.identity // הנח שה-nurse_identity נמצא באובייקט schedule
                     }))
                 );
                 if (availableSlots.length == 0) {
                     alert("אין שעות עבודה ביום זה😮‍💨")
-                    console.log("אין שעות עבודה ביום זה😮‍💨")
                 }
                 else {
                     setAvailableHours(availableSlots); // השעות הפנויות נשמרות במצב
-                    console.log(availableSlots);
                 }
             }
         } catch (error) {
@@ -89,7 +86,6 @@ export default function UseCalendar() {
         const fetchBabies = async () => {
             try {
                 if (role !== 'Parent' || !token) return;
-                console.log(parentId);
                 const res = await axios.get(`http://localhost:7002/user/my-babies/${parentId}`, {
                     headers: {
                         Authorization: `Bearer ${token}`,
@@ -102,9 +98,7 @@ export default function UseCalendar() {
                         label: b,
                         value: b
                     }));
-                    console.log(res);
 
-                    console.log(babyOptions)
                     setBabies(babyOptions);
                 }
             } catch (err) {
@@ -130,15 +124,11 @@ console.log("aaaaaaaaaaaaaaaaaa");
             
             // שליחת ההזמנה
             const appointmentData = {
-                    time: timeAndId.key, // הנח שהמשתנה selectedTime מכיל את השעה
-                    date: new Date(date) // המרת המשתנה date לאובייקט תאריך
-                
+                time: timeAndId.key, // הנח שהמשתנה selectedTime מכיל את השעה
+                date: new Date(date) // המרת המשתנה date לאובייקט תאריך
+
             }
-            
-            console.log(appointmentData);
-            
-            
-            
+            console.log("selectedBaby" + availableHours);
             const res = await axios.post('http://localhost:7002/appointment/', {
                 appointment_time: appointmentData,
                 baby_id: selectedBaby,   //⭐ תוספת של התינוק
@@ -217,7 +207,7 @@ console.log("aaaaaaaaaaaaaaaaaa");
                             <h4>שעות פנויות:</h4>
                             <ListBox
                                 value={selectedTime}
-                                onChange={(e) => {console.log(e); setSelectedTime(e.value)}}
+                                onChange={(e) => {  setSelectedTime(e.value) }}
                                 options={availableHours}
                                 optionLabel="label"
                                 className="w-full custom-listbox"
@@ -225,7 +215,7 @@ console.log("aaaaaaaaaaaaaaaaaa");
                                 itemTemplate={(option) => (
                                     <>
                                         <div style={{ color: 'black' }}>
-                                            {option.key }
+                                            {option.key}
                                             -- ❤
                                             {option.label}
                                         </div>

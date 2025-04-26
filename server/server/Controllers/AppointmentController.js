@@ -5,11 +5,11 @@ const jwt = require('jsonwebtoken'); // ודא שהחבילה מותקנת
 // יצירת תור חדש
 const createNewAppointments = async (req, res) => {
     try {
-        const { appointment_time, nurse_id, babyId } = req.body;
-console.log(appointment_time, nurse_id, babyId);
+        const { appointment_time, nurse_id, baby_id } = req.body;
+console.log(appointment_time, nurse_id, baby_id);
         // יצירת תור חדש
         const appointment = new Appointment({
-            baby_id:babyId,
+            baby_id:baby_id,
             appointment_time,
             nurse_id,
         });
