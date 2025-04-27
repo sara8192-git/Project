@@ -232,9 +232,9 @@ const bookSlot = async (req, res) => {
             return res.status(400).json({ message: "יש לספק מזהה אחות, תאריך ושעת תור." });
         }
         console.log("kkkkkkkkk");
-        console.log(nurseId, selectedTime);
+        console.log(date);
 
-        const schedule = await NurseSchedule.findOne({ identity: nurseId, working_day: new Date(formattedDate) });
+        const schedule = await NurseSchedule.findOne({ identity: nurseId, working_day: date });
         console.log(schedule);
 
         if (!schedule) {

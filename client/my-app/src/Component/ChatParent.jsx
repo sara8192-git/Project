@@ -4,6 +4,7 @@ import { Button } from 'primereact/button';
 import { Card } from 'primereact/card';
 import { InputText } from 'primereact/inputtext';
 
+
 export default function ChatParent() {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
@@ -13,13 +14,13 @@ export default function ChatParent() {
   }, []);
 
   const fetchMessages = async () => {
-    const res = await axios.get('/messages/lastMessages', { withCredentials: true });
+    const res = await axios.get('http://localhost:7002/messages/lastMessages', { withCredentials: true });
     setMessages(res.data);
   };
 
   const sendMessage = async () => {
     if (!newMessage) return;
-    await axios.post('/messages', { content: newMessage, chatRoomId: 'ID-פה-של-הצאט' }, { withCredentials: true });
+    await axios.post('http://localhost:7002/messages', { content: newMessage, chatRoomId: 'ID-פה-של-הצאט' }, { withCredentials: true });
     setNewMessage('');
     fetchMessages();
   };

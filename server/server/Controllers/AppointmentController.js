@@ -163,7 +163,23 @@ const getAppointmentByNurseId = async (req, res) => {
     }
     res.json(Appointments)
 }
+const getAppointmentByBabyId = async (req, res) => {
+    const { baby_id } = req.params
+    
+    if (!baby_id) {
+        return res.status(400).json({ message: "יש לספק מזהה אחות  ." });
+    }
 
+    // Get single task from MongoDB
+    const Appointments = await Appointment.find({baby_id:baby_id});
+    // If no tasks
+    console.log(Appointments);
+    
+    if (!Appointments ) {
+        return res.status(400).json({ message: 'No Appointment found' })
+    }
+    res.json(Appointments)
+}
 module.exports = {
     createNewAppointments,
     getAllAppointments,
@@ -171,5 +187,6 @@ module.exports = {
     cancelAppointment,
     getAppointmentById,
     getAppointmentsByDate,
-    getAppointmentByNurseId
+    getAppointmentByNurseId,
+    getAppointmentByBabyId
 }

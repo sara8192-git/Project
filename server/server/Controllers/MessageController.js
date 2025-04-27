@@ -58,6 +58,7 @@ exports.markAsRead = async (req, res) => {
     res.json({ success: true });
   };
   exports.getLastMessagesForUser = async (req, res) => {
+    
     const userId = req.params.userId;
   
     const rooms = await ChatRoom.find({ participants: userId });

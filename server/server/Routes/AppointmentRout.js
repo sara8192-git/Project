@@ -15,5 +15,6 @@ router.post("/",  parentMW, AppointmentController.createNewAppointments)
 router.patch("/cancel/:_id",  parentMW, AppointmentController.cancelAppointment)
 router.put("/",  parentMW, AppointmentController.updateAppointment)
 router.get("/Nurse/:nurse_id",  nurseMW, AppointmentController.getAppointmentByNurseId)
+router.get("/Baby/:baby_id",  parentMW, AppointmentController.getAppointmentByBabyId)
 
 module.exports = router

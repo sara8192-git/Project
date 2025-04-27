@@ -34,13 +34,13 @@ export default function Nurse() {
             command: () => {
                 navigate('/nurse/chat');
             }},
-        {
-            label: 'Projects',
-            icon: 'pi pi-search',
-            command: () => {
-                navigate('/nurse/BookedAppointmentParent')
-            }
-        }
+        // {
+        //     label: 'Projects',
+        //     icon: 'pi pi-search',
+        //     command: () => {
+        //         navigate('/nurse/BookedAppointmentParent')
+        //     }
+        // }
     ];
 
     return (

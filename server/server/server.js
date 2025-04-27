@@ -14,22 +14,22 @@ const app = express();
 connectDB();
 const http = require('http');
 const server = http.createServer(app);
-const io = require('socket.io')(server, {
-  cors: {
-    origin: '*'
-  }
-});
-io.on('connection', (socket) => {
-    console.log('User connected:', socket.id);
+// const io = require('socket.io')(server, {
+//   cors: {
+//     origin: '*'
+//   }
+// });
+// io.on('connection', (socket) => {
+//     console.log('User connected:', socket.id);
   
-    socket.on('joinRoom', (chatRoomId) => {
-      socket.join(chatRoomId);
-    });
+//     socket.on('joinRoom', (chatRoomId) => {
+//       socket.join(chatRoomId);
+//     });
   
-    socket.on('sendMessage', (message) => {
-      io.to(message.chatRoomId).emit('newMessage', message);
-    });
-  });
+//     socket.on('sendMessage', (message) => {
+//       io.to(message.chatRoomId).emit('newMessage', message);
+//     });
+//   });
   //  io.to(chatRoomId).emit('newMessage', message);
 
 app.use(cors(corsOptions));

@@ -65,7 +65,7 @@ export default function UseCalendar() {
                         // identity: schedule.identity // הנח שה-nurse_identity נמצא באובייקט schedule
                     }))
                 );
-                
+
 
                 if (availableSlots.length == 0) {
                     alert("אין שעות עבודה ביום זה😮‍💨")
@@ -106,7 +106,7 @@ export default function UseCalendar() {
                     },
                 }
             );
-            console.log("BabyId"+response.data.name);
+            console.log("BabyId" + response.data.name);
 
             return response.data.name;
         } catch (error) {
@@ -121,20 +121,24 @@ export default function UseCalendar() {
         setAvailableHours([]);       // ניקוי השעות של היום הקודם
         setSelectedTime(null);       // ניקוי הבחירה של היום הקודם
         fetchAvailableHours(e.value); // קריאה לפונקציה שמביאה שעות פנויות
-        
 
-    }; 
+
+    };
     // תוספת - שליפת התינוקות של ההורה
     useEffect(() => {
         const fetchBabies = async () => {
             try {
+                console.log(token);
 
-                if (role !== 'Parent' || !token) return;
-                const res = await axios.get(`http://localhost:7002/user/my-babies/${parentId}`, {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
+                const res = await axios.get(
+                    `http://localhost:7002/user/my-babies/${parentId}`,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
                     }
-                });
+                );
+
                 if (res.status === 200) {
                     const babyOptions = res.data.map(b => ({
                         label: b,
@@ -169,9 +173,9 @@ export default function UseCalendar() {
         fetchBabiesName()
 
 
-    }, []);
+    }, [availableHours]);
 
- 
+
 
     // 🟡 **פונקציה להזמנת תור**
     const handleBookSlot = async () => {
@@ -209,12 +213,13 @@ export default function UseCalendar() {
                 setAvailableHours(availableHours.filter(hour => hour.value !== selectedTime));
 
                 setSelectedAppointmentId(res.data._id); // שמירת ה-ID
-                console.log("timeAndId.label " + timeAndId.label);
+                const formattedDate = new Date(date).toLocaleDateString('en-CA'); // תאריך בפורמט ISO עם הזמן המקומי
+console.log("formattedDate"+formattedDate);
 
                 // קריאה לעדכון הדגל של השעה ל-true ביומן של האחות
                 await axios.put('http://localhost:7002/nurseScheduler/book-slot', {
                     nurseId: timeAndId.label,
-                    date:date,
+                    date:formattedDate,
                     selectedTime: timeAndId.key
                 }, {
                     headers: {
@@ -300,12 +305,16 @@ export default function UseCalendar() {
                             <h4>בחר ילד:</h4>
                             <Dropdown
                                 value={selectedBaby}
-                                options={babies}
+                                // options={babies}
+                                options={babies.map((baby) => ({
+                                    label: BabyDetails[baby.value] || baby.value, // אם שם התינוק זמין, השתמש בו, אחרת השתמש ב-ID
+                                    value: baby.value
+                                }))}
                                 onChange={(e) => setSelectedBaby(e.value)}
                                 placeholder="בחר תינוק"
                                 className="w-full"
                             />
-                        </div> 
+                        </div>
                     )}
                     {selectedTime && (
                         <div className="mt-4">
@@ -313,7 +322,7 @@ export default function UseCalendar() {
                             <Button
                                 label="הזמן תור"
                                 icon="pi pi-calendar-plus"
-                                className="p-button-warning mr-2" 
+                                className="p-button-warning mr-2"
                                 onClick={handleBookSlot}
                             />
                             <Button
