@@ -19,6 +19,7 @@ import Register from "./Component/Register"; // יבוא קומפוננטת הר
 import Home from "./Component/Home"; 
 import Parent from './Component/Parent'
 import Nurse from "./Component/Nurse"
+import AddMeasurementPage from "./Component/AddMeasurementPage"
 function App() {
 
   const itemRenderer = (item) => (
@@ -72,6 +73,7 @@ return (
                 <Route path="/register" element={<Register />} /> {/* נתיב חדש להרשמה */}
                 <Route path="/parent/*" element={<Parent />} /> {/* נתיב חדש להרשמה */}
                 <Route path="/Nurse/*" element={<Nurse />} /> {/* נתיב חדש להרשמה */}
+                <Route path="/AddMeasurementPage/:babyId" element={<AddMeasurementPage />} />
 
             </Routes>
   

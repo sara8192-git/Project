@@ -1,5 +1,19 @@
 const mongoose = require('mongoose')
 const {format}=require('date-fns')
+const MeasurementSchema = new mongoose.Schema({
+    height: {
+        type: Number,
+        required: true
+    },
+    weight: {
+        type: Number,
+        required: true
+    },
+    date: {
+        type: Date,
+        default: Date.now
+    }
+}, { _id: false })
 const BabiesSchema = new mongoose.Schema({
     identity:{
         type: String, 
@@ -18,7 +32,8 @@ const BabiesSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         required: true , 
         ref: "User"
-    }
+    },
+    measurements: [MeasurementSchema]
 }, { timestamps: true })
 
 module.exports= mongoose.model('Babies', BabiesSchema)

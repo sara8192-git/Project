@@ -128,8 +128,8 @@ export default function UseCalendar() {
     useEffect(() => {
         const fetchBabies = async () => {
             try {
-                console.log(token);
-
+               
+                
                 const res = await axios.get(
                     `http://localhost:7002/user/my-babies/${parentId}`,
                     {
@@ -138,7 +138,7 @@ export default function UseCalendar() {
                         },
                     }
                 );
-
+                console.log("res"+res);
                 if (res.status === 200) {
                     const babyOptions = res.data.map(b => ({
                         label: b,

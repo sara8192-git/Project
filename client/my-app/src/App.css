@@ -45,8 +45,8 @@
   }
 }
 
-button, a {
-  all: unset; /* אם זה קיים, תמחק את זה כי זה מסיר את כל העיצוב! */
+button:not(.p-button) {
+  all: unset;
 }
 
 body {

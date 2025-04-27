@@ -84,6 +84,28 @@ const deleteBaby = async (req, res) => {
         return res.status(500).json({ message: 'Error deleting baby', error })
     }
 }
+const addMeasurement = async (req, res) => {
+    try {
+        const { _id, height, weight } = req.body
+
+        // ודא שכל הנתונים נמסרו
+        if (!_id || !height || !weight)
+            return res.status(400).json({ message: 'All fields are required' })
+
+        const baby = await Babies.findById(_id)
+        if (!baby)
+            return res.status(404).json({ message: 'Baby not found' })
+
+        // מחפש אם יש כבר measurements ומעדכן אם כן
+        baby.measurements = [{ height, weight }];
+        await baby.save()
+
+        res.status(200).json({ message: 'Measurement updated successfully', measurements: baby.measurements })
+
+    } catch (error) {
+        res.status(500).json({ message: 'Error adding measurement', error: error.message })
+    }
+}
 
 
 
@@ -98,6 +120,7 @@ const getBabiesById = async (req, res) => {
     } catch (error) {
         return res.status(500).json({ message: 'Error fetching baby', error })
     }
+
 }
 
 
@@ -107,6 +130,7 @@ module.exports = {
     updateBabies,
     deleteBaby,
     getBabiesById,
-    getBabiesByParent
+    getBabiesByParent,
+    addMeasurement
 }
 
