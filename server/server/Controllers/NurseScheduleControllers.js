@@ -232,8 +232,7 @@ const bookSlot = async (req, res) => {
             return res.status(400).json({ message: "יש לספק מזהה אחות, תאריך ושעת תור." });
         }
         console.log("kkkkkkkkk");
-        const formattedDate = format(new Date(date), 'yyyy-MM-dd');
-        console.log(nurseId, formattedDate);
+        console.log(nurseId, selectedTime);
 
         const schedule = await NurseSchedule.findOne({ identity: nurseId, working_day: new Date(formattedDate) });
         console.log(schedule);

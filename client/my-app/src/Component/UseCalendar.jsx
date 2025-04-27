@@ -65,6 +65,8 @@ export default function UseCalendar() {
                         // identity: schedule.identity // הנח שה-nurse_identity נמצא באובייקט schedule
                     }))
                 );
+                
+
                 if (availableSlots.length == 0) {
                     alert("אין שעות עבודה ביום זה😮‍💨")
                 }
@@ -79,6 +81,7 @@ export default function UseCalendar() {
     };
     const getNameNurse = async (NurseId) => {
         try {
+            console.log("NurseId" + NurseId);
             const response = await axios.get(
                 `http://localhost:7002/user/${NurseId}`,
                 {
@@ -103,7 +106,9 @@ export default function UseCalendar() {
                     },
                 }
             );
-            return response.data;
+            console.log("BabyId"+response.data.name);
+
+            return response.data.name;
         } catch (error) {
             console.error("שגיאה בשליפת התינוק:", error);
         }
@@ -116,25 +121,25 @@ export default function UseCalendar() {
         setAvailableHours([]);       // ניקוי השעות של היום הקודם
         setSelectedTime(null);       // ניקוי הבחירה של היום הקודם
         fetchAvailableHours(e.value); // קריאה לפונקציה שמביאה שעות פנויות
-    };
+        
+
+    }; 
     // תוספת - שליפת התינוקות של ההורה
     useEffect(() => {
         const fetchBabies = async () => {
             try {
+
                 if (role !== 'Parent' || !token) return;
                 const res = await axios.get(`http://localhost:7002/user/my-babies/${parentId}`, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     }
                 });
-
-
                 if (res.status === 200) {
                     const babyOptions = res.data.map(b => ({
                         label: b,
                         value: b
                     }));
-
                     setBabies(babyOptions);
                 }
             } catch (err) {
@@ -145,29 +150,41 @@ export default function UseCalendar() {
             const nurseData = {};
             await Promise.all(availableHours.map(async (slot) => {
                 const nurse = await getNameNurse(slot.label); // קבלת פרטי האחות
-                nurseData[slot.label] = nurse; // עדכון המידע
+                if (nurse)
+                    nurseData[slot.label] = nurse; // עדכון המידע
             }));
             setNurseDetails(nurseData); // עדכון עם כל הנתונים
         };
-        if (availableHours.length > 0) {
-            fetchNurses();
-        }
+        const fetchBabiesName = async () => {
+            const BabyData = {};
+            await Promise.all(babies.map(async (slot) => {
+                const baby = await getNameBaby(slot.label); // קבלת פרטי האחות
+                if (baby)
+                    BabyData[slot.label] = baby; // עדכון המידע
+            }));
+            setBabyDetails(BabyData); // עדכון עם כל הנתונים
+        };
+        fetchNurses();
         fetchBabies();
-    }, [role, token]);
+        fetchBabiesName()
 
+
+    }, []);
+
+ 
 
     // 🟡 **פונקציה להזמנת תור**
     const handleBookSlot = async () => {
-console.log("aaaaaaaaaaaaaaaaaa");
+        console.log("aaaaaaaaaaaaaaaaaa");
 
         if (!selectedTime) {
             alert('אנא בחר שעה');
             return;
         }
-        
+
         try {
-           const timeAndId= availableHours.find((e)=>e.value==selectedTime)
-            
+            const timeAndId = availableHours.find((e) => e.value == selectedTime)
+
             // שליחת ההזמנה
             const appointmentData = {
                 time: timeAndId.key, // הנח שהמשתנה selectedTime מכיל את השעה
@@ -192,19 +209,18 @@ console.log("aaaaaaaaaaaaaaaaaa");
                 setAvailableHours(availableHours.filter(hour => hour.value !== selectedTime));
 
                 setSelectedAppointmentId(res.data._id); // שמירת ה-ID
-                console.log("timeAndId.label " + timeAndId.key);
+                console.log("timeAndId.label " + timeAndId.label);
 
                 // קריאה לעדכון הדגל של השעה ל-true ביומן של האחות
                 await axios.put('http://localhost:7002/nurseScheduler/book-slot', {
-                    nurse_id: timeAndId.label,
-                    date,
+                    nurseId: timeAndId.label,
+                    date:date,
                     selectedTime: timeAndId.key
                 }, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     }
                 });
-
             } else {
                 alert('הייתה בעיה בהזמנת התור');
             }
@@ -289,7 +305,7 @@ console.log("aaaaaaaaaaaaaaaaaa");
                                 placeholder="בחר תינוק"
                                 className="w-full"
                             />
-                        </div>
+                        </div> 
                     )}
                     {selectedTime && (
                         <div className="mt-4">
@@ -297,7 +313,7 @@ console.log("aaaaaaaaaaaaaaaaaa");
                             <Button
                                 label="הזמן תור"
                                 icon="pi pi-calendar-plus"
-                                className="p-button-warning mr-2"
+                                className="p-button-warning mr-2" 
                                 onClick={handleBookSlot}
                             />
                             <Button
