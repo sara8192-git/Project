@@ -10,6 +10,7 @@ import { Menubar } from 'primereact/menubar';
 import QueueSummaryNurse from './/QueueSummaryNurse'
 import { Route, Routes } from 'react-router-dom'
 import ChatNurse from './ChatNurse'
+import TestsAndStatistics from "./TestsAndStatistics"
 export default function Nurse() {
 
     const navigate = useNavigate(); // 🔹 מאפשר ניווט לדפים אחרים
@@ -49,7 +50,7 @@ export default function Nurse() {
             <Routes>
                 <Route path='/QueueSummaryNurse' element={<QueueSummaryNurse />} />
                 <Route path='/ChatNurse' element={<ChatNurse />} />
-
+                <Route path='/TestsAndStatistics/:id' element={<TestsAndStatistics />} />
             </Routes>
         </div>
     );

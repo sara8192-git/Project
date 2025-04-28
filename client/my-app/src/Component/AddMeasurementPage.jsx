@@ -50,9 +50,11 @@ const AddMeasurementPage = () => {
           onChange={(e) => setWeight(e.target.value)}
           className="border p-2 w-full mb-4 rounded"
         />
+        
         <div className="flex justify-between">
           <Button label="שמור" onClick={handleAddMeasurement} className="p-button-success" />
           <Button label="ביטול" onClick={() => navigate(-1)} className="p-button-secondary" />
+          
         </div>
       </div>
     </div>
