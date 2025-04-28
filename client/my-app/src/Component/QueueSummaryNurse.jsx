@@ -24,11 +24,9 @@ export default function QueueSummaryNurse() {
                     },
                 }
             );
-            if (response.data > 0) {
                 setAppointments(response.data);
-            }
+            
             console.log(response.data);
-            if (response.data > 0) {
                 // אחרי שמביאים את התורים, נטען את כל התינוקות
                 const babyData = {};
                 await Promise.all(response.data.map(async (appt) => {
@@ -42,7 +40,7 @@ export default function QueueSummaryNurse() {
                 }));
 
                 setBabyDetails(babyData);
-            }
+            
         } catch (error) {
             console.error("שגיאה בשליפת תורים:", error);
         }
