@@ -69,6 +69,7 @@ return (
 
         </div>
             <Routes> 
+                
                 <Route path='/Home' element={<Home/>} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} /> {/* נתיב חדש להרשמה */}

@@ -100,7 +100,48 @@ const getBabiesById = async (req, res) => {
     }
 
 }
+const getWeightsByBabyId = async (req, res) => {
+    const {id } = req.params; // קבלת ה-ID מהפרמטרים של ה-URL
+console.log(id);
+    try {
+        // חיפוש התינוק לפי ID
+        const baby = await Babies.findById(id);
 
+        // בדיקה אם התינוק לא נמצא
+        if (!baby) {
+            return res.status(404).json({ message: 'Baby not found' });
+        }
+
+        // יצירת מערך של כל המשקלים של התינוק
+        const weights = baby.messure.map(measure => measure.weight);
+
+        res.status(200).json({ weights });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Error fetching weights for the baby' });
+    }
+};
+const getHightssByBabyId = async (req, res) => {
+    const {id } = req.params; // קבלת ה-ID מהפרמטרים של ה-URL
+console.log(id);
+    try {
+        // חיפוש התינוק לפי ID
+        const baby = await Babies.findById(id);
+
+        // בדיקה אם התינוק לא נמצא
+        if (!baby) {
+            return res.status(404).json({ message: 'Baby not found' });
+        }
+
+        // יצירת מערך של כל המשקלים של התינוק
+        const weights = baby.messure.map(measure => measure.height);
+
+        res.status(200).json({ height });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Error fetching height for the baby' });
+    }
+};
 const addMeasurement = async (req, res) => {
     try {
         const { identity, height, weight } = req.body
@@ -130,6 +171,8 @@ module.exports = {
     deleteBaby,
     getBabiesById,
     getBabiesByParent,
-    addMeasurement
+    addMeasurement,
+    getWeightsByBabyId,
+    getHightssByBabyId
 }
 
