@@ -35,6 +35,9 @@ export default function Login() {
                 else if(response.data.user.role=="Nurse"){
                     navigate('/nurse')
                 }
+                else if(response.data.user.role=="Secretary"){
+                    navigate('/secretary')
+                }
               //שליחה לפי תפקיד
 
             }

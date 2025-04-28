@@ -14,6 +14,7 @@ router.post("/",UserControler.creatNewUsers)
 router.delete("/:_id",administerMW,UserControler.deleteUser)
 router.put("/",UserControler.updateUser)
 router.get('/my-babies/:parentId',parentMW, UserControler.getMyBabies);
+router.get('/id/:identity',parentMW, UserControler.getUserByIdentity);
 
 module.exports = router
 

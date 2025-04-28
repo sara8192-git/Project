@@ -7,7 +7,7 @@ import { Button } from "primereact/button";
 import { useDispatch, useSelector } from 'react-redux';
 import { setToken, logOut } from '../redux/tokenSlice'
 import { Menubar } from 'primereact/menubar';
-import QueueSummaryNurse from './/QueueSummaryNurse'
+import QueueSummaryNurse from './QueueSummaryNurse'
 import { Route, Routes } from 'react-router-dom'
 import ChatNurse from './ChatNurse'
 export default function Nurse() {
