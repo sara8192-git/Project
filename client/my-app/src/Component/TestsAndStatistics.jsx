@@ -2,17 +2,25 @@ import React, { useState, useEffect } from 'react';
 import { Chart } from 'primereact/chart';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
+import { useSelector } from 'react-redux';
 
-export default function StatisticsPage() {
+export default function TestsAndStatistics() {
     const { id } = useParams(); // ID של התינוק מהנתיב
     const [heightData, setHeightData] = useState({});
     const [weightData, setWeightData] = useState({});
     const [chartOptions, setChartOptions] = useState({});
+    const token = useSelector((state) => state.token.token);
+
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.get(`http://localhost:7002/baby/${id}`);
+                const response = await axios.get(`http://localhost:7002/baby/${id}`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+
                 const measurements = response.data.messure;
 
                 const heights = measurements.map((measure, index) => ({
@@ -70,11 +78,21 @@ export default function StatisticsPage() {
                     },
                     scales: {
                         x: {
+                            type: 'linear', 
+                            position: 'bottom',
                             ticks: {
                                 color: textColorSecondary
                             },
                             grid: {
                                 color: surfaceBorder
+                            },
+                            title: {
+                                display: true,
+                                text: 'מספר מדידה',  // ⬅️ מה ציר ה-X מבטא
+                                color: textColor,
+                                font: {
+                                    size: 14
+                                }
                             }
                         },
                         y: {
@@ -83,7 +101,15 @@ export default function StatisticsPage() {
                             },
                             grid: {
                                 color: surfaceBorder
-                            }
+                            },
+                            title: {
+                display: true,
+                text: 'גובה / משקל',  // ⬅️ מה ציר ה-Y מבטא
+                color: textColor,
+                font: {
+                    size: 14
+                }
+            }
                         }
                     }
                 });

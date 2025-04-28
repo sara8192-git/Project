@@ -8,6 +8,7 @@ import { Provider } from 'react-redux';
 import 'primereact/resources/themes/lara-light-blue/theme.css';
 import 'primereact/resources/primereact.min.css';
 import 'primeicons/primeicons.css';
+import 'chartjs-adapter-date-fns';
 
 
 import { store } from './redux/store'

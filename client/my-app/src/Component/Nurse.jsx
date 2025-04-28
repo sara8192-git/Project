@@ -50,8 +50,8 @@ export default function Nurse() {
             <Routes>
                 <Route path='/QueueSummaryNurse' element={<QueueSummaryNurse />} />
                 <Route path='/ChatNurse' element={<ChatNurse />} />
-                <Route path='/TestsAndStatistics/:id' element={<TestsAndStatistics />} />
-            </Routes>
+                <Route path='/nurse/TestsAndStatistics/:id' element={<TestsAndStatistics />} />
+                </Routes>
         </div>
     );
 }
