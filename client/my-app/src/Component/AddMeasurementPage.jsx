@@ -2,8 +2,11 @@ import React, { useState } from 'react'
 import axios from 'axios'
 import { useParams, useNavigate } from 'react-router-dom'
 import { Button } from 'primereact/button'
+import { useSelector } from 'react-redux';
 
 const AddMeasurementPage = () => {
+  const token = useSelector((state) => state.token.token)
+
   const { babyId } = useParams()
   const navigate = useNavigate()
 
@@ -12,13 +15,13 @@ const AddMeasurementPage = () => {
 
   const handleAddMeasurement = async () => {
     try {
-      await axios.patch('http://localhost:7002/testResults/addMeasurement', {
-        _id: babyId,
+      await axios.patch('http://localhost:7002/baby', {
+        identity: babyId,
         height,
         weight
       }, {
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
+          'Authorization': `Bearer ${token}`
         }
       })
       alert('המדידה נוספה בהצלחה!')

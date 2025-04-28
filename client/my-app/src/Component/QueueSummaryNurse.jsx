@@ -24,23 +24,25 @@ export default function QueueSummaryNurse() {
                     },
                 }
             );
-            setAppointments(response.data);
+            if (response.data > 0) {
+                setAppointments(response.data);
+            }
             console.log(response.data);
+            if (response.data > 0) {
+                // אחרי שמביאים את התורים, נטען את כל התינוקות
+                const babyData = {};
+                await Promise.all(response.data.map(async (appt) => {
 
-            // אחרי שמביאים את התורים, נטען את כל התינוקות
-            const babyData = {};
-            await Promise.all(response.data.map(async (appt) => {
-
-                if (appt.baby_id) {
-                    const baby = await getIDBaby(appt.baby_id);
-                    if (baby) {
-                        babyData[appt.baby_id] = baby;
+                    if (appt.baby_id) {
+                        const baby = await getIDBaby(appt.baby_id);
+                        if (baby) {
+                            babyData[appt.baby_id] = baby;
+                        }
                     }
-                }
-            }));
+                }));
 
-            setBabyDetails(babyData);
-
+                setBabyDetails(babyData);
+            }
         } catch (error) {
             console.error("שגיאה בשליפת תורים:", error);
         }
@@ -48,6 +50,7 @@ export default function QueueSummaryNurse() {
 
     const getIDBaby = async (BabyId) => {
         try {
+            console.log("BabyId" + BabyId);
             const response = await axios.get(
                 `http://localhost:7002/baby/${BabyId}`,
                 {
@@ -56,6 +59,7 @@ export default function QueueSummaryNurse() {
                     },
                 }
             );
+            console.log("response" + response.data.identity);
             return response.data;
         } catch (error) {
             console.error("שגיאה בשליפת התינוק:", error);
