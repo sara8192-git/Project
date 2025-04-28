@@ -1,4 +1,4 @@
- 
+
 
 const User = require("../models/User")
 const Babies = require("../models/Babies")
@@ -15,7 +15,7 @@ const creatNewBaby = async (req, res) => {
                 parent.babies.push(baby._id);
                 await parent.save();
             }
-            return res.status(201).json({ message: 'New baby created',baby })
+            return res.status(201).json({ message: 'New baby created', baby })
         } else {
             return res.status(400).json({ message: 'Invalid baby' })
         }
@@ -84,28 +84,6 @@ const deleteBaby = async (req, res) => {
         return res.status(500).json({ message: 'Error deleting baby', error })
     }
 }
-const addMeasurement = async (req, res) => {
-    try {
-        const { _id, height, weight } = req.body
-
-        // ודא שכל הנתונים נמסרו
-        if (!_id || !height || !weight)
-            return res.status(400).json({ message: 'All fields are required' })
-
-        const baby = await Babies.findById(_id)
-        if (!baby)
-            return res.status(404).json({ message: 'Baby not found' })
-
-        // מחפש אם יש כבר measurements ומעדכן אם כן
-        baby.measurements = [{ height, weight }];
-        await baby.save()
-
-        res.status(200).json({ message: 'Measurement updated successfully', measurements: baby.measurements })
-
-    } catch (error) {
-        res.status(500).json({ message: 'Error adding measurement', error: error.message })
-    }
-}
 
 
 
@@ -123,7 +101,34 @@ const getBabiesById = async (req, res) => {
 
 }
 
+const addMeasurement = async (req, res) => {
+    try {
+        const { baby_id, height, weight } = req.body
 
+        // ודא שכל הנתונים נמסרו
+        if (!baby_id || !height || !weight || !test_date)
+            return res.status(400).json({ message: 'All fields are required' })
+        console.log("baby_id" + baby_id + "test_date" + test_date.time);
+
+        const date = {
+            time: test_date.time,
+            date: test_date.date
+        }
+
+        const baby = await TestResults.find({ baby_id: baby_id, test_date: date })
+        if (!baby)
+            return res.status(404).json({ message: 'Baby not found' })
+
+        // מחפש אם יש כבר measurements ומעדכן אם כן
+        baby.result = [{ height, weight }];
+        await baby.save()
+
+        res.status(200).json({ message: 'Measurement updated successfully', result: baby.result })
+
+    } catch (error) {
+        res.status(500).json({ message: 'Error adding measurement', error: error.message })
+    }
+}
 module.exports = {
     creatNewBaby,
     getAllBabies,

@@ -12,7 +12,7 @@ const AddMeasurementPage = () => {
 
   const handleAddMeasurement = async () => {
     try {
-      await axios.put('/baby/addMeasurement', {
+      await axios.patch('http://localhost:7002/testResults/addMeasurement', {
         _id: babyId,
         height,
         weight

@@ -55,6 +55,7 @@ export default function BookedAppointmentParent() {
     };
 
     useEffect(() => {
+        console.log("jjjjjjj");
         // שליפת התינוקות של ההורה
         const fetchBabies = async () => {
             try {
