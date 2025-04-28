@@ -129,7 +129,6 @@ export default function UseCalendar() {
         const fetchBabies = async () => {
             try {
                
-                
                 const res = await axios.get(
                     `http://localhost:7002/user/my-babies/${parentId}`,
                     {
