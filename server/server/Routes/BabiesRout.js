@@ -15,5 +15,6 @@ router.get("/:_id",parentMW,BabiesControler.getBabiesById)
 router.delete("/:_id",administerMW,BabiesControler.deleteBaby)
 router.put("/",parentMW,BabiesControler.updateBabies)
 router.get("/by-parent/:parentId", parentMW, BabiesControler.getBabiesByParent)
+router.patch("/",nurseMW,BabiesControler.addMeasurement)
 
 module.exports = router

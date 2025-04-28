@@ -20,11 +20,13 @@ const BabiesSchema = new mongoose.Schema({
         required: true , 
         ref: "User"
     },
-    messure: [{
-        higth: { type: Number},
-        weigth: { type: Number},
-    }
-]
+    messure: [
+        {
+            height: { type: Number, required: true },
+            weight: { type: Number, required: true }
+        }
+    ]
+
 
 }, { timestamps: true })
 

@@ -103,25 +103,19 @@ const getBabiesById = async (req, res) => {
 
 const addMeasurement = async (req, res) => {
     try {
-        const { baby_id, height, weight } = req.body
-
-        // ודא שכל הנתונים נמסרו
-        if (!baby_id || !height || !weight || !test_date)
+        const { identity, height, weight } = req.body
+        console.log( identity, height, weight);
+        if (!identity || !height || !weight)
             return res.status(400).json({ message: 'All fields are required' })
-        console.log("baby_id" + baby_id + "test_date" + test_date.time);
-
-        const date = {
-            time: test_date.time,
-            date: test_date.date
-        }
-
-        const baby = await TestResults.find({ baby_id: baby_id, test_date: date })
+    
+        const baby = await Babies.findById(identity)
         if (!baby)
             return res.status(404).json({ message: 'Baby not found' })
 
         // מחפש אם יש כבר measurements ומעדכן אם כן
-        baby.result = [{ height, weight }];
-        await baby.save()
+        baby.messure.push({ height, weight });
+        await baby.save();
+
 
         res.status(200).json({ message: 'Measurement updated successfully', result: baby.result })
 
