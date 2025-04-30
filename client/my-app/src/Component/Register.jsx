@@ -8,6 +8,7 @@ import { Toast } from "primereact/toast";
 import "primereact/resources/themes/lara-light-blue/theme.css";
 import "primereact/resources/primereact.min.css";
 import "primeicons/primeicons.css";
+import { FileUpload } from "primereact/fileupload";
 
 const Register = () => {
     const [formData, setFormData] = useState({
@@ -16,29 +17,41 @@ const Register = () => {
         email: "",
         password: "",
         role: "",
-        emailDomain: "@gmail.com"
+        emailDomain: "@gmail.com",
+        profilePicture: null // שמירת התמונה שהועלתה
     });
     const toast = useRef(null);
 
-    
     const emailDomains = ["@gmail.com", "@yahoo.com", "@outlook.com", "@hotmail.com"];
 
     const handleChange = (e, field) => {
         setFormData({ ...formData, [field]: e.target.value });
     };
 
+    const handleFileUpload = (e) => {
+        if (e.files && e.files.length > 0) {
+            setFormData({ ...formData, profilePicture: e.files[0] });
+            toast.current.show({ severity: "info", summary: "Success", detail: "תמונה הועלתה בהצלחה!" });
+        }
+    };
+
     const handleRegister = async () => {
         try {
+            // יצירת אובייקט FormData
+            const formDataToSend = new FormData();
+            formDataToSend.append("identity", formData.identity);
+            formDataToSend.append("name", formData.name);
+            formDataToSend.append("email", formData.email + formData.emailDomain);
+            formDataToSend.append("password", formData.password);
+            formDataToSend.append("role", formData.role);
+
+            if (formData.profilePicture) {
+                formDataToSend.append("profilePicture", formData.profilePicture);
+            }
+
             const response = await fetch("http://localhost:7002/auth/register", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    identity: formData.identity,
-                    name: formData.name,
-                    email: formData.email + formData.emailDomain,
-                    password: formData.password,
-                    role: formData.role
-                })
+                body: formDataToSend // שליחת הנתונים כ-FormData
             });
 
             const data = await response.json();
@@ -81,7 +94,17 @@ const Register = () => {
                         <small>הסיסמה חייבת לכלול אות גדולה, אות קטנה ומספר</small>
                     </div>
 
-                   
+                    <div className="field">
+                        <label htmlFor="profilePicture">תמונת פרופיל</label>
+                        <FileUpload
+                            name="profilePicture"
+                            accept="image/*"
+                            maxFileSize={1000000}
+                            customUpload
+                            uploadHandler={handleFileUpload}
+                            auto
+                        />
+                    </div>
 
                     <Button label="הצטרפות" icon="pi pi-user-plus" className="p-button-success w-full mt-3" onClick={handleRegister} />
                 </div>

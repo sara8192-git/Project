@@ -7,7 +7,8 @@ const connectDB = require("./config/dbConn");
 const nodemailer = require("nodemailer");
 const messageRoutes = require('./Routes/messageRoutes');
 const chatRoomRoutes = require('./Routes/chatRoomRoutes');
-const multer = require("multer")
+const path = require('path');
+
 const PORT = process.env.PORT || 7002;
 
 const app = express();
@@ -35,6 +36,8 @@ const server = http.createServer(app);
 app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.static("public"));
+
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // app.get("/", (req, res) => {
 //     res.send("This is home page");

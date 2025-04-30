@@ -1,11 +1,14 @@
 const User = require("../models/User")
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
+const multer = require("multer");
+const path = require("path");
+
 const login = async (req, res) => {
     try {
 
         const { email, password } = req.body
-      
+
         if (!email || !password) {
             return res.status(400).json({ message: 'Both identity and password are required' })
         }
@@ -29,37 +32,61 @@ const login = async (req, res) => {
         // { expiresIn: '1h' }להוסיף אם רוצים הגבלת זמן לטוקן
         const accessToken = jwt.sign(userInfo, process.env.ACCESS_TOKEN_SECRET)
 
-        res.json({ accessToken,user:foundUser[0]})
+        res.json({ accessToken, user: foundUser[0] })
     } catch (error) {
         console.error("❌ שגיאה במהלך לוגין:", error);
         return res.status(500).json({ message: 'Error during login', error })
     }
 }
+
+
 const register = async (req, res) => {
-    console.log("jjjjjj");
     try {
-        const { identity, name, email, password } = req.body
+        const { identity, name, email, password } = req.body;
+
+        // בדיקת שדות חובה
         if (!identity || !name || !email || !password) {
-            return res.status(400).json({ message: 'All fields are required' })
+            return res.status(400).json({ message: 'All fields are required' });
         }
 
-        const duplicate = await User.findOne({ identity }).lean()
+        // בדיקת משתמש קיים
+        const duplicate = await User.findOne({ identity }).lean();
         if (duplicate) {
-            return res.status(409).json({ message: 'User with this identity already exists' })
+            return res.status(409).json({ message: 'User with this identity already exists' });
         }
 
-        const hashedPwd = await bcrypt.hash(password, 10)
-        const userObject = { identity, name, email, password: hashedPwd }
+        // העלאת תמונה (אם קיימת)
+        let profilePicturePath = null;
+        if (req.file) {
+            profilePicturePath = `/uploads/${req.file.filename}`;
+        }
 
-        const user = await User.create(userObject)
+        // הצפנת סיסמה
+        const hashedPwd = await bcrypt.hash(password, 10);
+
+        // יצירת אובייקט משתמש
+        const userObject = {
+            identity,
+            name,
+            email,
+            password: hashedPwd,
+            profilePicture: profilePicturePath // שמירת נתיב התמונה
+        };
+
+        // שמירת המשתמש בבסיס הנתונים
+        const user = await User.create(userObject);
+
         if (user) {
-            return res.status(201).json({ message: `New user ${user.identity} created successfully` })
+            return res.status(201).json({ 
+                message: `New user ${user.identity} created successfully`,
+                user,
+            });
         } else {
-            return res.status(400).json({ message: 'Error creating user' })
+            return res.status(400).json({ message: 'Error creating user' });
         }
-    } catch (error) {
-        return res.status(500).json({ message: 'Error during registration', error })
+    } catch (err) {
+        res.status(500).json({ message: 'Error during registration', error: err.message });
     }
-}
+};
 
-module.exports = { login, register }
+module.exports = { login, register}
