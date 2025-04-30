@@ -189,17 +189,19 @@ const deleteAppointment = async (req, res) => {
             return res.status(400).json({ message: 'Appointment  ID is required' })
         }
 
-        const Appointment = await Appointment.findById(_id).exec()
-        if (!testResult) {
+        const appointment = await Appointment.findById(_id).exec()
+        console.log("appointment"+appointment+"_id"+_id);
+        if (!appointment) {
             return res.status(400).json({ message: 'Appointment not found' })
         }
 
-        await Appointment.deleteOne()
+        await appointment.deleteOne()
         return res.status(200).json({ message: `Appointment with ID ${_id} deleted` })
     } catch (error) {
         return res.status(500).json({ message: 'Error deleting Appointment', error })
     }
 }
+
 const updateAppointmentStatus = async (req, res) => {
     try {
         const { appointment_id, status } = req.body;

@@ -1,6 +1,5 @@
 const express = require("express")
 const router = express.Router()
-const secretaryMW = require("../middleware/secretaryMW")
 const parentMW = require("../middleware/parentMW")
 const verifyJWT = require("../middleware/verifyJWT")
 const nurseMW = require("../middleware/nurseMW")
