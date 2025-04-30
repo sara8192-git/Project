@@ -1,0 +1,15 @@
+export const growthDataByAge = [
+    { age: 0, heightMean: 50.0, heightStdDev: 2.0, weightMean: 3.3, weightStdDev: 0.5 },
+    { age: 3, heightMean: 61.0, heightStdDev: 2.5, weightMean: 5.8, weightStdDev: 0.7 },
+    { age: 6, heightMean: 67.6, heightStdDev: 2.7, weightMean: 7.9, weightStdDev: 0.9 },
+    { age: 9, heightMean: 72.0, heightStdDev: 2.8, weightMean: 9.2, weightStdDev: 1.0 },
+    { age: 12, heightMean: 76.0, heightStdDev: 3.0, weightMean: 10.3, weightStdDev: 1.1 },
+    { age: 15, heightMean: 79.0, heightStdDev: 3.1, weightMean: 11.2, weightStdDev: 1.2 },
+    { age: 18, heightMean: 82.0, heightStdDev: 3.2, weightMean: 11.8, weightStdDev: 1.2 },
+    { age: 21, heightMean: 85.0, heightStdDev: 3.3, weightMean: 12.5, weightStdDev: 1.3 },
+    { age: 24, heightMean: 87.0, heightStdDev: 3.4, weightMean: 13.0, weightStdDev: 1.4 },
+    { age: 27, heightMean: 89.0, heightStdDev: 3.5, weightMean: 13.5, weightStdDev: 1.4 },
+    { age: 30, heightMean: 91.0, heightStdDev: 3.6, weightMean: 14.0, weightStdDev: 1.5 },
+    { age: 33, heightMean: 93.0, heightStdDev: 3.7, weightMean: 14.5, weightStdDev: 1.5 },
+    { age: 36, heightMean: 95.0, heightStdDev: 3.8, weightMean: 15.0, weightStdDev: 1.6 },
+];
