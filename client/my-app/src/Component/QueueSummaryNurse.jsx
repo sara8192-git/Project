@@ -88,7 +88,6 @@ export default function QueueSummaryNurse() {
                                 label="הצג סטטיסטיקות "
                                 rounded
                                 onClick={() => navigate(`/TestsAndStatistics/${BabyDetails[appt.baby_id]?._id}`)}
-<<<<<<< HEAD
                             />
                             <Button
                                 label="דוח על טיפול "
@@ -98,13 +97,7 @@ export default function QueueSummaryNurse() {
                                     setVisible(true); // פתיחת הדיאלוג
                                 }}
                             />
-                              <p><strong>שעה:</strong> {appt.appointment_time?.time || "לא ידוע"}</p>
-=======
-                                />
-                                
-                            {/* <p><strong>תאריך:</strong> {appt.appointment_time?.date ? new Date(appt.appointment_time.date).toLocaleDateString('he-IL') : "לא ידוע"}</p> */}
                             <p><strong>שעה:</strong> {appt.appointment_time?.time || "לא ידוע"}</p>
->>>>>>> eecb7de8182040b8e4ad62e1de46adf8ea37a529
                             <p><strong>תז התינוק:</strong> {BabyDetails[appt.baby_id]?.identity || "לא ידוע"}</p>
                             <p><strong>בדיקה:</strong> {appt.status}</p>
                         </Card>

@@ -6,6 +6,8 @@ import UseCalendar from './UseCalendar';
 import ChatParent from './ChatParent'
 import {  Route, Routes } from 'react-router-dom'
 import AddBabySecretary from './AddBabySecretary'
+import AddScheduleNurse from './AddScheduleNurse'
+
 export default function Parent() {
 
     const navigate = useNavigate(); // 🔹 מאפשר ניווט לדפים אחרים
@@ -25,10 +27,10 @@ export default function Parent() {
             }
         },
         {
-            label: 'Projects',
+            label: 'AddScheduleNurse',
             icon: 'pi pi-search',
             command: () => {
-                navigate('/secretary/BookedAppointmentParent')
+                navigate('/secretary/AddScheduleNurse')
             }
         },
         {
@@ -49,6 +51,7 @@ export default function Parent() {
                 <Route path='/UseCalendar' element={<UseCalendar />} />
                 <Route path='/ChatParent' element={<ChatParent />} />
                 <Route path='/AddBabySecretary' element={<AddBabySecretary />} />
+                <Route path='/AddScheduleNurse' element={<AddScheduleNurse />} />
 
             </Routes>
         </div>
