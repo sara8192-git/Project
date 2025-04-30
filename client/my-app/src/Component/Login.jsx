@@ -17,6 +17,7 @@ export default function Login() {
     const handleLogin = async (e) => {
         e.preventDefault(); // מונע רענון של הדף
         setError(""); // איפוס שגיאות קודמות
+        console.log("email"+email);
 
         try {
             const response = await axios.post("http://localhost:7002/auth/login", {

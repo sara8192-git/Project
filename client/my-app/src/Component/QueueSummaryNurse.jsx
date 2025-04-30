@@ -1,18 +1,21 @@
 import { useNavigate } from "react-router-dom";
-import { Route, Routes } from 'react-router-dom'
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useSelector } from 'react-redux';
 import { Card } from "primereact/card";
 import { Button } from 'primereact/button';
 import AddMeasurementPage from "./AddMeasurementPage";
+import ReportAbaby from "./ReportAbaby";
 
 export default function QueueSummaryNurse() {
     const [appointments, setAppointments] = useState([]);
     const token = useSelector((state) => state.token.token);
-    const user = useSelector((state) => state.token.user);
+    const user = useSelector((state) => state.token.user); // nurseId
     const [BabyDetails, setBabyDetails] = useState([]);
-    const navigate = useNavigate();  // מיקום נכון לקריאת ה-hook
+    const [visible, setVisible] = useState(false);
+    const [selectedBabyId, setSelectedBabyId] = useState(null);
+
+    const navigate = useNavigate();
 
     const fetchAppointments = async () => {
         try {
@@ -24,23 +27,20 @@ export default function QueueSummaryNurse() {
                     },
                 }
             );
-                setAppointments(response.data);
-            
-            console.log(response.data);
-                // אחרי שמביאים את התורים, נטען את כל התינוקות
-                const babyData = {};
-                await Promise.all(response.data.map(async (appt) => {
+            setAppointments(response.data);
 
-                    if (appt.baby_id) {
-                        const baby = await getIDBaby(appt.baby_id);
-                        if (baby) {
-                            babyData[appt.baby_id] = baby;
-                        }
+            const babyData = {};
+            await Promise.all(response.data.map(async (appt) => {
+                if (appt.baby_id) {
+                    const baby = await getIDBaby(appt.baby_id);
+                    if (baby) {
+                        babyData[appt.baby_id] = baby;
                     }
-                }));
+                }
+            }));
 
-                setBabyDetails(babyData);
-            
+            setBabyDetails(babyData);
+
         } catch (error) {
             console.error("שגיאה בשליפת תורים:", error);
         }
@@ -48,7 +48,6 @@ export default function QueueSummaryNurse() {
 
     const getIDBaby = async (BabyId) => {
         try {
-            console.log("BabyId" + BabyId);
             const response = await axios.get(
                 `http://localhost:7002/baby/${BabyId}`,
                 {
@@ -57,7 +56,6 @@ export default function QueueSummaryNurse() {
                     },
                 }
             );
-            console.log("response" + response.data.identity);
             return response.data;
         } catch (error) {
             console.error("שגיאה בשליפת התינוק:", error);
@@ -85,20 +83,35 @@ export default function QueueSummaryNurse() {
                                 rounded
                                 onClick={() => navigate(`/AddMeasurementPage/${BabyDetails[appt.baby_id]?._id}`)}
                             />
-                            
-                             <Button
+
+                            <Button
                                 label="הצג סטטיסטיקות "
                                 rounded
                                 onClick={() => navigate(`/TestsAndStatistics/${BabyDetails[appt.baby_id]?._id}`)}
-                                />
-                            {/* <p><strong>תאריך:</strong> {appt.appointment_time?.date ? new Date(appt.appointment_time.date).toLocaleDateString('he-IL') : "לא ידוע"}</p> */}
-                            <p><strong>שעה:</strong> {appt.appointment_time?.time || "לא ידוע"}</p>
+                            />
+                            <Button
+                                label="דוח על טיפול "
+                                rounded
+                                onClick={() => {
+                                    setSelectedBabyId(BabyDetails[appt.baby_id]?._id); // קביעת ID של התינוק
+                                    setVisible(true); // פתיחת הדיאלוג
+                                }}
+                            />
+                              <p><strong>שעה:</strong> {appt.appointment_time?.time || "לא ידוע"}</p>
                             <p><strong>תז התינוק:</strong> {BabyDetails[appt.baby_id]?.identity || "לא ידוע"}</p>
                             <p><strong>בדיקה:</strong> {appt.status}</p>
                         </Card>
                     ))}
                 </div>
             )}
+
+            {/* קומפוננטה של הדיאלוג */}
+            <ReportAbaby
+                visible={visible}
+                setVisible={setVisible}
+                babyId={selectedBabyId} // העברת ID של התינוק
+                nurseId={user._id}     // העברת ID של האחות
+            />
         </div>
     );
 }

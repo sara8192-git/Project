@@ -2,57 +2,29 @@ const TestResults = require("../models/TestResults")
 const multer = require('multer');
 const path = require('path');
 
-const fileTypes = ['image/jpeg', 'image/png', 'application/pdf']; // הוסיפו סוגי קבצים נוספים אם רוצים
 
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-      cb(null, './uploads/');
-    },
-    filename: function (req, file, cb) {
-      cb(null, Date.now() + path.extname(file.originalname));
-    }
-  });
- 
-  const upload = multer({
-    storage: storage,
-    fileFilter: (req, file, cb) => {
-      if (!fileTypes.includes(file.mimetype)) {
-        return cb(new Error('File type not allowed'), false);
-      }
-      cb(null, true);
-    },
-  }).single('file');
+
   
 const creatTestResults = async (req, res) => {
     try {
-        const { baby_id, nurse_id, test_date, result } = req.body
+        const { baby_id, nurse_id, test_date, result } = req.body;
         if (!baby_id || !nurse_id || !test_date || !result) {
-            return res.status(400).json({ message: 'patient_id, test_type, result, and date are required' })
+            return res.status(400).json({ message: 'All fields are required' });
         }
-        let filePath = null;
-        if (req.result) {
-            filePath = req.result.path;
-        }
-        // בדיקת קיום תוצאה קודמת עבור החולה
-        // const existingResult = await TestResults.findOne({ patient_id, test_type, date })
-        // if (existingResult) {
-        //     return res.status(400).json({ message: 'Test result already exists for this patient on this date' })
-        // }
+
         const newTestResult = new TestResults({
             baby_id,
             nurse_id,
             test_date,
-            result:filePath,
+            result
         });
+
         const savedTestResult = await newTestResult.save();
         res.status(201).json(savedTestResult);
-
-        // const testResult = await TestResults.create({ patient_id, test_type, result, date })
-        // return res.status(201).json({ message: 'New test result created', testResult })
     } catch (error) {
-        return res.status(500).json({ message: 'Error creating test result', error })
+        return res.status(500).json({ message: 'Error creating test result', error });
     }
-}
+};
 
 const getAllTestResults = async (req, res) => {
     try {

@@ -8,11 +8,12 @@ const TestResultController = require("../Controllers/TestResultController")
 const verifyJWT = require("../middleware/verifyJWT")
 
 router.use(verifyJWT)
-// router.post('/', testResultsController.upload, testResultsController.createTestResults);
+router.post('/',nurseMW, TestResultController.creatTestResults);
 
 router.get("/", nurseMW, TestResultController.getAllTestResults)
 router.get("/:_id", parentMW, TestResultController.getTestResultById)
 router.delete("/:_id", nurseMW, TestResultController.deleteTestResults)
 router.put("/", nurseMW, TestResultController.updateTestResults)
+
 
 module.exports = router
