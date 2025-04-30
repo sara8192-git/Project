@@ -58,7 +58,7 @@ const updateAppointment = async (req, res) => {
 
 const cancelAppointment = async (req, res) => {
     try {
-        const { _id } = req.body;
+        const { _id } = req.params;
         const token = req.headers['authorization']?.split(' ')[1];
         const decoded = jwt.verify(token, 'your-secret-key');
         if (!_id) {
@@ -180,6 +180,50 @@ const getAppointmentByBabyId = async (req, res) => {
     }
     res.json(Appointments)
 }
+
+const deleteAppointment = async (req, res) => {
+    try {
+        const { _id } = req.params
+
+        if (!_id) {
+            return res.status(400).json({ message: 'Appointment  ID is required' })
+        }
+
+        const Appointment = await Appointment.findById(_id).exec()
+        if (!testResult) {
+            return res.status(400).json({ message: 'Appointment not found' })
+        }
+
+        await Appointment.deleteOne()
+        return res.status(200).json({ message: `Appointment with ID ${_id} deleted` })
+    } catch (error) {
+        return res.status(500).json({ message: 'Error deleting Appointment', error })
+    }
+}
+const updateAppointmentStatus = async (req, res) => {
+    try {
+        const { appointment_id, status } = req.body;
+
+        if (!appointment_id) {
+            return res.status(400).json({ message: 'Appointment ID is required' });
+        }
+
+        // מציאת התור על ידי ID
+        const appointment = await Appointment.findById(appointment_id).exec();
+        if (!appointment) {
+            return res.status(404).json({ message: 'Appointment not found' });
+        }
+
+        // עדכון הסטטוס
+        appointment.status = status || appointment.status;
+
+        await appointment.save();
+        return res.status(200).json({ message: 'Appointment status updated successfully', appointment });
+    } catch (error) {
+        console.error("Error in updateAppointmentStatus:", error);
+        return res.status(500).json({ message: 'Error updating appointment status', error });
+    }
+};
 module.exports = {
     createNewAppointments,
     getAllAppointments,
@@ -188,5 +232,7 @@ module.exports = {
     getAppointmentById,
     getAppointmentsByDate,
     getAppointmentByNurseId,
-    getAppointmentByBabyId
+    getAppointmentByBabyId,
+    deleteAppointment,
+    updateAppointmentStatus
 }

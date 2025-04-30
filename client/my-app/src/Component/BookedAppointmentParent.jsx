@@ -34,6 +34,31 @@ export default function BookedAppointmentParent() {
             return [];
         }
     };
+
+    const deleteAppointment = async (appointmentId, babyId) => {
+        try {
+            await axios.delete(
+                `http://localhost:7002/appointment/${appointmentId}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+            // עדכון הסטייט לאחר המחיקה
+            setAppointments((prevAppointments) => {
+                const updatedAppointments = { ...prevAppointments };
+                updatedAppointments[babyId] = updatedAppointments[babyId].filter(
+                    (appointment) => appointment._id !== appointmentId
+                );
+                return updatedAppointments;
+            });
+            console.log("התור נמחק בהצלחה");
+        } catch (error) {
+            console.error("שגיאה במחיקת התור:", error);
+        }
+    };
+
     // פונקציה לשלוף את כל התורים של כל התינוקות
     const fetchAppointments = async () => {
         const allAppointments = {};
@@ -45,7 +70,6 @@ export default function BookedAppointmentParent() {
         );
         setAppointments(allAppointments);
     };
-
 
     const getNameBaby = async (BabyId) => {
         try {
@@ -64,8 +88,6 @@ export default function BookedAppointmentParent() {
     };
 
     useEffect(() => {
-        console.log("jjjjjjj");
-        // שליפת התינוקות של ההורה
         const fetchBabies = async () => {
             try {
                 const res = await axios.get(
@@ -89,11 +111,10 @@ export default function BookedAppointmentParent() {
             }
         };
         fetchBabies();
-    }, [parentId, token]); // קריאה תתבצע רק אם ה-token או ה-parentId משתנים
+    }, [parentId, token]);
 
     useEffect(() => {
         if (babies.length > 0) {
-            // רק אם יש תינוקות נבצע את שליפת השמות
             const fetchBabiesName = async () => {
                 const BabyData = {};
                 await Promise.all(babies.map(async (slot) => {
@@ -106,13 +127,13 @@ export default function BookedAppointmentParent() {
             };
             fetchBabiesName();
         }
-    }, [babies]);  // קריאה זו תתבצע כש-babies משתנה
+    }, [babies]);
 
     useEffect(() => {
-        if (Object.keys(babyDetails).length > 0) {  // לוודא ש-babyDetails נטען
-            fetchAppointments();  // שליפת התורים כש-babyDetails נטען
+        if (Object.keys(babyDetails).length > 0) {
+            fetchAppointments();
         }
-    }, [babyDetails]);  // קריאה זו תתבצע כש-babyDetails משתנה
+    }, [babyDetails]);
 
     return (
         <div>
@@ -121,20 +142,28 @@ export default function BookedAppointmentParent() {
                 <div key={babyId}>
                     <h3>{babyDetails[babyId]}</h3>
                     <ul>
-                        {/* {appointments[babyId]?.map((appointment, index) => (
-                            <li key={index}>
-                                {appointment.appointment_time.date} - {appointment.appointment_time.time}
-                            </li>
-                        ))} */}
                         {appointments[babyId]?.map((appointment, index) => {
-                            // בדיקה אם הנתונים תקינים לפני הגישה
                             if (!appointment || !appointment.appointment_time) {
                                 console.warn("Invalid appointment data:", appointment);
-                                return null; // דלג על ערכים לא תקינים
+                                return null;
                             }
                             return (
                                 <li key={index}>
                                     {formatDate(appointment.appointment_time.date) || "תאריך לא ידוע"} - {appointment.appointment_time.time || "שעה לא ידועה"}
+                                    <button
+                                        onClick={() => deleteAppointment(appointment._id, babyId)}
+                                        style={{
+                                            marginLeft: "10px",
+                                            backgroundColor: "red",
+                                            color: "white",
+                                            border: "none",
+                                            padding: "5px 10px",
+                                            borderRadius: "5px",
+                                            cursor: "pointer",
+                                        }}
+                                    >
+                                        מחק
+                                    </button>
                                 </li>
                             );
                         })}
