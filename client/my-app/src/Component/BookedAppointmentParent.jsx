@@ -35,6 +35,7 @@ export default function BookedAppointmentParent() {
         }
     };
 
+    //צריך להפוך את הדגל לשלילה במערך
     const deleteAppointment = async (appointmentId, babyId) => {
         try {
             await axios.delete(
