@@ -85,7 +85,41 @@ const deleteBaby = async (req, res) => {
     }
 }
 
-
+// const deleteBabiesOutOfAge = async (req, res) => {
+//     try {
+//         const baby = await Babies.findById(_id).exec()
+//         if (!baby) {
+//             return res.status(400).json({ message: 'Baby not found' })
+//         }
+//         await baby.deleteOne()
+//         res.json(`ID ${_id} deleted`)
+//     } catch (error) {
+//         return res.status(500).json({ message: 'Error deleting baby', error })
+//     }
+// }
+const deleteBabiesOutOfAge = async (req, res) => {
+    try {
+      console.log("Request received in deleteBabiesOutOfAge");
+  
+      // חישוב התאריך המקסימלי (3 שנים מהיום)
+      const threeYearsAgo = new Date();
+      threeYearsAgo.setFullYear(threeYearsAgo.getFullYear() - 3);
+  
+      // מחיקת תינוקות שגילם מעל 3 שנים
+      const result = await Babies.deleteMany({ dob: { $lt: threeYearsAgo } });
+  
+      console.log(`Successfully deleted ${result.deletedCount} babies older than 3 years.`);
+      res.status(200).json({
+        message: `Successfully deleted ${result.deletedCount} babies older than 3 years.`,
+      });
+    } catch (error) {
+      console.error('Error deleting babies out of age:', error);
+      res.status(500).json({
+        message: 'Error deleting babies out of age',
+        error,
+      });
+    }
+  };
 
 const getBabiesById = async (req, res) => {
     try {
@@ -173,6 +207,7 @@ module.exports = {
     getBabiesByParent,
     addMeasurement,
     getWeightsByBabyId,
-    getHightssByBabyId
+    getHightssByBabyId,
+    deleteBabiesOutOfAge
 }
 

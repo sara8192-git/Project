@@ -91,6 +91,7 @@ export default function QueueSummaryNurse() {
                                 rounded
                                 onClick={() => navigate(`/TestsAndStatistics/${BabyDetails[appt.baby_id]?._id}`)}
                                 />
+                                
                             {/* <p><strong>תאריך:</strong> {appt.appointment_time?.date ? new Date(appt.appointment_time.date).toLocaleDateString('he-IL') : "לא ידוע"}</p> */}
                             <p><strong>שעה:</strong> {appt.appointment_time?.time || "לא ידוע"}</p>
                             <p><strong>תז התינוק:</strong> {BabyDetails[appt.baby_id]?.identity || "לא ידוע"}</p>
