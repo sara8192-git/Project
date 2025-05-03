@@ -189,6 +189,7 @@ const createScheduleForNurse = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
+
 // 🎯 שליפת שעות פנויות של אחות ביום מסוים
 
 const getAvailableSlots = async (req, res) => {
@@ -250,7 +251,11 @@ const bookSlot = async (req, res) => {
             return res.status(400).json({ message: "השעה כבר נתפסה, אנא בחר שעה אחרת." });
         }
 
-        schedule.available_slots[slotIndex].is_booked = true;
+        if(schedule.available_slots[slotIndex].is_booked == true)
+            schedule.available_slots[slotIndex].is_booked = false;
+        else
+            schedule.available_slots[slotIndex].is_booked = true;
+
         await schedule.save();
 
         res.status(200).json({ message: "התור נשמר בהצלחה!" });

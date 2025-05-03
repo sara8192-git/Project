@@ -204,20 +204,20 @@ const deleteAppointment = async (req, res) => {
 
 const updateAppointmentStatus = async (req, res) => {
     try {
-        const { appointment_id, status } = req.body;
+        const { _id } = req.body;
 
-        if (!appointment_id) {
+        if (!_id) {
             return res.status(400).json({ message: 'Appointment ID is required' });
         }
 
         // מציאת התור על ידי ID
-        const appointment = await Appointment.findById(appointment_id).exec();
+        const appointment = await Appointment.findById(_id).exec();
         if (!appointment) {
             return res.status(404).json({ message: 'Appointment not found' });
         }
 
         // עדכון הסטטוס
-        appointment.status = status || appointment.status;
+        appointment.status =  "completed"
 
         await appointment.save();
         return res.status(200).json({ message: 'Appointment status updated successfully', appointment });

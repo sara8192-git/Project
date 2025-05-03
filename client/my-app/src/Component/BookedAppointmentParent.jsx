@@ -3,19 +3,19 @@ import axios from "axios";
 import { useSelector } from 'react-redux';
 
 export default function BookedAppointmentParent() {
-    const [babies, setBabies] = useState([]);  //⭐ תוספת - מערך תינוקות
+    const [babies, setBabies] = useState([]);
     const [babyDetails, setBabyDetails] = useState({});
-    const token = useSelector((state) => state.token.token)
-    const parentId = useSelector((state) => state.token.user._id)
-    const [appointments, setAppointments] = useState([]);  // סטייט לשמירת התורים
+    const token = useSelector((state) => state.token.token);
+    const parentId = useSelector((state) => state.token.user._id);
+    const [appointments, setAppointments] = useState({});
 
     const formatDate = (isoString) => {
-        if (!isoString) return "תאריך לא ידוע"; // טיפול במקרה של ערך ריק
+        if (!isoString) return "תאריך לא ידוע";
         const date = new Date(isoString);
-        const day = date.getDate().toString().padStart(2, '0'); // הוספת אפסים למספר ימים
-        const month = (date.getMonth() + 1).toString().padStart(2, '0'); // חודשים מתחילים מ-0
+        const day = date.getDate().toString().padStart(2, '0');
+        const month = (date.getMonth() + 1).toString().padStart(2, '0');
         const year = date.getFullYear();
-        return `${day}\\${month}\\${year}`; // פורמט מותאם
+        return `${day}\\${month}\\${year}`;
     };
 
     const getAppointmentsByBabyId = async (babyId) => {
@@ -23,66 +23,49 @@ export default function BookedAppointmentParent() {
             const response = await axios.get(
                 `http://localhost:7002/appointment/Baby/${babyId}`,
                 {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
+                    headers: { Authorization: `Bearer ${token}` },
                 }
             );
-            return response.data;  // התורים של התינוק
+            return response.data;
         } catch (error) {
             console.error("שגיאה בשליפת התורים:", error);
             return [];
         }
     };
 
-    //צריך להפוך את הדגל לשלילה במערך
     const deleteAppointment = async (appointmentId, babyId) => {
         try {
             await axios.delete(
                 `http://localhost:7002/appointment/${appointmentId}`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                }
+                { headers: { Authorization: `Bearer ${token}` } }
             );
-            // עדכון הסטייט לאחר המחיקה
-            setAppointments((prevAppointments) => {
-                const updatedAppointments = { ...prevAppointments };
-                updatedAppointments[babyId] = updatedAppointments[babyId].filter(
-                    (appointment) => appointment._id !== appointmentId
-                );
-                return updatedAppointments;
+            setAppointments(prev => {
+                const updated = { ...prev };
+                updated[babyId] = updated[babyId].filter(a => a._id !== appointmentId);
+                return updated;
             });
-            console.log("התור נמחק בהצלחה");
         } catch (error) {
             console.error("שגיאה במחיקת התור:", error);
         }
     };
 
-    // פונקציה לשלוף את כל התורים של כל התינוקות
     const fetchAppointments = async () => {
-        const allAppointments = {};
+        const all = {};
         await Promise.all(
-            Object.keys(babyDetails).map(async (babyId) => {
-                const appointments = await getAppointmentsByBabyId(babyId);
-                allAppointments[babyId] = appointments;
+            Object.keys(babyDetails).map(async babyId => {
+                all[babyId] = await getAppointmentsByBabyId(babyId);
             })
         );
-        setAppointments(allAppointments);
+        setAppointments(all);
     };
 
     const getNameBaby = async (BabyId) => {
         try {
-            const response = await axios.get(
+            const res = await axios.get(
                 `http://localhost:7002/baby/${BabyId}`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                }
+                { headers: { Authorization: `Bearer ${token}` } }
             );
-            return response.data.name;
+            return res.data.name;
         } catch (error) {
             console.error("שגיאה בשליפת התינוק:", error);
         }
@@ -93,19 +76,10 @@ export default function BookedAppointmentParent() {
             try {
                 const res = await axios.get(
                     `http://localhost:7002/user/my-babies/${parentId}`,
-                    {
-                        headers: {
-                            Authorization: `Bearer ${token}`,
-                        },
-                    }
+                    { headers: { Authorization: `Bearer ${token}` } }
                 );
-
                 if (res.status === 200) {
-                    const babyOptions = res.data.map(b => ({
-                        label: b,
-                        value: b
-                    }));
-                    setBabies(babyOptions);
+                    setBabies(res.data.map(b => ({ label: b, value: b })));
                 }
             } catch (err) {
                 console.error("❌ שגיאה בשליפת תינוקות:", err);
@@ -115,46 +89,47 @@ export default function BookedAppointmentParent() {
     }, [parentId, token]);
 
     useEffect(() => {
-        if (babies.length > 0) {
-            const fetchBabiesName = async () => {
-                const BabyData = {};
-                await Promise.all(babies.map(async (slot) => {
-                    const baby = await getNameBaby(slot.label); // קבלת פרטי התינוק
-                    if (baby) {
-                        BabyData[slot.label] = baby; // עדכון המידע
-                    }
+        if (babies.length) {
+            const fetchNames = async () => {
+                const names = {};
+                await Promise.all(babies.map(async slot => {
+                    const name = await getNameBaby(slot.label);
+                    if (name) names[slot.label] = name;
                 }));
-                setBabyDetails(BabyData); // עדכון עם כל הנתונים
+                setBabyDetails(names);
             };
-            fetchBabiesName();
+            fetchNames();
         }
     }, [babies]);
 
     useEffect(() => {
-        if (Object.keys(babyDetails).length > 0) {
-            fetchAppointments();
-        }
+        if (Object.keys(babyDetails).length) fetchAppointments();
     }, [babyDetails]);
 
     return (
-        <div>
-            <h2>תורים</h2>
-            {Object.keys(appointments).map((babyId) => (
-                <div key={babyId}>
-                    <h3>{babyDetails[babyId]}</h3>
-                    <ul>
-                        {appointments[babyId]?.map((appointment, index) => {
-                            if (!appointment || !appointment.appointment_time) {
-                                console.warn("Invalid appointment data:", appointment);
-                                return null;
-                            }
+        <div className="p-6">
+            <h2 className="text-2xl font-semibold mb-6 text-center">התורים שלי</h2>
+            {Object.keys(appointments).map(babyId => (
+                <div key={babyId} className="mb-8">
+                    <h3 className="text-lg font-bold mb-4 text-purple-700">
+                        {babyDetails[babyId]}
+                    </h3>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+                        {appointments[babyId]?.map((appointment, idx) => {
+                            if (!appointment?.appointment_time) return null;
                             return (
-                                <li key={index}>
-                                    {formatDate(appointment.appointment_time.date) || "תאריך לא ידוע"} - {appointment.appointment_time.time || "שעה לא ידועה"}
+                                <div
+                                    key={idx}
+                                    className="border border-purple-300 rounded-xl p-4 shadow-sm flex flex-col justify-between bg-white"
+                                >
+                                    <span className="text-right text-sm text-gray-700 mb-4">
+                                        {formatDate(appointment.appointment_time.date)} -{" "}
+                                        {appointment.appointment_time.time}
+                                    </span>
                                     <button
                                         onClick={() => deleteAppointment(appointment._id, babyId)}
                                         style={{
-                                            marginLeft: "10px",
+                                            marginTop: "auto",
                                             backgroundColor: "red",
                                             color: "white",
                                             border: "none",
@@ -165,10 +140,10 @@ export default function BookedAppointmentParent() {
                                     >
                                         מחק
                                     </button>
-                                </li>
+                                </div>
                             );
                         })}
-                    </ul>
+                    </div>
                 </div>
             ))}
         </div>

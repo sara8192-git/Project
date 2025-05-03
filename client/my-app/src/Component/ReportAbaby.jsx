@@ -4,8 +4,9 @@ import { Calendar } from 'primereact/calendar';
 import { Editor } from 'primereact/editor';
 import { Button } from 'primereact/button';
 import { useSelector } from 'react-redux';
+import axios from "axios";
 
-export default function ReportAbaby({ visible, setVisible, babyId, nurseId }) {
+export default function ReportAbaby({ visible, setVisible, babyId, nurseId ,appoitmentId}) {
     const token = useSelector((state) => state.token.token);
     const [testDate, setTestDate] = useState(null);
     const [result, setResult] = useState('');
@@ -40,6 +41,7 @@ export default function ReportAbaby({ visible, setVisible, babyId, nurseId }) {
                 day: testDate
             },
             result: result
+
         };
 
         try {
@@ -63,6 +65,28 @@ export default function ReportAbaby({ visible, setVisible, babyId, nurseId }) {
         } catch (err) {
             alert("Error: " + err.message);
         }
+console.log("appoitmentId"+appoitmentId);
+
+        try {
+            const response = await axios.patch('http://localhost:7002/appointment/update-status',{
+                _id: appoitmentId,
+            } ,{
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                alert("v: " + data.message);
+
+            } else {
+                const error = await response.json();
+                alert("Error saving test result: " + error.message);
+            }
+        } catch (err) {
+            alert("Error: " + err.message);
+        }
     };
 
     return (
@@ -74,11 +98,11 @@ export default function ReportAbaby({ visible, setVisible, babyId, nurseId }) {
                 </div>
                 <div className="field">
                     <label htmlFor="result">תוצאה</label>
-                    <Editor 
-                        id="result" 
-                        value={result} 
-                        onTextChange={(e) => setResult(e.htmlValue)} 
-                        style={{ height: '200px' }} 
+                    <Editor
+                        id="result"
+                        value={result}
+                        onTextChange={(e) => setResult(e.htmlValue)}
+                        style={{ height: '200px' }}
                         modules={{
                             toolbar: toolbarOptions, // Custom toolbar without Heading
                         }}
