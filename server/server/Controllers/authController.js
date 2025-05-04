@@ -50,11 +50,14 @@ const register = async (req, res) => {
         }
 
         // בדיקת משתמש קיים
+        const dupliemail = await User.findOne({ email:email }).lean();
+        if (dupliemail) {
+            return res.status(409).json({ message: 'User with this email already exists' });
+        }
         const duplicate = await User.findOne({ identity }).lean();
         if (duplicate) {
             return res.status(409).json({ message: 'User with this identity already exists' });
         }
-
         // העלאת תמונה (אם קיימת)
         let profilePicturePath = null;
         if (req.file) {

@@ -58,7 +58,7 @@ console.log("p"+p);
                 }
             );
             
-            if (response) {
+            if (response.ok) {
                 toast.current.show({ severity: "success", summary: "Success", detail: "נרשמת בהצלחה לטיפת חלב!", life: 3000 });
             } else {
                 toast.current.show({ severity: "error", summary: "Error", detail: response.message || "שגיאה ברישום", life: 3000 });

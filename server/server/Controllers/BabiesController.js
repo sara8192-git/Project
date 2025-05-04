@@ -1,5 +1,3 @@
-
-
 const User = require("../models/User")
 const Babies = require("../models/Babies")
 
@@ -8,6 +6,12 @@ const creatNewBaby = async (req, res) => {
         const { identity, name, dob, parent_id } = req.body
         if (!identity || !name || !dob || !parent_id)
             return res.status(400).json({ message: 'Mandatory fields are required' })
+
+        const dupliidentity = await Babies.findOne({ identity:identity });
+        if (dupliidentity) {
+            return res.status(409).json({ message: 'Baby with this identity already exists' });
+        }
+
         const baby = await Babies.create({ identity, name, dob, parent_id })
         if (baby) {
             const parent = await User.findById(parent_id);
@@ -24,6 +28,8 @@ const creatNewBaby = async (req, res) => {
         return res.status(500).json({ message: 'Error creating baby', error: error.message });
     }
 }
+
+
 const getBabiesByParent = async (req, res) => {
     try {
         const { parentId } = req.params;
