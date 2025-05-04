@@ -49,7 +49,7 @@ export default function ReportAbaby({ visible, setVisible, babyId, nurseId, appo
       });
 console.log(response.data.status);
       // עדכון ה-state של ההורה כדי לגרום לסטטוס להתעדכן מיד
-      const updatedStatus = response.data.status || "עודכן"; // בדוק אם השרת מחזיר סטטוס מעודכן
+      const updatedStatus = response.data.status || "completed"; // בדוק אם השרת מחזיר סטטוס מעודכן
       updateStatus(appointmentId, updatedStatus); // קריאה לפונקציה שמעדכנת את ה-state המקומי
 
       setVisible(false); // סגירת הדיאלוג
