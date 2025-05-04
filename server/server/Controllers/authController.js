@@ -46,23 +46,23 @@ const register = async (req, res) => {
 
         // בדיקת שדות חובה
         if (!identity || !name || !email || !password) {
-            return res.status(400).json({ message: 'All fields are required' });
+            return res.status(400).json({ message: 'כל השדות חובה' });
         }
 
         // בדיקת משתמש קיים
         const dupliemail = await User.findOne({ email:email }).lean();
         if (dupliemail) {
-            return res.status(409).json({ message: 'User with this email already exists' });
+            return res.status(409).json({ message: 'המייל הנוכחי שייך למשתמש שונה' });
         }
 
         const nameRegex = /^[^\d\W_]+(?: [^\d\W_]+)*$/u; // ביטוי רגולרי: רק אותיות מכל סוג ורווחים
         if (!nameRegex.test(name)) {
-            return res.status(400).json({ message: 'Name must contain only letters and spaces' });
+            return res.status(400).json({ message: 'שם מורכב מאותיות ורווחים בלבד' });
         }
 
         const duplicate = await User.findOne({ identity }).lean();
         if (duplicate) {
-            return res.status(409).json({ message: 'User with this identity already exists' });
+            return res.status(409).json({ message: 'קיים משתמש עם התז הנוכחי' });
         }
         // העלאת תמונה (אם קיימת)
         let profilePicturePath = null;
