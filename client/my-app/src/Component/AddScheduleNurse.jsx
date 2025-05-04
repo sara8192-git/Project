@@ -9,7 +9,7 @@ import "primeicons/primeicons.css";
 import axios from "axios";
 import { Calendar } from 'primereact/calendar';
 
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 const AddScheduleNurse = () => {
     const [formData, setFormData] = useState({
@@ -25,17 +25,18 @@ const AddScheduleNurse = () => {
         try {
             console.log(props);
             const response = await axios.get(
-                `http://localhost:7002/user/id/${props}`
-                , {
+                `http://localhost:7002/user/id/${props}`,
+                {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
                 }
             );
             console.log(response.data._id);
-            handleAddBabySecretary(response.data._id)
+            handleAddBabySecretary(response.data._id);
         } catch (error) {
-            toast.current.show({ severity: "error", summary: "Error", detail: "שגיאה בחיבור לשרת", life: 3000 });
+            const errorMessage = error.response?.data?.message || "שגיאה בחיבור לשרת";
+            toast.current.show({ severity: "error", summary: "Error", detail: errorMessage, life: 3000 });
         }
     };
 
@@ -45,17 +46,32 @@ const AddScheduleNurse = () => {
 
     const handleAddBabySecretary = async (p) => {
         try {
-            const formattedDate = new Date(formData.date).toLocaleDateString('en-CA'); // תאריך בפורמט ISO עם הזמן המקומי
+            const today = new Date();
+            const selectedDate = new Date(formData.date);
 
-            console.log("formData.date" + formData.date+"formData.startTime"+formData.startTime+"formData.endTime"+formData.endTime);
-            const response = await axios.post(
-                `http://localhost:7002/nurseScheduler`, {
-                identity: p,
-                workingDay: formattedDate,
-                startTime: formData.startTime,
-                endTime: formData.endTime
+            // בדיקה אם התאריך קטן מהתאריך הנוכחי
+            if (selectedDate < today.setHours(0, 0, 0, 0)) {
+                toast.current.show({
+                    severity: "error",
+                    summary: "Error",
+                    detail: "אי אפשר לקבוע שעות ליום שעבר",
+                    life: 3000
+                });
+                return;
             }
-                , {
+
+            const formattedDate = selectedDate.toLocaleDateString('en-CA'); // תאריך בפורמט ISO עם הזמן המקומי
+
+            console.log("formData.date" + formData.date + "formData.startTime" + formData.startTime + "formData.endTime" + formData.endTime);
+            const response = await axios.post(
+                `http://localhost:7002/nurseScheduler`,
+                {
+                    identity: p,
+                    workingDay: formattedDate,
+                    startTime: formData.startTime,
+                    endTime: formData.endTime
+                },
+                {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
@@ -63,12 +79,14 @@ const AddScheduleNurse = () => {
             );
 
             if (response) {
-                toast.current.show({ severity: "success", summary: "Success", detail: "נרשמת בהצלחה לטיפת חלב!", life: 3000 });
+                toast.current.show({ severity: "success", summary: "Success", detail: "מערכת שעות נוצרה בהצלחה!", life: 3000 });
             } else {
-                toast.current.show({ severity: "error", summary: "Error", detail: response.message || "שגיאה ברישום", life: 3000 });
+                const errorMessage = response.data?.message || "שגיאה ברישום";
+                toast.current.show({ severity: "error", summary: "Error", detail: errorMessage, life: 3000 });
             }
         } catch (error) {
-            toast.current.show({ severity: "error", summary: "Error", detail: "שגיאה בחיבור לשרת", life: 3000 });
+            const errorMessage = error.response?.data?.message || "שגיאה בחיבור לשרת";
+            toast.current.show({ severity: "error", summary: "Error", detail: errorMessage, life: 3000 });
         }
     };
 
@@ -91,7 +109,8 @@ const AddScheduleNurse = () => {
                             showButtonBar
                             placeholder="בחר או כתוב תאריך"
                             dateFormat="dd/mm/yy"
-                        />                    </div>
+                        />
+                    </div>
 
                     <div className="field">
                         <label htmlFor="startTime">שעת התחלה </label>
@@ -105,11 +124,7 @@ const AddScheduleNurse = () => {
                         <InputText id="endTime" value={formData.endTime} onChange={(e) => handleChange(e, "endTime")} />
                     </div>
 
-
-
-                    {/* <Button label="הוסף" icon="pi pi-user-plus" className="p-button-success w-full mt-3" onClick={get_idByIndentity(formData.parent)} /> */}
                     <Button label="הוסף" icon="pi pi-user-plus" className="p-button-success w-full mt-3" onClick={() => get_idByIndentity(formData.identity)} />
-
                 </div>
             </Card>
         </div>
