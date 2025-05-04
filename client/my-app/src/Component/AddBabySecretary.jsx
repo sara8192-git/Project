@@ -63,7 +63,7 @@ const AddBabySecretary = () => {
             );
             console.log(response);
             if (response) {
-                toast.current.show({ severity: "success", summary: "Success", detail: "נרשמת בהצלחה לטיפת חלב!", life: 3000 });
+                toast.current.show({ severity: "success", summary: "Success", detail: "תינוק חדש נוצר", life: 3000 });
             } else {
                 toast.current.show({ severity: "error", summary: "Error", detail: response.message || "שגיאה ברישום", life: 3000 });
             }

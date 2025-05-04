@@ -64,25 +64,4 @@ export default function Login() {
             </form>
         </div>
     );
-}//קבלת הטוקן בכל מקום רצוי
-// const accesstoken=useSelector((state)=>state.token.token)
-
-//יציאת משתמש מסקנה: להפעיל רק ע"י כפתור ולא ע"י רפשרוש
-// useEffect(()=>{
-//     dispatch(logOut())
-
-// },[])
- //חילוץ
-//  const decodeToken = (token) => {
-//     if (!token) {
-//         throw new Error('No token provided');
-//     }
-    
-//     try {
-//         const decoded = jwtDecode(token);
-//         return decoded; // Returns the content of the token
-//     } catch (error) {
-//         console.error('Token is invalid or expired', error);
-//         return null;
-//     }
-// };
+}

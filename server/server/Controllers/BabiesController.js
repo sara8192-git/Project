@@ -5,11 +5,11 @@ const creatNewBaby = async (req, res) => {
     try {
         const { identity, name, dob, parent_id } = req.body
         if (!identity || !name || !dob || !parent_id)
-            return res.status(400).json({ message: 'Mandatory fields are required' })
+            return res.status(400).json({ message: 'כל השדות חובה' })
 
         const dupliidentity = await Babies.findOne({ identity:identity });
         if (dupliidentity) {
-            return res.status(409).json({ message: 'Baby with this identity already exists' });
+            return res.status(409).json({ message: 'תעודת זהות של התינוק כבר קיימת' });
         }
         const formattedDate = new Date(dob);
         if (isNaN(formattedDate.getTime())) {
@@ -24,7 +24,7 @@ const creatNewBaby = async (req, res) => {
                 parent.babies.push(baby._id);
                 await parent.save();
             }
-            return res.status(201).json({ message: 'New baby created', baby })
+            return res.status(201).json({ message: 'תינוק חדש נוצר', baby })
         } else {
             return res.status(400).json({ message: 'Invalid baby' })
         }
