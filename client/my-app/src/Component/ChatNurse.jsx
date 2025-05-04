@@ -13,7 +13,7 @@ export default function ChatNurse() {
   }, []);
 
   const fetchMessages = async () => {
-    const res = await axios.get('/messages/lastMessages', { withCredentials: true });
+    const res = await axios.get('http://localhost:7002/messages/lastMessages', { withCredentials: true });
     setMessages(res.data);
   };
 
