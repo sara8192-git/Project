@@ -169,10 +169,10 @@ const createScheduleForNurse = async (req, res) => {
 
         // בדיקה אם כבר קיימת מערכת שעות לאותו יום
 
-        // const existingSchedule = await NurseSchedule.findOne({ identity: identity, working_day: new Date(workingDay) });
-        //     if (existingSchedule) {
-        //         return res.status(400).json({ message: "כבר קיימת מערכת שעות לאחות בתאריך זה." });
-        //     }
+        const existingSchedule = await NurseSchedule.findOne({ identity: identity, working_day: new Date(workingDay) });
+            if (existingSchedule) {
+                return res.status(400).json({ message: "כבר קיימת מערכת שעות לאחות בתאריך זה." });
+            }
 
         const availableSlots = generateTimeSlots(startTime, endTime);
         console.log(availableSlots);
