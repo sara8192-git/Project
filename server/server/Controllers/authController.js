@@ -54,6 +54,12 @@ const register = async (req, res) => {
         if (dupliemail) {
             return res.status(409).json({ message: 'User with this email already exists' });
         }
+
+        const nameRegex = /^[^\d\W_]+(?: [^\d\W_]+)*$/u; // ביטוי רגולרי: רק אותיות מכל סוג ורווחים
+        if (!nameRegex.test(name)) {
+            return res.status(400).json({ message: 'Name must contain only letters and spaces' });
+        }
+
         const duplicate = await User.findOne({ identity }).lean();
         if (duplicate) {
             return res.status(409).json({ message: 'User with this identity already exists' });

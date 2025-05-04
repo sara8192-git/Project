@@ -22,10 +22,15 @@ const UserSchema = new mongoose.Schema({
         default: 'Parent'
 
     },
-    babies: [{
-        type: mongoose.Schema.Types.ObjectId, // שדה זה יהיה מזהה של תינוק
-        ref: 'Babies' // הפנייה לקולקציית התינוקות
-    }],
+    babies: {
+        type: [{
+            type: mongoose.Schema.Types.ObjectId, 
+            ref: 'Babies' 
+        }],
+        default: function () {
+            return this.role === 'Parent' ? [] : undefined;
+        }
+    },
     profilePicture: { // שדה חדש לשמירת נתיב התמונה
         type: String,
         allowNull: true, // לא חובה
