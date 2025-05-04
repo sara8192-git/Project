@@ -11,7 +11,8 @@ const BabiesSchema = new mongoose.Schema({
         required: true
     }, 
     dob:{
-        type: Date,
+        type: Date, 
+        format:('YYYY-MM-DD'),
         required: true 
     }, 
     parent_id:{
