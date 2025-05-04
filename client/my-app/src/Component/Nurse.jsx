@@ -9,12 +9,12 @@ import defaultProfilePicture from "../picture/WIN_20250430_18_06_45_Pro.jpg";
 import { useSelector } from "react-redux"; // לשימוש בפרטי המשתמש מ-Redux
 
 export default function Nurse() {
-    const name = useSelector((state) => state.token.user.name)
+    const name = useSelector((state) => state.token.user.name);
     const user = useSelector((state) => state.token.user);
     const profilePicture = user?.profilePicture
-    ? `http://localhost:7002${user.profilePicture}` // נתיב מוחלט לתמונה שהועלתה
-    : defaultProfilePicture; // תמונה דיפולטיבית
-    
+        ? `http://localhost:7002${user.profilePicture}` // נתיב מוחלט לתמונה שהועלתה
+        : defaultProfilePicture; // תמונה דיפולטיבית
+
     const navigate = useNavigate(); // 🔹 מאפשר ניווט לדפים אחרים
     const items = [
         {
@@ -32,13 +32,14 @@ export default function Nurse() {
             }
         },
         {
-            label:'chat with parents',
+            label: 'Chat with parents', // 🔹 תמיד מוצג
             icon: 'pi pi-comments',
             command: () => {
-                navigate('/nurse/chat');
-            }},
-      
+                navigate('/nurse/ChatNurse');
+            }
+        },
     ];
+
     const endTemplate = (
         <div className="flex align-items-center">
             <img
@@ -55,14 +56,16 @@ export default function Nurse() {
             <span>{name || "Guest"}</span>
         </div>
     );
+
     return (
         <div className="flex flex-column align-items-center">
             <Menubar model={items} end={endTemplate}/>
             <Routes>
                 <Route path='/QueueSummaryNurse' element={<QueueSummaryNurse />} />
-                <Route path='/ChatNurse' element={<ChatNurse />} />
+                <Route path='/ChatNurse' element={<ChatNurse />} /> {/* נתיב נכון */}
                 <Route path='/nurse/TestsAndStatistics/:id' element={<TestsAndStatistics />} />
-                </Routes>
+            </Routes>
+            
         </div>
     );
 }

@@ -13,6 +13,8 @@ export default function QueueSummaryNurse() {
 
   const token = useSelector((state) => state.token.token);
   const user = useSelector((state) => state.token.user);
+  console.log(user);
+  
   const navigate = useNavigate();
 
   const fetchAppointments = async () => {

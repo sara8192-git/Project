@@ -1,64 +1,66 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { Button } from 'primereact/button';
-import { Card } from 'primereact/card';
-import { InputText } from 'primereact/inputtext';
- 
+import React, { useState, useEffect } from "react";
+import io from "socket.io-client";
+import { useSelector } from "react-redux";
+
+const socket = io("http://localhost:7002");
+
 export default function ChatNurse() {
-  const [messages, setMessages] = useState([]);
-  const [newMessage, setNewMessage] = useState('');
+    const [message, setMessage] = useState("");
+    const [messages, setMessages] = useState([]);
+    const userName = useSelector((state) => state.token.user.name); // שם המשתמש
+    const userRole = useSelector((state) => state.token.user.role); // תפקיד המשתמש
+    const chatRoomId = "unique-parent-id"; // מזהה ייחודי לצ'אט (יש להתאים לפי ההורה)
 
-  useEffect(() => {
-    fetchMessages();
-  }, []);
+    useEffect(() => {
+        // הצטרפות לחדר
+        socket.emit("joinRoom", { chatRoomId, userName, userRole });
 
-  const fetchMessages = async () => {
-    const res = await axios.get('http://localhost:7002/messages/lastMessages', { withCredentials: true });
-    setMessages(res.data);
-  };
+        // קבלת הודעות מהשרת
+        socket.on("newMessage", (message) => {
+            setMessages((prev) => [...prev, message]);
+        });
 
-  const sendMessage = async () => {
-    await axios.post('/messages', { content: newMessage, chatRoomId: 'ID-פה-של-הצאט' }, { withCredentials: true });
-    setNewMessage('');
-    fetchMessages();
-  };
-  const messageBubble = (msg, index) => (
-    <div
-      key={index}
-      className={`p-2 mb-2 border-round-lg shadow-1 text-white flex ${
-        msg.senderId.role === 'parent' ? 'justify-content-end' : 'justify-content-start'
-      }`}
-      style={{
-        backgroundColor: msg.senderId.role === 'parent' ? '#3f51b5' : '#f48fb1',
-        maxWidth: '70%',
-        alignSelf: msg.senderId.role === 'parent' ? 'flex-end' : 'flex-start',
-      }}
-    >
-      <div>
-        <div className="text-xs font-bold mb-1">{msg.senderId.name}</div>
-        <div>{msg.content}</div>
-      </div>
-    </div>
-  );
-  return (
-    
-    <div className="p-4">
-      <h2>📩 צ'אט עם הורים</h2>
-      <div className="border rounded p-3 mb-3" style={{ minHeight: '300px', maxHeight: '400px', overflowY: 'scroll' }}>
-        {messages.map((msg, index) => (
-          <div key={index} className="mb-2">
-            <strong>{msg.senderId.name}:</strong> {msg.content}
-          </div>
-        ))}
-      </div>
-      <input
-        type="text"
-        value={newMessage}
-        onChange={(e) => setNewMessage(e.target.value)}
-        placeholder="הקלד הודעה..."
-        className="p-inputtext p-component p-mr-2"
-      />
-      <Button label="שלח" icon="pi pi-send" onClick={sendMessage} />
-    </div>
-  );
+        return () => {
+            socket.off("newMessage");
+        };
+    }, []);
+
+    const sendMessage = () => {
+        if (message.trim() !== "") {
+            const newMessage = { 
+                chatRoomId, 
+                text: message, 
+                user: userName, // שם המשתמש
+                userRole // תפקיד המשתמש
+            };
+
+            // שליחת ההודעה לשרת
+            socket.emit("sendMessage", newMessage);
+
+            // הוספת ההודעה למערך ההודעות מקומית
+            setMessages((prev) => [...prev, newMessage]);
+
+            // ניקוי שדה ההודעה
+            setMessage("");
+        }
+    };
+
+    return (
+        <div>
+            <div>
+                {messages.map((msg, index) => (
+                    <div key={index}>
+                        <strong>{msg.user}:</strong> {msg.text}
+                    </div>
+                ))}
+            </div>
+            <input
+                type="text"
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                placeholder="Type your message..."
+            />
+            <button onClick={sendMessage}>Send</button>
+        </div>
+    );
 }

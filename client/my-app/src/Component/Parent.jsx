@@ -78,7 +78,6 @@ export default function Parent() {
                 <Route path='/BookedAppointmentParent' element={<BookedAppointmentParent />} />
                 <Route path='/UseCalendar' element={<UseCalendar />} />
                 <Route path='/ChatParent' element={<ChatParent />} />
-
             </Routes>
         </div>
     );

@@ -15,33 +15,43 @@ const app = express();
 connectDB();
 const http = require('http');
 const server = http.createServer(app);
-// const io = require('socket.io')(server, {
-//   cors: {
-//     origin: '*'
-//   }
-// });
-// io.on('connection', (socket) => {
-//     console.log('User connected:', socket.id);
-  
-//     socket.on('joinRoom', (chatRoomId) => {
-//       socket.join(chatRoomId);
-//     });
-  
-//     socket.on('sendMessage', (message) => {
-//       io.to(message.chatRoomId).emit('newMessage', message);
-//     });
-//   });
-  //  io.to(chatRoomId).emit('newMessage', message);
+
+// 🔹 WebSocket Integration
+const { Server } = require("socket.io");
+const io = new Server(server, {
+  cors: {
+    origin: '*', // ניתן להחליף בכתובת ה-Frontend שלך
+  }
+});
+
+// 🔹 Socket.io Logic
+io.on('connection', (socket) => {
+    console.log('User connected:', socket.id);
+
+    // כשהמשתמש מצטרף לחדר
+    socket.on('joinRoom', (chatRoomId) => {
+        console.log(`User ${socket.id} joined room ${chatRoomId}`);
+        socket.join(chatRoomId);
+    });
+
+    // כשהמשתמש שולח הודעה
+    socket.on('sendMessage', (message) => {
+        console.log(`Message sent to room ${message.chatRoomId} by ${message.user}:`, message.text);
+        
+        // שידור ההודעה לחדר (לכלל המשתמשים בחדר מלבד השולח)
+        socket.to(message.chatRoomId).emit('newMessage', message);
+    });
+
+    // כשהמשתמש מתנתק
+    socket.on('disconnect', () => {
+        console.log('User disconnected:', socket.id);
+    });
+});
 
 app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.static("public"));
-
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-
-// app.get("/", (req, res) => {
-//     res.send("This is home page");
-// });
 
 // הגדרת הטרנספורטר לשליחת מיילים
 const transporter = nodemailer.createTransport({
@@ -77,13 +87,13 @@ app.use("/testResults", require("./Routes/TestResultRout"));
 app.use("/auth", require("./Routes/authRoutes"));
 app.use("/nurseScheduler", require("./Routes/NurseScheduleroute"));
 app.use('/messages', messageRoutes);
-app.use('/chatrooms', chatRoomRoutes)
+app.use('/chatrooms', chatRoomRoutes);
+
 // התחברות למסד נתונים והרצת השרת
 mongoose.connection.once("open", () => {
     console.log("Connected to MongoDB");
-    app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-    // server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-
+    // הפעלת השרת HTTP + WebSocket
+    server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 });
 
 mongoose.connection.on("error", err => {

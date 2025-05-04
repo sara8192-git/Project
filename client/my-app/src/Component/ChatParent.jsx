@@ -1,71 +1,70 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { Button } from 'primereact/button';
-import { Card } from 'primereact/card';
-import { InputText } from 'primereact/inputtext';
+import React, { useState, useEffect } from "react";
+import io from "socket.io-client";
+import { useSelector } from "react-redux"; // 🔹 ייבוא Redux
+import "./ChatParent.css"; // עיצוב הצ'אט
 
+const socket = io("http://localhost:7002"); // כתובת השרת שלך
 
 export default function ChatParent() {
-  const [messages, setMessages] = useState([]);
-  const [newMessage, setNewMessage] = useState('');
+    const [message, setMessage] = useState(""); // הודעה חדשה
+    const [messages, setMessages] = useState([]); // רשימת ההודעות
 
-  useEffect(() => {
-    fetchMessages();
-  }, []);
+    // 🔹 שליפת שם המשתמש מ-Redux
+    const userName = useSelector((state) => state.token.user.name); 
 
-  const fetchMessages = async () => {
-    const res = await axios.get('http://localhost:7002/messages/lastMessages', { withCredentials: true });
-    setMessages(res.data);
-  };
+    useEffect(() => {
+        const chatRoomId = "example-room-id"; // מזהה החדר (יש לעדכן)
+        socket.emit("joinRoom", chatRoomId); // התחברות לחדר
 
-  const sendMessage = async () => {
-    if (!newMessage) return;
-    await axios.post('http://localhost:7002/messages', { content: newMessage, chatRoomId: 'ID-פה-של-הצאט' }, { withCredentials: true });
-    setNewMessage('');
-    fetchMessages();
-  };
+        // האזנה להודעות חדשות מהשרת
+        socket.on("newMessage", (message) => {
+            setMessages((prevMessages) => [...prevMessages, message]);
+        });
 
-  const messageBubble = (msg, index) => (
-    <div
-      key={index}
-      className={`p-2 mb-2 border-round-lg shadow-1 text-white flex ${
-        msg.senderId.role === 'parent' ? 'justify-content-end' : 'justify-content-start'
-      }`}
-      style={{
-        backgroundColor: msg.senderId.role === 'parent' ? '#3f51b5' : '#f48fb1',
-        maxWidth: '70%',
-        alignSelf: msg.senderId.role === 'parent' ? 'flex-end' : 'flex-start',
-      }}
-    >
-      <div>
-        <div className="text-xs font-bold mb-1">{msg.senderId.name}</div>
-        <div>{msg.content}</div>
-      </div>
-    </div>
-  );
+        // ניקוי מאזינים כשעוזבים את הרכיב
+        return () => {
+            socket.off("newMessage");
+        };
+    }, []);
 
-  return (
-    <div className="p-4 flex justify-content-center">
-      <Card title="📩 הצ'אט שלך" className="w-full md:w-8 border-round-3xl shadow-4">
-        <div className="p-3 border-1 surface-200 border-round mb-3" style={{ minHeight: '300px', maxHeight: '400px', overflowY: 'scroll', display: 'flex', flexDirection: 'column' }}>
-          {messages.length ? messages.map(messageBubble) : <div className="text-center text-600">אין הודעות עדיין</div>}
+    const sendMessage = () => {
+        if (message.trim() !== "") {
+            const chatRoomId = "example-room-id"; // מזהה החדר (יש לעדכן)
+            const newMessage = { 
+                chatRoomId, 
+                text: message, 
+                user: userName // 🔹 שליחת שם המשתמש יחד עם ההודעה
+            };
+
+            // הוספת ההודעה למערך ההודעות באופן מקומי
+            setMessages((prevMessages) => [...prevMessages, newMessage]);
+
+            // שליחת ההודעה לשרת
+            socket.emit("sendMessage", newMessage);
+
+            // ניקוי שדה ההודעה
+            setMessage("");
+        }
+    };
+
+    return (
+        <div className="chat-container">
+            <div className="chat-messages">
+                {messages.map((msg, index) => (
+                    <div key={index} className="chat-message">
+                        <strong>{msg.user}:</strong> {msg.text}
+                    </div>
+                ))}
+            </div>
+            <div className="chat-input">
+                <input
+                    type="text"
+                    value={message}
+                    onChange={(e) => setMessage(e.target.value)}
+                    placeholder="Type a message..."
+                />
+                <button onClick={sendMessage}>Send</button>
+            </div>
         </div>
-
-        <div className="flex gap-2">
-          <InputText
-            value={newMessage}
-            onChange={(e) => setNewMessage(e.target.value)}
-            placeholder="הקלד הודעה..."
-            className="flex-1 p-inputtext-lg border-round-xl"
-          />
-          <Button
-            label="שלח"
-            icon="pi pi-send"
-            className="p-button-rounded p-button-lg p-button-primary"
-            onClick={sendMessage}
-          />
-        </div>
-      </Card>
-    </div>
-  );
+    );
 }
