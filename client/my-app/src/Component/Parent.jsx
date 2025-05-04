@@ -6,7 +6,7 @@ import UseCalendar from './UseCalendar';
 import ChatParent from './ChatParent'
 import { Route, Routes } from 'react-router-dom'
 import { useSelector } from "react-redux"; // לשימוש בפרטי המשתמש מ-Redux
-import defaultProfilePicture from "../WIN_20250430_18_06_45_Pro.jpg";
+import defaultProfilePicture from "../picture/WIN_20250430_18_06_45_Pro.jpg";
 
 export default function Parent() {
     const name = useSelector((state) => state.token.user.name)

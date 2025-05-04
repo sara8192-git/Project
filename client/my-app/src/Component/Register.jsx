@@ -66,49 +66,87 @@ const Register = () => {
     };
 
     return (
-        <div className="flex justify-content-center align-items-center h-screen">
+        <div className="register-container">
             <Toast ref={toast} />
-            <Card title="הצטרפות לטיפת חלב" className="p-4 w-25">
-                <div className="p-fluid">
-                    <div className="field">
-                        <label htmlFor="identity">תעודת זהות</label>
-                        <InputText id="identity" value={formData.identity} onChange={(e) => handleChange(e, "identity")} />
-                    </div>
 
-                    <div className="field">
-                        <label htmlFor="name">שם מלא</label>
-                        <InputText id="name" value={formData.name} onChange={(e) => handleChange(e, "name")} />
-                    </div>
-
-                    <div className="field">
-                        <label htmlFor="email">אימייל</label>
-                        <div className="p-inputgroup">
-                            <InputText id="email" value={formData.email} onChange={(e) => handleChange(e, "email")} />
-                            <Dropdown value={formData.emailDomain} options={emailDomains.map(domain => ({ label: domain, value: domain }))} onChange={(e) => handleChange(e, "emailDomain")} />
+            <div className="login-left">
+                {/* תמונת רקע */}
+            </div>
+            <div className="login-right">
+                <div className="login-box">
+                    <h1>הצטרפות לאזור אישי</h1>
+                    <p>הזן את פרטיך כדי להירשם</p>
+                    <form onSubmit={(e) => { e.preventDefault(); handleRegister(); }} className="p-fluid">
+                        <div className="p-field">
+                            <label>תעודת זהות</label>
+                            <InputText
+                                id="identity"
+                                value={formData.identity}
+                                onChange={(e) => handleChange(e, "identity")}
+                                placeholder="הזן תעודת זהות"
+                            />
                         </div>
-                    </div>
-
-                    <div className="field">
-                        <label htmlFor="password">סיסמה</label>
-                        <Password id="password" value={formData.password} onChange={(e) => handleChange(e, "password")} toggleMask feedback />
-                        <small>הסיסמה חייבת לכלול אות גדולה, אות קטנה ומספר</small>
-                    </div>
-
-                    <div className="field">
-                        <label htmlFor="profilePicture">תמונת פרופיל</label>
-                        <FileUpload
-                            name="profilePicture"
-                            accept="image/*"
-                            maxFileSize={1000000}
-                            customUpload
-                            uploadHandler={handleFileUpload}
-                            auto
+                        <div className="p-field">
+                            <label>שם מלא</label>
+                            <InputText
+                                id="name"
+                                value={formData.name}
+                                onChange={(e) => handleChange(e, "name")}
+                                placeholder="הזן שם מלא"
+                            />
+                        </div>
+                        <div className="p-field">
+                            <label>אימייל</label>
+                            <div className="p-inputgroup email-group">
+                                <InputText
+                                    id="email"
+                                    value={formData.email}
+                                    onChange={(e) => handleChange(e, "email")}
+                                    placeholder="דוא״ל"
+                                    className="email-input"
+                                />
+                                <Dropdown
+                                    value={formData.emailDomain}
+                                    options={emailDomains.map(domain => ({ label: domain, value: domain }))}
+                                    onChange={(e) => handleChange(e, "emailDomain")}
+                                    className="email-dropdown"
+                                />
+                            </div>
+                        </div>
+                        <div className="p-field">
+                            <label>סיסמה</label>
+                            <Password
+                                id="password"
+                                value={formData.password}
+                                onChange={(e) => handleChange(e, "password")}
+                                placeholder="הזן סיסמה"
+                                feedback={false}
+                            />
+                            <small>הסיסמה חייבת לכלול אות גדולה, אות קטנה ומספר</small>
+                        </div>
+                        <div className="field">
+                            <label htmlFor="profilePicture">תמונת פרופיל</label>
+                            <FileUpload
+                                name="profilePicture"
+                                accept="image/*"
+                                maxFileSize={1000000}
+                                customUpload
+                                uploadHandler={handleFileUpload}
+                                auto
+                            />
+                        </div>
+                        <Button
+                            type="submit"
+                            label="הצטרפות"
+                            className="login-button"
+                            onClick={handleRegister}
                         />
+                    </form>
+                    <div className="extra-links">
+                        כבר רשומים? <a href="http://localhost:3000/login">התחברו כאן</a>
                     </div>
-
-                    <Button label="הצטרפות" icon="pi pi-user-plus" className="p-button-success w-full mt-3" onClick={handleRegister} />
                 </div>
-            </Card>
+            </div>
         </div>
     );
 };

@@ -5,7 +5,7 @@ import QueueSummaryNurse from './QueueSummaryNurse'
 import { Route, Routes } from 'react-router-dom'
 import ChatNurse from './ChatNurse'
 import TestsAndStatistics from "./TestsAndStatistics"
-import defaultProfilePicture from "../WIN_20250430_18_06_45_Pro.jpg";
+import defaultProfilePicture from "../picture/WIN_20250430_18_06_45_Pro.jpg";
 import { useSelector } from "react-redux"; // לשימוש בפרטי המשתמש מ-Redux
 
 export default function Nurse() {

@@ -7,7 +7,7 @@ import ChatParent from './ChatParent'
 import {  Route, Routes } from 'react-router-dom'
 import AddBabySecretary from './AddBabySecretary'
 import AddScheduleNurse from './AddScheduleNurse'
-import defaultProfilePicture from "../WIN_20250430_18_06_45_Pro.jpg";
+import defaultProfilePicture from "../picture/WIN_20250430_18_06_45_Pro.jpg";
 import { useSelector } from "react-redux"; // לשימוש בפרטי המשתמש מ-Redux
 
 export default function Parent() {

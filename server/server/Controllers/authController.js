@@ -50,14 +50,14 @@ const register = async (req, res) => {
         }
 
         // בדיקת משתמש קיים
-        const dupliemail = await User.findOne({ email:email }).lean();
+        const dupliemail = await User.findOne({ email: email }).lean();
         if (dupliemail) {
             return res.status(409).json({ message: 'המייל הנוכחי שייך למשתמש שונה' });
         }
 
-        const nameRegex = /^[^\d\W_]+(?: [^\d\W_]+)*$/u; // ביטוי רגולרי: רק אותיות מכל סוג ורווחים
+        const nameRegex = /^[a-zA-Zא-ת]+(?: [a-zA-Zא-ת]+)*$/u; // ביטוי רגולרי: אותיות באנגלית, בעברית ורווחים
         if (!nameRegex.test(name)) {
-            return res.status(400).json({ message: 'שם מורכב מאותיות ורווחים בלבד' });
+            return res.status(400).json({ message: 'שם יכול להכיל רק אותיות באנגלית, בעברית ורווחים בלבד' });
         }
 
         const duplicate = await User.findOne({ identity }).lean();
@@ -86,7 +86,7 @@ const register = async (req, res) => {
         const user = await User.create(userObject);
 
         if (user) {
-            return res.status(201).json({ 
+            return res.status(201).json({
                 message: `New user ${user.identity} created successfully`,
                 user,
             });
@@ -98,4 +98,4 @@ const register = async (req, res) => {
     }
 };
 
-module.exports = { login, register}
+module.exports = { login, register }
