@@ -105,7 +105,21 @@ const getTestResultById = async (req, res) => {
     }
 }
 
+const checkIfReported = async (req, res) => {
+    try {
+        const { appointmentId } = req.query;
 
+        if (!appointmentId) {
+            return res.status(400).json({ message: 'Appointment ID is required' });
+        }
+
+        const reportExists = await TestResults.exists({ appointment_id: appointmentId });
+
+        res.status(200).json({ reported: !!reportExists });
+    } catch (error) {
+        res.status(500).json({ message: 'Error checking report status', error: error.message });
+    }
+};
 
 
 
@@ -115,5 +129,6 @@ module.exports = {
     getTestResultById,
     updateTestResults,
     deleteTestResults,
+    checkIfReported
     // 
 }

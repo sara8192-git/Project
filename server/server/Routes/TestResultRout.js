@@ -15,5 +15,5 @@ router.get("/:_id", parentMW, TestResultController.getTestResultById)
 router.delete("/:_id", nurseMW, TestResultController.deleteTestResults)
 router.put("/", nurseMW, TestResultController.updateTestResults)
 
-
+router.get('/testResults/check', TestResultController.checkIfReported);
 module.exports = router
