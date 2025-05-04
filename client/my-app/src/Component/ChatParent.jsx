@@ -10,18 +10,19 @@ export default function ChatParent() {
     const [messages, setMessages] = useState([]); // רשימת ההודעות
 
     // 🔹 שליפת שם המשתמש מ-Redux
-    const userName = useSelector((state) => state.token.user.name); 
+    const userName = useSelector((state) => state.token.user.name);
+    const userRole = useSelector((state) => state.token.user.role); // שליפת תפקיד המשתמש
+    const chatRoomId = "unique-parent-id"; // מזהה ייחודי לצ'אט (יש להתאים לפי ההורה)
 
     useEffect(() => {
-        const chatRoomId = "example-room-id"; // מזהה החדר (יש לעדכן)
-        socket.emit("joinRoom", chatRoomId); // התחברות לחדר
+        // הצטרפות לחדר
+        socket.emit("joinRoom", { chatRoomId, userName, userRole });
 
-        // האזנה להודעות חדשות מהשרת
+        // קבלת הודעות מהשרת
         socket.on("newMessage", (message) => {
-            setMessages((prevMessages) => [...prevMessages, message]);
+            setMessages((prev) => [...prev, message]);
         });
 
-        // ניקוי מאזינים כשעוזבים את הרכיב
         return () => {
             socket.off("newMessage");
         };
@@ -29,18 +30,18 @@ export default function ChatParent() {
 
     const sendMessage = () => {
         if (message.trim() !== "") {
-            const chatRoomId = "example-room-id"; // מזהה החדר (יש לעדכן)
             const newMessage = { 
                 chatRoomId, 
                 text: message, 
-                user: userName // 🔹 שליחת שם המשתמש יחד עם ההודעה
+                user: userName, // שם המשתמש
+                userRole // תפקיד המשתמש
             };
-
-            // הוספת ההודעה למערך ההודעות באופן מקומי
-            setMessages((prevMessages) => [...prevMessages, newMessage]);
 
             // שליחת ההודעה לשרת
             socket.emit("sendMessage", newMessage);
+
+            // הוספת ההודעה למערך ההודעות מקומית
+            setMessages((prev) => [...prev, newMessage]);
 
             // ניקוי שדה ההודעה
             setMessage("");

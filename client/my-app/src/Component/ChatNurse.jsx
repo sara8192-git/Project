@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import io from "socket.io-client";
 import { useSelector } from "react-redux";
+import "./ChatParent.css"; 
 
 const socket = io("http://localhost:7002");
 
@@ -15,7 +16,6 @@ export default function ChatNurse() {
         // הצטרפות לחדר
         socket.emit("joinRoom", { chatRoomId, userName, userRole });
 
-        // קבלת הודעות מהשרת
         socket.on("newMessage", (message) => {
             setMessages((prev) => [...prev, message]);
         });
@@ -27,11 +27,11 @@ export default function ChatNurse() {
 
     const sendMessage = () => {
         if (message.trim() !== "") {
-            const newMessage = { 
+            const newMessage = {
                 chatRoomId, 
-                text: message, 
-                user: userName, // שם המשתמש
-                userRole // תפקיד המשתמש
+                text: `אחות ${userName} עונה: ${message}`, // הוספת שם האחות
+                user: userName, 
+                userRole
             };
 
             // שליחת ההודעה לשרת
@@ -46,21 +46,23 @@ export default function ChatNurse() {
     };
 
     return (
-        <div>
-            <div>
+        <div className="chat-container"> {/* הוספת קלאס CSS לצ'אט */}
+            <div className="chat-messages">
                 {messages.map((msg, index) => (
-                    <div key={index}>
+                    <div key={index} className="chat-message">
                         <strong>{msg.user}:</strong> {msg.text}
                     </div>
                 ))}
             </div>
-            <input
-                type="text"
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-                placeholder="Type your message..."
-            />
-            <button onClick={sendMessage}>Send</button>
+            <div className="chat-input">
+                <input
+                    type="text"
+                    value={message}
+                    onChange={(e) => setMessage(e.target.value)}
+                    placeholder="Type your message..."
+                />
+                <button onClick={sendMessage}>Send</button>
+            </div>
         </div>
     );
 }

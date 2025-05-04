@@ -29,9 +29,9 @@ io.on('connection', (socket) => {
     console.log('User connected:', socket.id);
 
     // כשהמשתמש מצטרף לחדר
-    socket.on('joinRoom', (chatRoomId) => {
-        console.log(`User ${socket.id} joined room ${chatRoomId}`);
-        socket.join(chatRoomId);
+    socket.on('joinRoom', ({ chatRoomId, userName, userRole }) => {
+        console.log(`User ${userName} (${userRole}) joined room ${chatRoomId}`);
+        socket.join(chatRoomId); // הצטרפות לחדר
     });
 
     // כשהמשתמש שולח הודעה
