@@ -8,6 +8,7 @@ import "primereact/resources/primereact.min.css";
 import "primeicons/primeicons.css";
 import axios from "axios";
 import { useDispatch, useSelector } from 'react-redux';
+import { Calendar } from 'primereact/calendar';
 
 const AddBabySecretary = () => {
     const [formData, setFormData] = useState({
@@ -32,7 +33,7 @@ const AddBabySecretary = () => {
             );
             handleAddBabySecretary(response.data._id)
         } catch (error) {
-            toast.current.show({ severity: "error", summary: "Error", detail: "שגיאה בחיבור לשרת", life: 3000 });
+            toast.current.show({ severity: "error", summary: "Error", detail: error.response.data.message || "שגיאה בחיבור לשרת", life: 3000 });
         }
     };
 
@@ -42,13 +43,16 @@ const AddBabySecretary = () => {
 
     const handleAddBabySecretary = async (p) => {
         try {
-            
-console.log("p"+p);
+
+            console.log("p" + p);
+            console.log(formData.identity + "   " + formData.name + "  " + formData.dob);
+            const formattedDate = new Date(formData.dob).toLocaleDateString('en-CA'); // תאריך בפורמט ISO עם הזמן המקומי
+
             const response = await axios.post(
                 `http://localhost:7002/baby`, {
                 identity: formData.identity,
                 name: formData.name,
-                dob: formData.dob,
+                dob: formattedDate,
                 parent_id: p
             }
                 , {
@@ -57,14 +61,14 @@ console.log("p"+p);
                     },
                 }
             );
-            
-            if (response.ok) {
+            console.log(response);
+            if (response) {
                 toast.current.show({ severity: "success", summary: "Success", detail: "נרשמת בהצלחה לטיפת חלב!", life: 3000 });
             } else {
                 toast.current.show({ severity: "error", summary: "Error", detail: response.message || "שגיאה ברישום", life: 3000 });
             }
         } catch (error) {
-            toast.current.show({ severity: "error", summary: "Error", detail: "שגיאה בחיבור לשרת", life: 3000 });
+            toast.current.show({ severity: "error", summary: "Error", detail: error.response.data.message || "שגיאה בחיבור לשרת", life: 3000 });
         }
     };
 
@@ -84,10 +88,15 @@ console.log("p"+p);
                     </div>
 
                     <div className="field">
-                        <label htmlFor="dob">תאריך לידה</label>
-                        <div className="p-inputgroup">
-                            <InputText id="dob" value={formData.dob} onChange={(e) => handleChange(e, "dob")} />
-                        </div>
+                        <label htmlFor="dob">תאריך לידה </label>
+                        <Calendar
+                            id="dob"
+                            value={formData.dob}
+                            onChange={(e) => handleChange(e, "dob")}
+                            showButtonBar
+                            placeholder="בחר תאריך"
+                            dateFormat="dd/mm/yy"
+                        />
                     </div>
 
                     <div className="field">

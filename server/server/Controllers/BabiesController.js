@@ -11,6 +11,11 @@ const creatNewBaby = async (req, res) => {
         if (dupliidentity) {
             return res.status(409).json({ message: 'Baby with this identity already exists' });
         }
+        const formattedDate = new Date(dob);
+        if (isNaN(formattedDate.getTime())) {
+            return res.status(400).json({ message: "תאריך לא תקין. יש להזין תאריך בפורמט YYYY-MM-DD" });
+        }
+        if (new Date(dob) > new Date()) return res.status(400).json({ message: "תאריך הלידה לא יכול להיות בעתיד" });
 
         const baby = await Babies.create({ identity, name, dob, parent_id })
         if (baby) {
