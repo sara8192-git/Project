@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import io from "socket.io-client";
 import { useSelector } from "react-redux";
 import axios from "axios";
+import sound from "../sounds/notification.wav";
 
 const socket = io("http://localhost:7002");
 
@@ -53,6 +54,13 @@ export default function ChatNurse() {
         }
     }, [selectedParent]);
 
+    const playSound = () => {
+        const audio = new Audio(sound); // משתמשים בנתיב המיובא
+        audio.play().catch((error) => {
+            console.error("Failed to play sound:", error);
+        });
+    };
+
     const sendMessage = () => {
         if (message.trim() !== "" && selectedParent) {
             const newMessage = {
@@ -65,6 +73,8 @@ export default function ChatNurse() {
             socket.emit("sendMessage", newMessage);
             setMessages((prev) => [...prev, newMessage]);
             setMessage("");
+            playSound();
+
         }
     };
 
