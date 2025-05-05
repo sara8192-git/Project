@@ -12,11 +12,16 @@ const login = async (req, res) => {
         if (!email || !password) {
             return res.status(400).json({ message: 'Both identity and password are required' })
         }
+
         const foundUser = await User.findOne({ email}).lean()
         if (!foundUser) {
             return res.status(401).json({ message: 'Unauthorized - Invalid email' })
         }
+        if (!password || !foundUser.password) {
+            throw new Error('Password or hash is missing');
+        }
 
+console.log(password+"    "+foundUser.password);
         const match = await bcrypt.compare(password, foundUser.password)
         console.log(match);
         if (!match) {
