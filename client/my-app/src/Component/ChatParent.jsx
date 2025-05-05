@@ -116,9 +116,12 @@ export default function ChatParent() {
             </div>
             {selectedNurse && (
                 <>
-                    <div className="chat-messages">
+                    <div className="chat-messages" style={{ backgroundColor: "white" }}>
                         {messages.map((msg, index) => (
-                            <div key={index} className={`chat-message ${msg.userRole === "nurse" ? "nurse-message" : ""}`}>
+                            <div 
+                                key={index} 
+                                className={`chat-message ${msg.userRole === "nurse" ? "nurse-message" : "parent-message"}`}
+                            >
                                 <div className="chat-text">
                                     <strong>{msg.user}:</strong> {msg.text}
                                 </div>
