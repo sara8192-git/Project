@@ -38,14 +38,18 @@ export default function ChatParent() {
             });
 
             socket.on("newMessage", (message) => {
+                // אם ההודעה לא קשורה לחדר הצ'אט הנוכחי, אז אנחנו רק מעדכנים את מצב ההודעות הלא נקראות
                 if (message.chatRoomId !== chatRoomId) {
                     setUnreadMessages((prev) => ({
                         ...prev,
                         [message.chatRoomId]: true
                     }));
                 } else {
-                    setMessages((prev) => [...prev, message]);
-                    setHighlightedSender(message.user); // עדכון השולח המודגש
+                    // כאן אנחנו דואגים לא להוסיף את ההודעה פעמיים אם היא כבר קיימת
+                    if (!messages.some(msg => msg.timestamp === message.timestamp)) {
+                        setMessages((prev) => [...prev, message]);
+                        setHighlightedSender(message.user); // עדכון השולח המודגש
+                    }
                 }
             });
 
@@ -53,7 +57,7 @@ export default function ChatParent() {
                 socket.off("newMessage");
             };
         }
-    }, [selectedNurse]);
+    }, [selectedNurse, messages]); // הוספת messages כ-dependency
 
     const playSound = () => {
         const audio = new Audio(sound);
@@ -118,6 +122,17 @@ export default function ChatParent() {
                                 <div className="chat-text">
                                     <strong>{msg.user}:</strong> {msg.text}
                                 </div>
+                                {msg.timestamp && (
+                                    <div className="chat-timestamp">
+                                        {new Date(msg.timestamp).toLocaleString("he-IL", {
+                                            hour: "2-digit",
+                                            minute: "2-digit",
+                                            day: "2-digit",
+                                            month: "2-digit",
+                                            year: "2-digit"
+                                        })}
+                                    </div>
+                                )}
                             </div>
                         ))}
                     </div>

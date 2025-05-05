@@ -19,9 +19,9 @@ const server = http.createServer(app);
 // 🔹 WebSocket Integration
 const { Server } = require("socket.io");
 const io = new Server(server, {
-  cors: {
-    origin: '*', // ניתן להחליף בכתובת ה-Frontend שלך
-  }
+    cors: {
+        origin: '*', // ניתן להחליף בכתובת ה-Frontend שלך
+    }
 });
 
 // 🔹 Socket.io Logic
@@ -42,14 +42,15 @@ io.on('connection', (socket) => {
 
     // כשהמשתמש שולח הודעה
     socket.on('sendMessage', (message) => {
-        console.log(`Message sent to room ${message.chatRoomId} by ${message.user}:`, message.text);
-        
+        // console.log(`Message sent to room ${message.chatRoomId} by ${message.user}:`, message.text);
+        message.timestamp = new Date().toISOString();
+
         // שמירת ההודעה בזיכרון
         messages.push(message);
 
         // שידור ההודעה לחדר (לכלל המשתמשים בחדר מלבד השולח)
-        socket.to(message.chatRoomId).emit('newMessage', message);
-    });
+        socket.broadcast.to(message.chatRoomId).emit('newMessage', message);
+        socket.emit('newMessage', message);    });
 
     // כשהמשתמש מתנתק
     socket.on('disconnect', () => {

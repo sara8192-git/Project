@@ -44,7 +44,13 @@ export default function ChatNurse() {
                         [message.chatRoomId]: true
                     }));
                 } else {
-                    setMessages((prev) => [...prev, message]);
+                    // כאן שדרגתי את הקוד כך שמתווספת רק הודעה חדשה שלא קיימת
+                    setMessages((prev) => {
+                        if (!prev.some(msg => msg.timestamp === message.timestamp)) {
+                            return [...prev, message];
+                        }
+                        return prev;
+                    });
                     setHighlightedSender(message.user); // עדכון השולח המודגש
                 }
             });
@@ -68,7 +74,8 @@ export default function ChatNurse() {
                 chatRoomId,
                 text: message,
                 user: userName,
-                userRole
+                userRole,
+                timestamp: new Date().toISOString()  // הוספת זמן שליחה
             };
 
             socket.emit("sendMessage", newMessage);
@@ -118,6 +125,17 @@ export default function ChatNurse() {
                                 <div className="chat-text">
                                     <strong>{msg.user}:</strong> {msg.text}
                                 </div>
+                                {msg.timestamp && (
+                                    <div className="chat-timestamp">
+                                        {new Date(msg.timestamp).toLocaleString("he-IL", {
+                                            hour: "2-digit",
+                                            minute: "2-digit",
+                                            day: "2-digit",
+                                            month: "2-digit",
+                                            year: "2-digit"
+                                        })}
+                                    </div>
+                                )}
                             </div>
                         ))}
                     </div>
