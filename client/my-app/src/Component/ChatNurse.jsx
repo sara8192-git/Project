@@ -29,7 +29,7 @@ export default function ChatNurse() {
         if (message.trim() !== "") {
             const newMessage = {
                 chatRoomId, 
-                text: `אחות ${userName} עונה: ${message}`, // הוספת שם האחות
+                text: message, // רק הטקסט עצמו
                 user: userName, 
                 userRole
             };
@@ -45,8 +45,14 @@ export default function ChatNurse() {
         }
     };
 
+    const handleKeyPress = (e) => {
+        if (e.key === "Enter") {
+            sendMessage();
+        }
+    };
+
     return (
-        <div className="chat-container"> {/* הוספת קלאס CSS לצ'אט */}
+        <div className="chat-container">
             <div className="chat-messages">
                 {messages.map((msg, index) => (
                     <div key={index} className="chat-message">
@@ -59,6 +65,7 @@ export default function ChatNurse() {
                     type="text"
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
+                    onKeyPress={handleKeyPress} // מאזין ללחיצה על מקש
                     placeholder="Type your message..."
                 />
                 <button onClick={sendMessage}>Send</button>

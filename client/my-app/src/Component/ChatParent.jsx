@@ -1,24 +1,21 @@
 import React, { useState, useEffect } from "react";
 import io from "socket.io-client";
-import { useSelector } from "react-redux"; // 🔹 ייבוא Redux
-import "./ChatParent.css"; // עיצוב הצ'אט
+import { useSelector } from "react-redux";
+import "./ChatParent.css";
 
-const socket = io("http://localhost:7002"); // כתובת השרת שלך
+const socket = io("http://localhost:7002");
 
 export default function ChatParent() {
-    const [message, setMessage] = useState(""); // הודעה חדשה
-    const [messages, setMessages] = useState([]); // רשימת ההודעות
-
-    // 🔹 שליפת שם המשתמש מ-Redux
-    const userName = useSelector((state) => state.token.user.name);
-    const userRole = useSelector((state) => state.token.user.role); // שליפת תפקיד המשתמש
+    const [message, setMessage] = useState("");
+    const [messages, setMessages] = useState([]);
+    const userName = useSelector((state) => state.token.user.name); // שם המשתמש
+    const userRole = useSelector((state) => state.token.user.role); // תפקיד המשתמש
     const chatRoomId = "unique-parent-id"; // מזהה ייחודי לצ'אט (יש להתאים לפי ההורה)
 
     useEffect(() => {
         // הצטרפות לחדר
         socket.emit("joinRoom", { chatRoomId, userName, userRole });
 
-        // קבלת הודעות מהשרת
         socket.on("newMessage", (message) => {
             setMessages((prev) => [...prev, message]);
         });
@@ -30,11 +27,11 @@ export default function ChatParent() {
 
     const sendMessage = () => {
         if (message.trim() !== "") {
-            const newMessage = { 
-                chatRoomId, 
-                text: message, 
-                user: userName, // שם המשתמש
-                userRole // תפקיד המשתמש
+            const newMessage = {
+                chatRoomId,
+                text: message, // הטקסט בלבד
+                user: userName,
+                userRole
             };
 
             // שליחת ההודעה לשרת
@@ -48,12 +45,25 @@ export default function ChatParent() {
         }
     };
 
+    const handleKeyPress = (e) => {
+        if (e.key === "Enter") {
+            sendMessage();
+        }
+    };
+
+    const formatUserName = (user, role) => {
+        return user; // רק השם עצמו, ללא ציון "אחות" או תוספות אחרות
+    };
+
     return (
         <div className="chat-container">
             <div className="chat-messages">
                 {messages.map((msg, index) => (
-                    <div key={index} className="chat-message">
-                        <strong>{msg.user}:</strong> {msg.text}
+                    <div key={index} className={`chat-message ${msg.userRole === "nurse" ? "nurse-message" : ""}`}>
+                        {/* הצגת שם המשתמש בלבד */}
+                        <div className="chat-text">
+                            <strong>{formatUserName(msg.user, msg.userRole)}:</strong> {msg.text}
+                        </div>
                     </div>
                 ))}
             </div>
@@ -62,7 +72,8 @@ export default function ChatParent() {
                     type="text"
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
-                    placeholder="Type a message..."
+                    onKeyPress={handleKeyPress} // מאזין ללחיצה על מקש
+                    placeholder="Type your message..."
                 />
                 <button onClick={sendMessage}>Send</button>
             </div>
