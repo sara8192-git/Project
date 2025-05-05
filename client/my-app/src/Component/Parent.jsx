@@ -32,28 +32,28 @@ export default function Parent() {
     const navigate = useNavigate(); // 🔹 מאפשר ניווט לדפים אחרים
     const items = [
         {
-            label: 'Home',
+            label: 'בית',
             icon: 'pi pi-home',
             command: () => {
                 navigate('./Home')
             }
         },
         {
-            label: 'Features',
+            label: 'קביעת תור',
             icon: 'pi pi-star',
             command: () => {
                 navigate('/parent/UseCalendar')
             }
         },
         {
-            label: 'Projects',
+            label: 'התורים שלי',
             icon: 'pi pi-search',
             command: () => {
                 navigate('/parent/BookedAppointmentParent')
             }
         },
         {
-            label: 'chat with nurse',
+            label: 'צאט עם אחות',
             icon: 'pi pi-comments',
             command: () => {
                 navigate('/parent/ChatParent');

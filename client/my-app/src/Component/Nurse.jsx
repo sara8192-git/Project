@@ -27,21 +27,21 @@ export default function Nurse() {
 
     const items = [
         {
-            label: 'Home',
+            label: 'בית',
             icon: 'pi pi-home',
             command: () => {
                 navigate('./Home')
             }
         },
         {
-            label: 'QueueSummaryNurse',
+            label: 'התורים שלי',
             icon: 'pi pi-star',
             command: () => {
                 navigate('/nurse/QueueSummaryNurse')
             }
         },
         {
-            label: 'Chat with parents', // 🔹 תמיד מוצג
+            label: 'צאט עם הורים', // 🔹 תמיד מוצג
             icon: 'pi pi-comments',
             command: () => {
                 navigate('/nurse/ChatNurse');

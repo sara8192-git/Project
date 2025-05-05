@@ -12,7 +12,6 @@ import AddMeasurementPage from "./Component/AddMeasurementPage";
 import TestsAndStatistics from "./Component/TestsAndStatistics";
 import ChatParent from './Component/ChatParent'; // קובץ הצ'אט להורה
 import ChatNurse from './Component/ChatNurse'; // קובץ הצ'אט לאחות
-import ChatOpenRooms from './Component/ChatOpenRooms'; // קובץ הצ'אטים הפתוחים
 
 function App() {
     return (
@@ -32,7 +31,6 @@ function App() {
                 <Route path="/AddMeasurementPage/:babyId" element={<AddMeasurementPage />} />
 
                 {/* נתיבים חדשים לצ'אט */}
-                <Route path="/open-rooms" element={<ChatOpenRooms />} /> {/* רשימת צ'אטים פתוחים */}
                 <Route path="/parent-chat" element={<ChatParent />} /> {/* צ'אט להורה */}
                 <Route path="/nurse-chat" element={<ChatNurse />} /> {/* צ'אט לאחות */}
             </Routes>

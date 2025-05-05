@@ -28,33 +28,27 @@ export default function Parent() {
     const navigate = useNavigate(); // 🔹 מאפשר ניווט לדפים אחרים
     const items = [
         {
-            label: 'RegisterNurse',
+            label: 'הוסף אחות',
             icon: 'pi pi-home',
             command: () => {
                 navigate('/secretary/RegisterNurse')
             }
         },
         {
-            label: 'AddBabySecretary',
+            label: 'הוספת תינוק',
             icon: 'pi pi-star',
             command: () => {
                 navigate('/secretary/AddBabySecretary')
             }
         },
         {
-            label: 'AddScheduleNurse',
+            label: 'הוספת מערכת שעות לתינוק',
             icon: 'pi pi-search',
             command: () => {
                 navigate('/secretary/AddScheduleNurse')
             }
         },
-        {
-            label:'chat with nurse',
-            icon: 'pi pi-comments',
-            command: () => {
-              navigate('/secretary/ChatParent');
-            }
-          },
+       
           {
               label: 'Log Out', // 🔹 כפתור Log Out
               icon: 'pi pi-sign-out',
