@@ -1,51 +1,43 @@
-import logo from './logo.svg';
+import React from 'react';
 import './App.css';
-import './flags.css'
-import { Menubar } from 'primereact/menubar';
-import { InputText } from 'primereact/inputtext';
-import { Badge } from 'primereact/badge';
-import { Avatar } from 'primereact/avatar';
-import React, { useState } from "react";
-import { PrimeReactProvider, PrimeReactContext } from 'primereact/api';
-import 'primeicons/primeicons.css';
-import 'primereact/resources/themes/lara-light-blue/theme.css'; // או תנסה ערכה אחרת
-import 'primereact/resources/primereact.min.css';
-import 'primeicons/primeicons.css';
-import { Link, Navigate, Route, Routes } from 'react-router-dom'
-import { useNavigate } from 'react-router-dom';
+import './flags.css';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import Login from "./Component/Login"; // קומפוננטת ההתחברות
-import { Button } from "primereact/button";
-import Register from "./Component/Register"; // יבוא קומפוננטת הרישום
-import Home from "./Component/Home";
-import Parent from './Component/Parent'
-import Nurse from "./Component/Nurse"
-import Secretary from './Component/Secretary'
-import AddMeasurementPage from "./Component/AddMeasurementPage"
-import TestsAndStatistics from "./Component/TestsAndStatistics"
+import Register from "./Component/Register"; // קומפוננטת הרישום
+import Home from "./Component/Home"; 
+import Parent from './Component/Parent';
+import Nurse from "./Component/Nurse";
+import Secretary from './Component/Secretary';
+import AddMeasurementPage from "./Component/AddMeasurementPage";
+import TestsAndStatistics from "./Component/TestsAndStatistics";
+import ChatParent from './Component/ChatParent'; // קובץ הצ'אט להורה
+import ChatNurse from './Component/ChatNurse'; // קובץ הצ'אט לאחות
+import ChatOpenRooms from './Component/ChatOpenRooms'; // קובץ הצ'אטים הפתוחים
+
 function App() {
-
-
     return (
         <div className="App">
-            <div className="card">
-
-            </div>
             <Routes>
+                {/* ניווט ברירת מחדל */}
                 <Route path="/" element={<Navigate to="/login" />} />
 
-                <Route path='/Home' element={<Home />} />
+                {/* נתיבים לקומפוננטות הקיימות */}
+                <Route path="/Home" element={<Home />} />
                 <Route path="/login" element={<Login />} />
-                <Route path="/register" element={<Register />} /> {/* נתיב חדש להרשמה */}
-                <Route path="/parent/*" element={<Parent />} /> {/* נתיב חדש להרשמה */}
-                <Route path="/Nurse/*" element={<Nurse />} /> {/* נתיב חדש להרשמה */}
+                <Route path="/register" element={<Register />} />
+                <Route path="/parent/*" element={<Parent />} />
+                <Route path="/Nurse/*" element={<Nurse />} />
                 <Route path='/TestsAndStatistics/:id' element={<TestsAndStatistics />} />
-
-                <Route path="/Secretary/*" element={<Secretary />} /> {/* נתיב חדש להרשמה */}
+                <Route path="/Secretary/*" element={<Secretary />} />
                 <Route path="/AddMeasurementPage/:babyId" element={<AddMeasurementPage />} />
-            </Routes>
 
+                {/* נתיבים חדשים לצ'אט */}
+                <Route path="/open-rooms" element={<ChatOpenRooms />} /> {/* רשימת צ'אטים פתוחים */}
+                <Route path="/parent-chat" element={<ChatParent />} /> {/* צ'אט להורה */}
+                <Route path="/nurse-chat" element={<ChatNurse />} /> {/* צ'אט לאחות */}
+            </Routes>
         </div>
-    )
+    );
 }
 
 export default App;

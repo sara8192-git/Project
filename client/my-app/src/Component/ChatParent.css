@@ -1,4 +1,4 @@
-/* עיצוב הכללי של הצ'אט */
+/* עיצוב כללי */
 .chat-container {
     display: flex;
     flex-direction: column;
@@ -11,24 +11,29 @@
     background-color: #f9f9f9;
 }
 
-/* עיצוב חלון ההודעות */
 .chat-messages {
     flex: 1;
     overflow-y: auto;
     padding: 10px;
 }
 
-/* עיצוב כל הודעה ברירת מחדל */
+/* עיצוב כל הודעה */
 .chat-message {
     margin-bottom: 10px;
     padding: 5px;
-    background-color: #e1f5fe; /* צבע ברירת המחדל */
+    background-color: #e1f5fe; /* צבע ברירת מחדל */
     border-radius: 5px;
+    text-align: right; /* כיווניות לימין */
 }
 
-/* עיצוב הודעות של אחות - צבע ירוק בהיר */
+/* עיצוב הודעות של אחות */
 .chat-message.nurse-message {
     background-color: #a5d6a7; /* ירוק בהיר */
+}
+
+/* עיצוב שם המשתמש */
+.chat-message strong {
+    color: #007bff;
 }
 
 /* עיצוב תיבת הקלט */
@@ -38,7 +43,6 @@
     border-top: 1px solid #ddd;
 }
 
-/* עיצוב שדה הקלט */
 .chat-input input {
     flex: 1;
     padding: 10px;
@@ -47,7 +51,6 @@
     margin-right: 10px;
 }
 
-/* עיצוב כפתור השליחה */
 .chat-input button {
     padding: 10px 20px;
     background-color: #007bff;
@@ -59,10 +62,4 @@
 
 .chat-input button:hover {
     background-color: #0056b3;
-}
-
-/* עיצוב שם המשתמש בהודעות */
-.chat-message strong {
-    color: #007bff;
-    margin-right: 5px;
 }

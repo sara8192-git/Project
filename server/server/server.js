@@ -25,6 +25,8 @@ const io = new Server(server, {
 });
 
 // 🔹 Socket.io Logic
+let messages = []; // Array to store messages
+
 io.on('connection', (socket) => {
     console.log('User connected:', socket.id);
 
@@ -32,12 +34,19 @@ io.on('connection', (socket) => {
     socket.on('joinRoom', ({ chatRoomId, userName, userRole }) => {
         console.log(`User ${userName} (${userRole}) joined room ${chatRoomId}`);
         socket.join(chatRoomId); // הצטרפות לחדר
+
+        // שליחה של הודעות קודמות
+        const roomMessages = messages.filter(msg => msg.chatRoomId === chatRoomId);
+        socket.emit('previousMessages', roomMessages);
     });
 
     // כשהמשתמש שולח הודעה
     socket.on('sendMessage', (message) => {
         console.log(`Message sent to room ${message.chatRoomId} by ${message.user}:`, message.text);
         
+        // שמירת ההודעה בזיכרון
+        messages.push(message);
+
         // שידור ההודעה לחדר (לכלל המשתמשים בחדר מלבד השולח)
         socket.to(message.chatRoomId).emit('newMessage', message);
     });
@@ -53,31 +62,27 @@ app.use(express.json());
 app.use(express.static("public"));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// הגדרת הטרנספורטר לשליחת מיילים
-const transporter = nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-        user: process.env.EMAIL_USER, // האימייל של השרת
-        pass: process.env.EMAIL_PASS  // הסיסמה של השרת
+// 🔹 הגדרת נתיב API לשליפת רשימת אחיות
+app.get("/nurses", async (req, res) => {
+    try {
+        const nurses = await mongoose.model("User").find({ role: "Nurse" }, "name _id");
+        res.status(200).json(nurses);
+    } catch (error) {
+        console.error("Error fetching nurses:", error);
+        res.status(500).json({ error: "Failed to fetch nurses" });
     }
 });
 
-// שליחת מייל לאחר הרשמה
-const sendWelcomeEmail = async (email, name) => {
-    const mailOptions = {
-        from: process.env.EMAIL_USER,
-        to: email,
-        subject: "נרשמת בהצלחה לטיפת חלב!",
-        text: `שלום ${name},\n\nברוך הבא לטיפת חלב! ההרשמה שלך הושלמה בהצלחה.\n\nבברכה, צוות טיפת חלב.`
-    };
-    
+// 🔹 הגדרת נתיב API לשליפת רשימת הורים
+app.get("/parents", async (req, res) => {
     try {
-        await transporter.sendMail(mailOptions);
-        console.log("מייל נשלח בהצלחה ל-", email);
+        const parents = await mongoose.model("User").find({ role: "Parent" }, "name _id");
+        res.status(200).json(parents);
     } catch (error) {
-        console.error("שגיאה בשליחת מייל:", error);
+        console.error("Error fetching parents:", error);
+        res.status(500).json({ error: "Failed to fetch parents" });
     }
-};
+});
 
 // חיבור לנתיבים
 app.use("/user", require("./Routes/UserRout"));
