@@ -130,7 +130,7 @@ export default function BookedAppointmentParent() {
                                         onClick={() => deleteAppointment(appointment._id, babyId)}
                                         style={{
                                             marginTop: "auto",
-                                            backgroundColor: "red",
+                                            backgroundColor: "green",
                                             color: "white",
                                             border: "none",
                                             padding: "5px 10px",

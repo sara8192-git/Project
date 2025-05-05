@@ -96,12 +96,12 @@ const RegisterNurse = () => {
                             />
                         </div>
                         <div className="p-field">
-                            <label>תפקיד </label>
+                            <label>תפקיד</label>
                             <InputText
                                 id="role"
-                                value={formData.role}
+                                value={formData.role || "Nurse"} // אם אין ערך, מציג "Nurse" כערך ברירת מחדל
                                 onChange={(e) => handleChange(e, "role")}
-                                placeholder=" כתוב תפקיד "
+                                placeholder="כתוב תפקיד"
                             />
                         </div>
                         <div className="p-field">
@@ -151,9 +151,7 @@ const RegisterNurse = () => {
                             onClick={handleRegister}
                         />
                     </form>
-                    <div className="extra-links">
-                        כבר רשומים? <a href="http://localhost:3000/login">התחברו כאן</a>
-                    </div>
+
                 </div>
             </div>
         </div>

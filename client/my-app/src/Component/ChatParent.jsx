@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import io from "socket.io-client";
 import { useSelector } from "react-redux";
 import axios from "axios";
-import "./ChatParent.css";
 
 const socket = io("http://localhost:7002");
 

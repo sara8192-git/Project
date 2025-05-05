@@ -23,7 +23,6 @@ const AddScheduleNurse = () => {
 
     const get_idByIndentity = async (props) => {
         try {
-            console.log(props);
             const response = await axios.get(
                 `http://localhost:7002/user/id/${props}`,
                 {
@@ -32,7 +31,6 @@ const AddScheduleNurse = () => {
                     },
                 }
             );
-            console.log(response.data._id);
             handleAddBabySecretary(response.data._id);
         } catch (error) {
             const errorMessage = error.response?.data?.message || "שגיאה בחיבור לשרת";
@@ -49,7 +47,6 @@ const AddScheduleNurse = () => {
             const today = new Date();
             const selectedDate = new Date(formData.date);
 
-            // בדיקה אם התאריך קטן מהתאריך הנוכחי
             if (selectedDate < today.setHours(0, 0, 0, 0)) {
                 toast.current.show({
                     severity: "error",
@@ -60,9 +57,8 @@ const AddScheduleNurse = () => {
                 return;
             }
 
-            const formattedDate = selectedDate.toLocaleDateString('en-CA'); // תאריך בפורמט ISO עם הזמן המקומי
+            const formattedDate = selectedDate.toLocaleDateString('en-CA');
 
-            console.log("formData.date" + formData.date + "formData.startTime" + formData.startTime + "formData.endTime" + formData.endTime);
             const response = await axios.post(
                 `http://localhost:7002/nurseScheduler`,
                 {
@@ -91,42 +87,51 @@ const AddScheduleNurse = () => {
     };
 
     return (
-        <div className="flex justify-content-center align-items-center h-screen">
+        <div className="register-container">
             <Toast ref={toast} />
-            <Card title="הוספת מערכת שעות לאחות " className="p-4 w-25">
-                <div className="p-fluid">
-                    <div className="field">
-                        <label htmlFor="identity">תעודת זהות אחות</label>
-                        <InputText id="identity" value={formData.identity} onChange={(e) => handleChange(e, "identity")} />
-                    </div>
-
-                    <div className="field">
-                        <label htmlFor="name">תאריך </label>
-                        <Calendar
-                            id="date"
-                            value={formData.date}
-                            onChange={(e) => handleChange(e, "date")}
-                            showButtonBar
-                            placeholder="בחר או כתוב תאריך"
-                            dateFormat="dd/mm/yy"
-                        />
-                    </div>
-
-                    <div className="field">
-                        <label htmlFor="startTime">שעת התחלה </label>
-                        <div className="p-inputgroup">
-                            <InputText id="startTime" value={formData.startTime} onChange={(e) => handleChange(e, "startTime")} />
+            <div className="login-left">
+                {/* תמונת רקע */}
+            </div>
+            <div className="login-right">
+                <div className="login-box">
+                    <h1>הוספת מערכת שעות לאחות</h1>
+                    <p>הזן את הפרטים כדי להוסיף מערכת שעות</p>
+                    <form onSubmit={(e) => { e.preventDefault(); get_idByIndentity(formData.identity); }} className="p-fluid">
+                        <div className="p-field">
+                            <label htmlFor="identity">תעודת זהות אחות</label>
+                            <InputText id="identity" value={formData.identity} onChange={(e) => handleChange(e, "identity")} placeholder="הזן תעודת זהות" />
                         </div>
-                    </div>
 
-                    <div className="field">
-                        <label htmlFor="endTime">שעת סיום </label>
-                        <InputText id="endTime" value={formData.endTime} onChange={(e) => handleChange(e, "endTime")} />
-                    </div>
+                        <div className="p-field">
+                            <label htmlFor="date">תאריך</label>
+                            <Calendar
+                                id="date"
+                                value={formData.date}
+                                onChange={(e) => handleChange(e, "date")}
+                                showButtonBar
+                                placeholder="בחר או כתוב תאריך"
+                                dateFormat="dd/mm/yy"
+                            />
+                        </div>
 
-                    <Button label="הוסף" icon="pi pi-user-plus" className="p-button-success w-full mt-3" onClick={() => get_idByIndentity(formData.identity)} />
+                        <div className="p-field">
+                            <label htmlFor="startTime">שעת התחלה</label>
+                            <InputText id="startTime" value={formData.startTime} onChange={(e) => handleChange(e, "startTime")} placeholder="הזן שעת התחלה" />
+                        </div>
+
+                        <div className="p-field">
+                            <label htmlFor="endTime">שעת סיום</label>
+                            <InputText id="endTime" value={formData.endTime} onChange={(e) => handleChange(e, "endTime")} placeholder="הזן שעת סיום" />
+                        </div>
+
+                        <Button
+                            type="submit"
+                            label="הוסף"
+                            className="login-button"
+                        />
+                    </form>
                 </div>
-            </Card>
+            </div>
         </div>
     );
 };

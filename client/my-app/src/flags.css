@@ -1232,3 +1232,405 @@ img.flag {
     /* ירוק בהיר */
 }
 
+/* עיצוב כולל לכלי הצ'אט */
+.chat-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #f0fff0;
+    /* ירוק בהיר מאוד */
+    border: 3px solid #90ee90;
+    /* ירוק בהיר */
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    font-family: "Arial", sans-serif;
+}
+
+/* עיצוב לבחירת הורה */
+.parent-selection {
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.parent-selection label {
+    font-weight: bold;
+    font-size: 16px;
+    color: #2e8b57;
+    /* ירוק כהה */
+}
+
+.parent-selection select {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border: 2px solid #90ee90;
+    /* ירוק בהיר */
+    border-radius: 5px;
+    background-color: #ffffff;
+    font-size: 14px;
+    color: #2e8b57;
+    transition: border-color 0.3s ease;
+}
+
+.parent-selection select:hover {
+    border-color: #76c76c;
+    /* ירוק כהה יותר */
+}
+
+/* עיצוב להודעות הצ'אט */
+.chat-messages {
+    flex-grow: 1;
+    overflow-y: auto;
+    max-height: 400px;
+    margin-bottom: 15px;
+    padding: 15px;
+    background-color: #e8f5e9;
+    /* ירוק בהיר מאוד */
+    border-radius: 10px;
+    border: 1px solid #90ee90;
+}
+
+.chat-message {
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 8px;
+    background-color: #d0f0c0;
+    /* ירוק בהיר */
+    color: #2e8b57;
+    word-break: break-word;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.chat-message.parent-message {
+    background-color: #c8e6c9;
+    /* ירוק בהיר נוסף */
+}
+
+/* עיצוב לשם המשתמש */
+.chat-text strong {
+    color: #006400;
+    /* ירוק כהה */
+}
+
+/* עיצוב לשורת הזנת ההודעה */
+.chat-input {
+    display: flex;
+    gap: 10px;
+}
+
+.chat-input input {
+    flex-grow: 1;
+    padding: 10px;
+    border: 2px solid #90ee90;
+    border-radius: 5px;
+    background-color: #ffffff;
+    font-size: 14px;
+    color: #2e8b57;
+    transition: border-color 0.3s ease;
+}
+
+.chat-input input::placeholder {
+    color: #a9a9a9;
+    /* אפור בהיר */
+}
+
+.chat-input input:focus {
+    border-color: #76c76c;
+    /* ירוק כהה יותר */
+    outline: none;
+}
+
+.chat-input button {
+    padding: 10px 20px;
+    background-color: #90ee90;
+    border: none;
+    border-radius: 5px;
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.chat-input button:hover {
+    background-color: #76c76c;
+    /* ירוק כהה יותר */
+}
+
+/* אנימציה להודעות חדשות */
+@keyframes newMessage {
+    from {
+        background-color: #76c76c;
+    }
+
+    to {
+        background-color: #d0f0c0;
+    }
+}
+
+.chat-message.new {
+    animation: newMessage 0.5s ease-in-out;
+}
+
+/* עיצוב כולל לכלי הצ'אט */
+.chat-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #f0fff0;
+    /* ירוק בהיר מאוד */
+    border: 3px solid #90ee90;
+    /* ירוק בהיר */
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    font-family: "Arial", sans-serif;
+}
+
+/* עיצוב לבחירת משתמש (הורה או אחות) */
+.parent-selection,
+.nurse-selection {
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.parent-selection label,
+.nurse-selection label {
+    font-weight: bold;
+    font-size: 16px;
+    color: #2e8b57;
+    /* ירוק כהה */
+}
+
+.parent-selection select,
+.nurse-selection select {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border: 2px solid #90ee90;
+    /* ירוק בהיר */
+    border-radius: 5px;
+    background-color: #ffffff;
+    font-size: 14px;
+    color: #2e8b57;
+    transition: border-color 0.3s ease;
+}
+
+.parent-selection select:hover,
+.nurse-selection select:hover {
+    border-color: #76c76c;
+    /* ירוק כהה יותר */
+}
+
+/* עיצוב להודעות הצ'אט */
+.chat-messages {
+    flex-grow: 1;
+    overflow-y: auto;
+    max-height: 400px;
+    margin-bottom: 15px;
+    padding: 15px;
+    background-color: #e8f5e9;
+    /* ירוק בהיר מאוד */
+    border-radius: 10px;
+    border: 1px solid #90ee90;
+}
+
+.chat-message {
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 8px;
+    background-color: #d0f0c0;
+    /* ירוק בהיר */
+    color: #2e8b57;
+    word-break: break-word;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.chat-message.parent-message,
+.chat-message.nurse-message {
+    background-color: #c8e6c9;
+    /* ירוק בהיר נוסף */
+}
+
+/* עיצוב לשם המשתמש */
+.chat-text strong {
+    color: #006400;
+    /* ירוק כהה */
+}
+
+/* עיצוב לשורת הזנת ההודעה */
+.chat-input {
+    display: flex;
+    gap: 10px;
+}
+
+.chat-input input {
+    flex-grow: 1;
+    padding: 10px;
+    border: 2px solid #90ee90;
+    border-radius: 5px;
+    background-color: #ffffff;
+    font-size: 14px;
+    color: #2e8b57;
+    transition: border-color 0.3s ease;
+}
+
+.chat-input input::placeholder {
+    color: #a9a9a9;
+    /* אפור בהיר */
+}
+
+.chat-input input:focus {
+    border-color: #76c76c;
+    /* ירוק כהה יותר */
+    outline: none;
+}
+
+.chat-input button {
+    padding: 10px 20px;
+    background-color: #90ee90;
+    border: none;
+    border-radius: 5px;
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.chat-input button:hover {
+    background-color: #76c76c;
+    /* ירוק כהה יותר */
+}
+
+/* אנימציה להודעות חדשות */
+@keyframes newMessage {
+    from {
+        background-color: #76c76c;
+    }
+
+    to {
+        background-color: #d0f0c0;
+    }
+}
+
+.chat-message.new {
+    animation: newMessage 0.5s ease-in-out;
+}
+
+/* עיצוב כולל */
+.p-6 {
+    padding: 24px;
+    background-color: #f0fff0;
+    /* ירוק בהיר מאוד */
+    border-radius: 10px;
+}
+
+.text-2xl {
+    font-size: 24px;
+    color: #2e8b57;
+    /* ירוק כהה */
+}
+
+.text-lg {
+    font-size: 18px;
+    color: #2e8b57;
+    /* ירוק כהה */
+}
+
+.font-semibold {
+    font-weight: 600;
+}
+
+.font-bold {
+    font-weight: bold;
+}
+
+.text-center {
+    text-align: center;
+}
+
+/* עיצוב כותרות */
+.text-purple-700 {
+    color: #2e8b57;
+    /* ירוק כהה */
+    margin-bottom: 16px;
+}
+
+.border-purple-300 {
+    border-color: #90ee90;
+    /* ירוק בהיר */
+}
+
+.grid {
+    display: grid;
+    gap: 16px;
+}
+
+.grid-cols-1 {
+    grid-template-columns: 1fr;
+}
+
+.sm\\:grid-cols-2 {
+    grid-template-columns: repeat(2, 1fr);
+}
+
+.md\\:grid-cols-3 {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.lg\\:grid-cols-4 {
+    grid-template-columns: repeat(4, 1fr);
+}
+
+/* כרטיסים */
+.border {
+    border: 2px solid #90ee90;
+    /* ירוק בהיר */
+}
+
+.rounded-xl {
+    border-radius: 12px;
+}
+
+.p-4 {
+    padding: 16px;
+}
+
+.shadow-sm {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.bg-white {
+    background-color: #ffffff;
+}
+
+.text-gray-700 {
+    color: #4b5563;
+}
+
+/* כפתור לביטול תור */
+button {
+    margin-top: auto;
+    background-color: #90ee90;
+    /* אדום עדין */
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #90ee90;
+    /* אדום כהה יותר */
+}
+
