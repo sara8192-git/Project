@@ -11,7 +11,8 @@ export default function ChatNurse() {
     const [messages, setMessages] = useState([]);
     const [selectedParent, setSelectedParent] = useState("");
     const [parents, setParents] = useState([]);
-    const [unreadMessages, setUnreadMessages] = useState({}); // מעקב אחר הודעות חדשות
+    const [unreadMessages, setUnreadMessages] = useState({});
+    const [highlightedSender, setHighlightedSender] = useState(""); // שולח מודגש
     const userName = useSelector((state) => state.token.user.name);
     const userRole = useSelector((state) => state.token.user.role);
     const chatRoomId = `${selectedParent}-${userName}`;
@@ -38,13 +39,13 @@ export default function ChatNurse() {
 
             socket.on("newMessage", (message) => {
                 if (message.chatRoomId !== chatRoomId) {
-                    // אם ההודעה מיועדת לחדר אחר, עדכן מצב של הודעה חדשה
                     setUnreadMessages((prev) => ({
                         ...prev,
                         [message.chatRoomId]: true
                     }));
                 } else {
                     setMessages((prev) => [...prev, message]);
+                    setHighlightedSender(message.user); // עדכון השולח המודגש
                 }
             });
 
@@ -55,7 +56,7 @@ export default function ChatNurse() {
     }, [selectedParent]);
 
     const playSound = () => {
-        const audio = new Audio(sound); // משתמשים בנתיב המיובא
+        const audio = new Audio(sound);
         audio.play().catch((error) => {
             console.error("Failed to play sound:", error);
         });
@@ -74,7 +75,6 @@ export default function ChatNurse() {
             setMessages((prev) => [...prev, newMessage]);
             setMessage("");
             playSound();
-
         }
     };
 
@@ -88,8 +88,9 @@ export default function ChatNurse() {
         setSelectedParent(parentName);
         setUnreadMessages((prev) => ({
             ...prev,
-            [`${parentName}-${userName}`]: false // מנקה הודעות חדשות לחדר הנבחר
+            [`${parentName}-${userName}`]: false
         }));
+        setHighlightedSender(""); // איפוס הדגשה בבחירת הורה חדש
     };
 
     return (
@@ -99,7 +100,11 @@ export default function ChatNurse() {
                 <select onChange={(e) => selectParent(e.target.value)} value={selectedParent}>
                     <option value="">--בחר--</option>
                     {parents.map((parent) => (
-                        <option key={parent._id} value={parent.name}>
+                        <option
+                            key={parent._id}
+                            value={parent.name}
+                            className={highlightedSender === parent.name ? "highlight" : ""}
+                        >
                             {unreadMessages[`${parent.name}-${userName}`] ? `🔴 ${parent.name}` : parent.name}
                         </option>
                     ))}

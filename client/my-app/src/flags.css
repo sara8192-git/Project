@@ -1634,3 +1634,7 @@ button:hover {
     /* אדום כהה יותר */
 }
 
+.highlight {
+    background-color: yellow;
+    font-weight: bold;
+}

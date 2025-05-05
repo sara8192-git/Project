@@ -11,7 +11,8 @@ export default function ChatParent() {
     const [messages, setMessages] = useState([]);
     const [selectedNurse, setSelectedNurse] = useState("");
     const [nurses, setNurses] = useState([]);
-    const [unreadMessages, setUnreadMessages] = useState({}); // מעקב אחר הודעות חדשות
+    const [unreadMessages, setUnreadMessages] = useState({});
+    const [highlightedSender, setHighlightedSender] = useState(""); // שולח מודגש
     const userName = useSelector((state) => state.token.user.name);
     const userRole = useSelector((state) => state.token.user.role);
     const chatRoomId = `${userName}-${selectedNurse}`;
@@ -38,13 +39,13 @@ export default function ChatParent() {
 
             socket.on("newMessage", (message) => {
                 if (message.chatRoomId !== chatRoomId) {
-                    // אם ההודעה מיועדת לחדר אחר, עדכן מצב של הודעה חדשה
                     setUnreadMessages((prev) => ({
                         ...prev,
                         [message.chatRoomId]: true
                     }));
                 } else {
                     setMessages((prev) => [...prev, message]);
+                    setHighlightedSender(message.user); // עדכון השולח המודגש
                 }
             });
 
@@ -54,12 +55,13 @@ export default function ChatParent() {
         }
     }, [selectedNurse]);
 
-        const playSound = () => {
-            const audio = new Audio(sound); // משתמשים בנתיב המיובא
-            audio.play().catch((error) => {
-                console.error("Failed to play sound:", error);
-            });
-        };
+    const playSound = () => {
+        const audio = new Audio(sound);
+        audio.play().catch((error) => {
+            console.error("Failed to play sound:", error);
+        });
+    };
+
     const sendMessage = () => {
         if (message.trim() !== "" && selectedNurse) {
             const newMessage = {
@@ -72,9 +74,6 @@ export default function ChatParent() {
             socket.emit("sendMessage", newMessage);
             setMessages((prev) => [...prev, newMessage]);
             setMessage("");
-console.log("ggggggg");
-
-            // השמעת הצליל לאחר שליחת ההודעה
             playSound();
         }
     };
@@ -89,8 +88,9 @@ console.log("ggggggg");
         setSelectedNurse(nurseName);
         setUnreadMessages((prev) => ({
             ...prev,
-            [`${userName}-${nurseName}`]: false // מנקה הודעות חדשות לחדר הנבחר
+            [`${userName}-${nurseName}`]: false
         }));
+        setHighlightedSender(""); // איפוס הדגשה בבחירת אחות חדשה
     };
 
     return (
@@ -100,7 +100,11 @@ console.log("ggggggg");
                 <select onChange={(e) => selectNurse(e.target.value)} value={selectedNurse}>
                     <option value="">--בחר--</option>
                     {nurses.map((nurse) => (
-                        <option key={nurse._id} value={nurse.name}>
+                        <option
+                            key={nurse._id}
+                            value={nurse.name}
+                            className={highlightedSender === nurse.name ? "highlight" : ""}
+                        >
                             {unreadMessages[`${userName}-${nurse.name}`] ? `🔴 ${nurse.name}` : nurse.name}
                         </option>
                     ))}
