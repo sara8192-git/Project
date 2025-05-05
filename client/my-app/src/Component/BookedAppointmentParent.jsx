@@ -138,7 +138,7 @@ export default function BookedAppointmentParent() {
                                             cursor: "pointer",
                                         }}
                                     >
-                                        לביטל התור
+                                        לביטול התור
                                     </button>
                                 </div>
                             );

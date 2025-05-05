@@ -139,7 +139,6 @@ const Register = () => {
                             type="submit"
                             label="הצטרפות"
                             className="login-button"
-                            onClick={handleRegister}
                         />
                     </form>
                     <div className="extra-links">
