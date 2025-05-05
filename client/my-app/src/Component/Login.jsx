@@ -56,7 +56,7 @@ export default function Login() {
                             <InputText
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
-                                placeholder="הזן תעודת זהות"
+                                placeholder="הזן אימייל"
                             />
                         </div>
                         <div className="p-field">
