@@ -6,7 +6,8 @@ import { Route, Routes } from 'react-router-dom'
 import ChatNurse from './ChatNurse'
 import TestsAndStatistics from "./TestsAndStatistics"
 import defaultProfilePicture from "../picture/WIN_20250430_18_06_45_Pro.jpg";
-import { useSelector } from "react-redux"; // לשימוש בפרטי המשתמש מ-Redux
+import { useSelector, useDispatch } from "react-redux"; // לשימוש בפרטי המשתמש מ-Redux
+import { logOut } from "../redux/tokenSlice"; // ייבוא הפעולה למחיקת הטוקן
 
 export default function Nurse() {
     const name = useSelector((state) => state.token.user.name);
@@ -16,6 +17,14 @@ export default function Nurse() {
         : defaultProfilePicture; // תמונה דיפולטיבית
 
     const navigate = useNavigate(); // 🔹 מאפשר ניווט לדפים אחרים
+    const dispatch = useDispatch(); // 🔹 מאפשר קריאה לפעולות Redux
+
+    // פונקציה לטיפול בלחיצה על "Log Out"
+    const handleLogout = () => {
+        dispatch(logOut()); // קריאה לפעולת מחיקת הטוקן
+        navigate('/login'); // ניתוב לדף הלוגין
+    };
+
     const items = [
         {
             label: 'Home',
@@ -38,6 +47,11 @@ export default function Nurse() {
                 navigate('/nurse/ChatNurse');
             }
         },
+        {
+            label: 'Log Out', // 🔹 כפתור Log Out
+            icon: 'pi pi-sign-out',
+            command: handleLogout // קריאה לפונקציה
+        }
     ];
 
     const endTemplate = (
@@ -65,7 +79,6 @@ export default function Nurse() {
                 <Route path='/ChatNurse' element={<ChatNurse />} /> {/* נתיב נכון */}
                 <Route path='/nurse/TestsAndStatistics/:id' element={<TestsAndStatistics />} />
             </Routes>
-            
         </div>
     );
 }

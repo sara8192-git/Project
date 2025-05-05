@@ -915,3 +915,25 @@ img.flag {
 .p-inputgroup .p-dropdown {
     font-size: 14px;
 }
+/* סגנון לטשטוש רקע */
+/* רקע מותאם לטשטוש */
+.p-dialog-mask {
+    backdrop-filter: blur(10px); /* טשטוש */
+    background-color: rgba(255, 255, 255, 0.3); /* צבע לבן עם שקיפות */
+}
+
+/* הסגנון של החלון עצמו */
+.custom-dialog .p-dialog {
+    border-radius: 12px; /* פינות מעוגלות לחלון */
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.9); /* צבע לבן עם שקיפות לחלון */
+    backdrop-filter: blur(5px); /* טשטוש בתוך החלון */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* צל עדין */
+}
+.chart-container {
+    width: 100%; /* הקונטיינר יתפוס את כל הרוחב */
+    height: 400px; /* גובה קבוע לגרף */
+    padding: 10px; /* מרווחים פנימיים */
+    box-sizing: border-box; /* כולל padding בתוך הגודל */
+    overflow: hidden; /* למנוע זליגה */
+  }

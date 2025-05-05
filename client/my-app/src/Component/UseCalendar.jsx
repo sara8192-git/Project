@@ -7,7 +7,6 @@ import { Button } from 'primereact/button';
 import { ListBox } from 'primereact/listbox';
 import { Dropdown } from 'primereact/dropdown';
 
-
 export default function UseCalendar() {
     const [date, setDate] = useState(null);
     const [availableHours, setAvailableHours] = useState([]);//שעות התורים לתאריך
@@ -23,7 +22,6 @@ export default function UseCalendar() {
     const token = useSelector((state) => state.token.token)
     const parentId = useSelector((state) => state.token.user._id)
 
-
     //  **שליפת השעות הפנויות מהשרת עבור תאריך שנבחר**
     const fetchAvailableHours = async (selectedDate) => {
         if (!selectedDate) return;
@@ -35,43 +33,24 @@ export default function UseCalendar() {
             console.error("❌ לא נמצא טוקן, יש להתחבר!");
             return;
         }
-        // 🟡 בהנחה שהשרת מחזיר את השעות הפנויות לפי אחות ו-תאריך:
         try {
-
             const res = await axios.get(`http://localhost:7002/nurseScheduler/${formattedDate}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 }
             });
             if (res.status === 200) {
-                // const availableSlots = res.data.flatMap(schedule => 
-                //     schedule.available_slots.map(slot => slot.time)
-                //   );; // קבלת הנתונים
-
-                //  console.log(formattedDate)
-                // const availableSlots = res.data.flatMap(schedule =>
-                //     schedule.available_slots.map(slot => ({
-                //         label: slot.time,
-                //         value: slot.time
-                //     }))
-                // );
                 const availableSlots = res.data.flatMap((schedule, index) =>
-
                     schedule.available_slots.map((slot, i) => ({
                         key: slot.time,
                         value: (index + 1) * (i + 48),
                         label: schedule.identity
-
-                        // identity: schedule.identity // הנח שה-nurse_identity נמצא באובייקט schedule
                     }))
                 );
 
-
                 if (availableSlots.length == 0) {
                     alert("אין שעות עבודה ביום זה😮‍💨")
-                }
-
-                else {
+                } else {
                     setAvailableHours(availableSlots); // השעות הפנויות נשמרות במצב
                 }
             }
@@ -79,6 +58,7 @@ export default function UseCalendar() {
             console.error("❌ שגיאה בשליפת השעות הפנויות:", error);
         }
     };
+
     const getNameNurse = async (NurseId) => {
         try {
             console.log("NurseId" + NurseId);
@@ -113,6 +93,7 @@ export default function UseCalendar() {
             console.error("שגיאה בשליפת התינוק:", error);
         }
     };
+
     //  **כאשר המשתמש לוחץ על תאריך בלוח השנה → מופעלת הפונקציה הזו**
     const handleDateChange = (e) => {
         setDate(e.value);            // שמירת התאריך שנבחר
@@ -121,14 +102,12 @@ export default function UseCalendar() {
         setAvailableHours([]);       // ניקוי השעות של היום הקודם
         setSelectedTime(null);       // ניקוי הבחירה של היום הקודם
         fetchAvailableHours(e.value); // קריאה לפונקציה שמביאה שעות פנויות
-
-
     };
+
     // תוספת - שליפת התינוקות של ההורה
     useEffect(() => {
         const fetchBabies = async () => {
             try {
-               
                 const res = await axios.get(
                     `http://localhost:7002/user/my-babies/${parentId}`,
                     {
@@ -137,7 +116,7 @@ export default function UseCalendar() {
                         },
                     }
                 );
-                console.log("res"+res);
+                console.log("res" + res);
                 if (res.status === 200) {
                     const babyOptions = res.data.map(b => ({
                         label: b,
@@ -149,32 +128,30 @@ export default function UseCalendar() {
                 console.error("❌ שגיאה בשליפת תינוקות:", err);
             }
         };
-        const fetchNurses = async () => {
-            const nurseData = {};
-            await Promise.all(availableHours.map(async (slot) => {
-                const nurse = await getNameNurse(slot.label); // קבלת פרטי האחות
-                if (nurse)
-                    nurseData[slot.label] = nurse; // עדכון המידע
-            }));
-            setNurseDetails(nurseData); // עדכון עם כל הנתונים
-        };
+
         const fetchBabiesName = async () => {
             const BabyData = {};
             await Promise.all(babies.map(async (slot) => {
-                const baby = await getNameBaby(slot.label); // קבלת פרטי האחות
-                if (baby)
-                    BabyData[slot.label] = baby; // עדכון המידע
+                const baby = await getNameBaby(slot.label);
+                if (baby) BabyData[slot.label] = baby; // עדכון המידע
             }));
             setBabyDetails(BabyData); // עדכון עם כל הנתונים
         };
-        fetchNurses();
-        fetchBabies();
-        fetchBabiesName()
 
+        const fetchNurses = async () => {
+            const nurseData = {};
+            await Promise.all(availableHours.map(async (slot) => {
+                const nurse = await getNameNurse(slot.label);
+                if (nurse) nurseData[slot.label] = nurse; // עדכון המידע
+            }));
+            setNurseDetails(nurseData); // עדכון עם כל הנתונים
+        };
 
+        // שינוי הסדר: טעינת תינוקות לפני אחיות
+        fetchBabies()
+            .then(() => fetchBabiesName())
+            .then(() => fetchNurses());
     }, [availableHours]);
-
-
 
     // 🟡 **פונקציה להזמנת תור**
     const handleBookSlot = async () => {
@@ -186,14 +163,13 @@ export default function UseCalendar() {
         }
 
         try {
-            const timeAndId = availableHours.find((e) => e.value == selectedTime)
+            const timeAndId = availableHours.find((e) => e.value == selectedTime);
 
-            // שליחת ההזמנה
             const appointmentData = {
-                time: timeAndId.key, // הנח שהמשתנה selectedTime מכיל את השעה
+                time: timeAndId.key,
                 date: new Date(date) // המרת המשתנה date לאובייקט תאריך
+            };
 
-            }
             console.log("selectedBaby" + availableHours);
             const res = await axios.post('http://localhost:7002/appointment/', {
                 appointment_time: appointmentData,
@@ -208,17 +184,15 @@ export default function UseCalendar() {
             if (res.status === 201) {
                 alert('הזמנת התור בוצעה בהצלחה');
 
-                // עדכון השעות הפנויות אחרי ההזמנה
                 setAvailableHours(availableHours.filter(hour => hour.value !== selectedTime));
-
                 setSelectedAppointmentId(res.data._id); // שמירת ה-ID
-                const formattedDate = new Date(date).toLocaleDateString('en-CA'); // תאריך בפורמט ISO עם הזמן המקומי
-console.log("formattedDate"+formattedDate);
 
-                // קריאה לעדכון הדגל של השעה ל-true ביומן של האחות
+                const formattedDate = new Date(date).toLocaleDateString('en-CA');
+                console.log("formattedDate" + formattedDate);
+
                 await axios.put('http://localhost:7002/nurseScheduler/book-slot', {
                     nurseId: timeAndId.label,
-                    date:formattedDate,
+                    date: formattedDate,
                     selectedTime: timeAndId.key
                 }, {
                     headers: {
@@ -233,43 +207,7 @@ console.log("formattedDate"+formattedDate);
         }
     };
 
-    const handleCancelSlot = async () => {
-        if (!selectedAppointmentId) {
-            alert('לא נבחר תור לביטול');
-            return;
-        }
-
-        try {
-            // ביטול התור
-            const res = await axios.patch(`http://localhost:7002/appointment/cancel/${selectedAppointmentId}`, null, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                }
-            });
-
-            if (res.status === 200) {
-                // עדכון ביומן של האחות
-                await axios.patch(`http://localhost:7002/nurseScheduler/cancel-slot`, {
-                    date,
-                    time: selectedTime
-                }, {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    }
-                });
-
-                alert('התור בוטל בהצלחה');
-                // החזרת השעה לרשימת השעות
-                setAvailableHours(prev => [...prev, { label: selectedTime, value: selectedTime }]);
-                setSelectedTime(null);
-            } else {
-                alert('הייתה בעיה בביטול');
-            }
-        } catch (error) {
-            console.error('❌ שגיאה בביטול:', error);
-        }
-    };
-
+    
 
     return (
         <div className="card flex flex-column align-items-center justify-content-center">
@@ -304,9 +242,8 @@ console.log("formattedDate"+formattedDate);
                             <h4>בחר ילד:</h4>
                             <Dropdown
                                 value={selectedBaby}
-                                // options={babies}
                                 options={babies.map((baby) => ({
-                                    label: BabyDetails[baby.value] || baby.value, // אם שם התינוק זמין, השתמש בו, אחרת השתמש ב-ID
+                                    label: BabyDetails[baby.value] || baby.value,
                                     value: baby.value
                                 }))}
                                 onChange={(e) => setSelectedBaby(e.value)}
@@ -317,19 +254,29 @@ console.log("formattedDate"+formattedDate);
                     )}
                     {selectedTime && (
                         <div className="mt-4">
-                            <h4>בחרת את השעה: <span style={{ color: 'gold' }}>{selectedTime}</span></h4>
+                            <h4>
+                                בחרת את השעה:
+                                <span style={{ color: 'gold' }}>
+                                    {(() => {
+                                        const selectedSlot = availableHours.find((slot) => slot.value === selectedTime);
+                                        if (selectedSlot) {
+                                            return new Date(`1970-01-01T${selectedSlot.key}`).toLocaleTimeString('he-IL', {
+                                                hour: '2-digit',
+                                                minute: '2-digit'
+                                            });
+                                        } else {
+                                            return "שעה לא נבחרה או אינה תקינה";
+                                        }
+                                    })()}
+                                </span>
+                            </h4>
                             <Button
                                 label="הזמן תור"
                                 icon="pi pi-calendar-plus"
                                 className="p-button-warning mr-2"
                                 onClick={handleBookSlot}
                             />
-                            <Button
-                                label="בטל תור"
-                                icon="pi pi-times"
-                                className="p-button-danger"
-                                onClick={handleCancelSlot}
-                            />
+                        
                         </div>
                     )}
                 </>
@@ -339,5 +286,3 @@ console.log("formattedDate"+formattedDate);
         </div>
     );
 }
-
-

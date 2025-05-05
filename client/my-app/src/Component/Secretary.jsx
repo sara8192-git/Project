@@ -8,7 +8,9 @@ import {  Route, Routes } from 'react-router-dom'
 import AddBabySecretary from './AddBabySecretary'
 import AddScheduleNurse from './AddScheduleNurse'
 import defaultProfilePicture from "../picture/WIN_20250430_18_06_45_Pro.jpg";
-import { useSelector } from "react-redux"; // לשימוש בפרטי המשתמש מ-Redux
+import { useSelector ,useDispatch} from "react-redux"; // לשימוש בפרטי המשתמש מ-Redux
+import RegisterNurse from './RegisterNurse'
+import { logOut } from "../redux/tokenSlice"; // ייבוא הפעולה למחיקת הטוקן
 
 export default function Parent() {
     const name = useSelector((state) => state.token.user.name)
@@ -16,14 +18,20 @@ export default function Parent() {
     const profilePicture = user?.profilePicture
     ? `http://localhost:7002${user.profilePicture}` // נתיב מוחלט לתמונה שהועלתה
     : defaultProfilePicture; // תמונה דיפולטיבית
+    const dispatch = useDispatch(); // 🔹 מאפשר קריאה לפעולות Redux
+    
+    const handleLogout = () => {
+        dispatch(logOut()); // קריאה לפעולת מחיקת הטוקן
+        navigate('/login'); // ניתוב לדף הלוגין
+    };
 
     const navigate = useNavigate(); // 🔹 מאפשר ניווט לדפים אחרים
     const items = [
         {
-            label: 'Home',
+            label: 'RegisterNurse',
             icon: 'pi pi-home',
             command: () => {
-                navigate('./Home')
+                navigate('/secretary/RegisterNurse')
             }
         },
         {
@@ -46,6 +54,11 @@ export default function Parent() {
             command: () => {
               navigate('/secretary/ChatParent');
             }
+          },
+          {
+              label: 'Log Out', // 🔹 כפתור Log Out
+              icon: 'pi pi-sign-out',
+              command: handleLogout // קריאה לפונקציה
           }
           
     ];
@@ -74,6 +87,7 @@ const endTemplate = (
                 <Route path='/ChatParent' element={<ChatParent />} />
                 <Route path='/AddBabySecretary' element={<AddBabySecretary />} />
                 <Route path='/AddScheduleNurse' element={<AddScheduleNurse />} />
+                <Route path='/RegisterNurse' element={<RegisterNurse />} />
 
             </Routes>
         </div>

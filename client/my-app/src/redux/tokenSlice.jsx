@@ -12,8 +12,9 @@ const tokenSlice = createSlice({
             state.user=action.payload.user
             console.log(state.user);
         },
-        logOut(state, action) {
-            state.token = null;
+        logOut(state) {
+            state.token = null; // איפוס הטוקן
+            state.user = {};    // איפוס פרטי המשתמש
         }
     }
 })

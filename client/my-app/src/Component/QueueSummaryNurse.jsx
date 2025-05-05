@@ -1,21 +1,34 @@
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { useSelector } from 'react-redux';
-import { Button } from 'primereact/button';
+import { useSelector } from "react-redux";
+import { Button } from "primereact/button";
+import { Dialog } from "primereact/dialog";
+import axios from "axios";
+import AddMeasurementPage from "./AddMeasurementPage";
+import TestsAndStatistics from "./TestsAndStatistics";
 import ReportAbaby from "./ReportAbaby";
 
 export default function QueueSummaryNurse() {
   const [appointments, setAppointments] = useState([]);
   const [babyDetails, setBabyDetails] = useState({});
+  const [measurementModalVisible, setMeasurementModalVisible] = useState(false);
+  const [statisticsModalVisible, setStatisticsModalVisible] = useState(false);
+  const [selectedBabyId, setSelectedBabyId] = useState(null);
   const [visible, setVisible] = useState(false);
   const [selectedAppointment, setSelectedAppointment] = useState(null);
 
   const token = useSelector((state) => state.token.token);
   const user = useSelector((state) => state.token.user);
-  console.log(user);
-  
-  const navigate = useNavigate();
+
+  // פונקציה לעדכון סטטוס של תור מסוים
+  const updateAppointmentStatus = (appointmentId, updatedStatus) => {
+    setAppointments((prevAppointments) =>
+      prevAppointments.map((appt) =>
+        appt._id === appointmentId
+          ? { ...appt, status: updatedStatus || "לא ידוע" }
+          : appt
+      )
+    );
+  };
 
   const fetchAppointments = async () => {
     try {
@@ -47,15 +60,6 @@ export default function QueueSummaryNurse() {
       fetchAppointments();
     }
   }, [user]);
-
-  // פונקציה לעדכון סטטוס של תור מסוים
-  const updateAppointmentStatus = (appointmentId, updatedStatus) => {
-    setAppointments((prevAppointments) =>
-      prevAppointments.map((appt) =>
-        appt._id === appointmentId ? { ...appt, status: updatedStatus || "לא ידוע" } : appt
-      )
-    );
-  };
 
   const styles = {
     container: {
@@ -112,7 +116,7 @@ export default function QueueSummaryNurse() {
                 <div>
                   <p><strong>תינוק:</strong> {baby?.identity || "לא ידוע"}</p>
                   <p><strong>שעה:</strong> {appt.appointment_time?.time || "לא ידוע"}</p>
-                  <p><strong>בדיקה:</strong> {appt.status || "לא ידוע"}</p> {/* ערך ברירת מחדל */}
+                  <p><strong>בדיקה:</strong> {appt.status || "לא ידוע"}</p>
                 </div>
                 <div style={styles.buttonContainer}>
                   <Button
@@ -120,14 +124,20 @@ export default function QueueSummaryNurse() {
                     rounded
                     size="small"
                     style={styles.button}
-                    onClick={() => navigate(`/AddMeasurementPage/${baby?._id}`)}
+                    onClick={() => {
+                      setSelectedBabyId(baby?._id);
+                      setMeasurementModalVisible(true);
+                    }}
                   />
                   <Button
                     label="סטטיסטיקות"
                     rounded
                     size="small"
                     style={styles.button}
-                    onClick={() => navigate(`/TestsAndStatistics/${baby?._id}`)}
+                    onClick={() => {
+                      setSelectedBabyId(baby?._id);
+                      setStatisticsModalVisible(true);
+                    }}
                   />
                   <Button
                     label="דוח טיפול"
@@ -145,6 +155,32 @@ export default function QueueSummaryNurse() {
           })}
         </div>
       )}
+
+      {/* חלון צף עבור הוספת מדידה */}
+      <Dialog
+        header="הוספת מדידה"
+        visible={measurementModalVisible}
+        style={{ width: "50vw" }}
+        onHide={() => setMeasurementModalVisible(false)}
+      >
+        <AddMeasurementPage
+          babyId={selectedBabyId}
+          onClose={() => setMeasurementModalVisible(false)}
+        />
+      </Dialog>
+
+      {/* חלון צף עבור סטטיסטיקות */}
+      <Dialog
+        header="סטטיסטיקות גובה ומשקל"
+        visible={statisticsModalVisible}
+        style={{ width: "50vw", height: "40vh", borderRadius: "0" }} // הקטנת הרוחב והגובה
+        onHide={() => setStatisticsModalVisible(false)}
+      >
+        <TestsAndStatistics
+          babyId={selectedBabyId}
+          onClose={() => setStatisticsModalVisible(false)}
+        />
+      </Dialog>
 
       {selectedAppointment && (
         <ReportAbaby

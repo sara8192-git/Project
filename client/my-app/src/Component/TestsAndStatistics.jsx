@@ -1,30 +1,28 @@
 import React, { useState, useEffect } from 'react';
 import { Chart } from 'primereact/chart';
-import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import { useSelector } from 'react-redux';
 import { calculatePercentile } from '../utilities/percentileCalculator';
 import { growthDataByAge } from '../utilities/growthData';
 
-export default function TestsAndStatistics() {
-    const { id } = useParams();
+export default function TestsAndStatistics({ babyId, onClose }) {
     const [heightData, setHeightData] = useState({});
     const [weightData, setWeightData] = useState({});
     const [chartOptions, setChartOptions] = useState({});
     const [percentileResult, setPercentileResult] = useState({ height: null, weight: null });
-    const [babyData, setBabyData] = useState({}); // שמירת נתוני התינוק
+    const [babyData, setBabyData] = useState({});
     const token = useSelector((state) => state.token.token);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.get(`http://localhost:7002/baby/${id}`, {
+                const response = await axios.get(`http://localhost:7002/baby/${babyId}`, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
                 });
 
-                setBabyData(response.data); // שמירת נתוני התינוק
+                setBabyData(response.data);
                 const measurements = response.data.messure;
 
                 const heights = measurements.map((measure, index) => ({
@@ -73,46 +71,46 @@ export default function TestsAndStatistics() {
                     plugins: {
                         legend: {
                             labels: {
-                                color: textColor
-                            }
-                        }
+                                color: '#495057',
+                            },
+                        },
                     },
                     scales: {
                         x: {
                             type: 'linear',
                             position: 'bottom',
                             ticks: {
-                                color: textColorSecondary
+                                color: '#495057',
                             },
                             grid: {
-                                color: surfaceBorder
+                                color: '#ebedef',
                             },
                             title: {
                                 display: true,
                                 text: 'מספר מדידה',
-                                color: textColor,
                                 font: {
-                                    size: 14
-                                }
-                            }
+                                    size: 14,
+                                },
+                                color: '#495057',
+                            },
                         },
                         y: {
                             ticks: {
-                                color: textColorSecondary
+                                color: '#495057',
                             },
                             grid: {
-                                color: surfaceBorder
+                                color: '#ebedef',
                             },
                             title: {
                                 display: true,
-                                text: 'גובה / משקל',
-                                color: textColor,
+                                text: 'גובה (ס״מ)',
                                 font: {
-                                    size: 14
-                                }
-                            }
-                        }
-                    }
+                                    size: 14,
+                                },
+                                color: '#495057',
+                            },
+                        },
+                    },
                 });
             } catch (error) {
                 console.error('Error fetching data:', error);
@@ -120,7 +118,7 @@ export default function TestsAndStatistics() {
         };
 
         fetchData();
-    }, [id, token]); // הוספת token למערך התלויות
+    }, [babyId, token]);
 
     const calculateAgeInMonths = (dob) => {
         const birthDate = new Date(dob);
@@ -179,17 +177,16 @@ export default function TestsAndStatistics() {
     };
 
     return (
-        <div className="card">
-            <h2 className="text-xl font-bold mb-4 text-center">סטטיסטיקות גובה ומשקל</h2>
-            <div className="mb-6">
-                <h3 className="text-lg font-bold mb-2">גרף גובה</h3>
+        <div>
+            <h2>סטטיסטיקות גובה ומשקל</h2>
+            <div>
+                <h3>גרף גובה</h3>
                 <Chart type="line" data={heightData} options={chartOptions} />
             </div>
             <div>
-                <h3 className="text-lg font-bold mb-2">גרף משקל</h3>
+                <h3>גרף משקל</h3>
                 <Chart type="line" data={weightData} options={chartOptions} />
             </div>
-
             <button
                 onClick={calculatePercentileForBaby}
                 className="p-button p-component p-button-success mt-4">
@@ -203,6 +200,7 @@ export default function TestsAndStatistics() {
                     <p>משקל: {percentileResult.weight}</p>
                 </div>
             )}
+            <button onClick={onClose} className="p-button p-component p-button-secondary mt-4">סגור</button>
         </div>
     );
 }

@@ -42,7 +42,7 @@ const login = async (req, res) => {
 
 const register = async (req, res) => {
     try {
-        const { identity, name, email, password } = req.body;
+        const { identity, name, email, password, role } = req.body; // הוספת role
 
         // בדיקת שדות חובה
         if (!identity || !name || !email || !password) {
@@ -64,6 +64,7 @@ const register = async (req, res) => {
         if (duplicate) {
             return res.status(409).json({ message: 'קיים משתמש עם התז הנוכחי' });
         }
+
         // העלאת תמונה (אם קיימת)
         let profilePicturePath = null;
         if (req.file) {
@@ -73,13 +74,17 @@ const register = async (req, res) => {
         // הצפנת סיסמה
         const hashedPwd = await bcrypt.hash(password, 10);
 
+        // אם role לא סופק, ברירת המחדל היא "Parent"
+        const userRole = role ? role : "Parent";
+
         // יצירת אובייקט משתמש
         const userObject = {
             identity,
             name,
             email,
             password: hashedPwd,
-            profilePicture: profilePicturePath // שמירת נתיב התמונה
+            profilePicture: profilePicturePath, // שמירת נתיב התמונה
+            role: userRole // הוספת role לאובייקט המשתמש
         };
 
         // שמירת המשתמש בבסיס הנתונים

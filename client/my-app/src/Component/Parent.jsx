@@ -5,12 +5,14 @@ import BookedAppointmentParent from "./BookedAppointmentParent"
 import UseCalendar from './UseCalendar';
 import ChatParent from './ChatParent'
 import { Route, Routes } from 'react-router-dom'
-import { useSelector } from "react-redux"; // לשימוש בפרטי המשתמש מ-Redux
+import { useSelector, useDispatch } from "react-redux"; // לשימוש בפרטי המשתמש מ-Redux
 import defaultProfilePicture from "../picture/WIN_20250430_18_06_45_Pro.jpg";
+import { logOut } from "../redux/tokenSlice"; // ייבוא הפעולה למחיקת הטוקן
 
 export default function Parent() {
     const name = useSelector((state) => state.token.user.name)
     // 🔹 נתיב לתמונת פרופיל דיפולטיבית
+    const dispatch = useDispatch(); // 🔹 מאפשר קריאה לפעולות Redux
 
     // 🔹 פרטי המשתמש מ-Redux
     const user = useSelector((state) => state.token.user);
@@ -21,6 +23,11 @@ export default function Parent() {
         ? `http://localhost:7002${user.profilePicture}` // נתיב מוחלט לתמונה שהועלתה
         : defaultProfilePicture; // תמונה דיפולטיבית
     console.log(profilePicture);
+
+    const handleLogout = () => {
+        dispatch(logOut()); // קריאה לפעולת מחיקת הטוקן
+        navigate('/login'); // ניתוב לדף הלוגין
+    };
 
     const navigate = useNavigate(); // 🔹 מאפשר ניווט לדפים אחרים
     const items = [
@@ -51,6 +58,11 @@ export default function Parent() {
             command: () => {
                 navigate('/parent/ChatParent');
             }
+        },
+        {
+            label: 'Log Out', // 🔹 כפתור Log Out
+            icon: 'pi pi-sign-out',
+            command: handleLogout // קריאה לפונקציה
         }
 
     ];
