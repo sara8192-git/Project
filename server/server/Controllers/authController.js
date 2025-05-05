@@ -12,27 +12,29 @@ const login = async (req, res) => {
         if (!email || !password) {
             return res.status(400).json({ message: 'Both identity and password are required' })
         }
-        const foundUser = await User.find({ email }).lean()
-        if (foundUser.length == 0) {
-            return res.status(401).json({ message: 'Unauthorized - Invalid identity' })
+        const foundUser = await User.findOne({ email}).lean()
+        if (!foundUser) {
+            return res.status(401).json({ message: 'Unauthorized - Invalid email' })
         }
 
-        // const match = await bcrypt.compare(password, foundUser.password)
-        // console.log(match);
-        // if (!match) {
-        //     return res.status(401).json({ message: 'Unauthorized - Invalid password' })
-        // }
+        const match = await bcrypt.compare(password, foundUser.password)
+        console.log(match);
+        if (!match) {
+            return res.status(401).json({ message: 'Unauthorized - Invalid password' })
+        }
+        
         const userInfo = {
-            _id: foundUser[0]._id,
-            identity: foundUser[0].identity,
-            name: foundUser[0].name,
-            role: foundUser[0].role,
-            email: foundUser[0].email
+            _id: foundUser._id,
+            identity: foundUser.identity,
+            name: foundUser.name,
+            role: foundUser.role,
+            email: foundUser.email
         }
         // { expiresIn: '1h' }להוסיף אם רוצים הגבלת זמן לטוקן
         const accessToken = jwt.sign(userInfo, process.env.ACCESS_TOKEN_SECRET)
 
-        res.json({ accessToken, user: foundUser[0] })
+        res.json({ accessToken, user: foundUser })
+
     } catch (error) {
         console.error("❌ שגיאה במהלך לוגין:", error);
         return res.status(500).json({ message: 'Error during login', error })
