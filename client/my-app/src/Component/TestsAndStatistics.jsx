@@ -93,6 +93,8 @@ export default function TestsAndStatistics({ babyId, onClose }) {
                                 },
                                 color: '#495057',
                             },
+                            min: 0, // 🟨 הגדרת המינימום של ציר ה-X
+                            max: 10, // 🟨 הגדרת המקסימום של ציר ה-X
                         },
                         y: {
                             ticks: {
@@ -109,15 +111,26 @@ export default function TestsAndStatistics({ babyId, onClose }) {
                                 },
                                 color: '#495057',
                             },
+                            min: 0, // הגדרת המינימום של ציר ה-Y
+                            max: 40, // הגדרת המקסימום של ציר ה-Y
+                            beginAtZero: true, // ודא שהגרף מתחיל מאפס
                         },
                     },
                 });
+
             } catch (error) {
                 console.error('Error fetching data:', error);
             }
         };
 
+        // קריאה לנתונים בטעינה ראשונית
         fetchData();
+
+        // קריאה נוספת לאחר פתיחת החלון הצף
+        setTimeout(() => {
+            fetchData();
+        }, 300); // זמן המתנה קצר כדי לוודא שהחלון נטען במלואו
+
     }, [babyId, token]);
 
     const calculateAgeInMonths = (dob) => {
