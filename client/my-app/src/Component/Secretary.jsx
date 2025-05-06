@@ -42,7 +42,7 @@ export default function Parent() {
             }
         },
         {
-            label: 'הוספת מערכת שעות לתינוק',
+            label: 'הוספת מערכת שעות לאחות',
             icon: 'pi pi-search',
             command: () => {
                 navigate('/secretary/AddScheduleNurse')

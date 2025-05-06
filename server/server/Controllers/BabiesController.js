@@ -7,7 +7,7 @@ const creatNewBaby = async (req, res) => {
         if (!identity || !name || !dob || !parent_id)
             return res.status(400).json({ message: 'כל השדות חובה' })
 
-        const dupliidentity = await Babies.findOne({ identity:identity });
+        const dupliidentity = await Babies.findOne({ identity: identity });
         if (dupliidentity) {
             return res.status(409).json({ message: 'תעודת זהות של התינוק כבר קיימת' });
         }
@@ -16,7 +16,9 @@ const creatNewBaby = async (req, res) => {
             return res.status(400).json({ message: "תאריך לא תקין. יש להזין תאריך בפורמט YYYY-MM-DD" });
         }
         if (new Date(dob) > new Date()) return res.status(400).json({ message: "תאריך הלידה לא יכול להיות בעתיד" });
-
+        const parent1 = await User.findById(parent_id);
+        if (parent1.role != 'Parent')
+            return res.status(400).json({ message: "תעודת הזהות של ההורה אינה שייכת להורה  " });
         const baby = await Babies.create({ identity, name, dob, parent_id })
         if (baby) {
             const parent = await User.findById(parent_id);
@@ -123,8 +125,8 @@ const getBabiesById = async (req, res) => {
 
 }
 const getWeightsByBabyId = async (req, res) => {
-    const {id } = req.params; // קבלת ה-ID מהפרמטרים של ה-URL
-console.log(id);
+    const { id } = req.params; // קבלת ה-ID מהפרמטרים של ה-URL
+    console.log(id);
     try {
         // חיפוש התינוק לפי ID
         const baby = await Babies.findById(id);
@@ -144,8 +146,8 @@ console.log(id);
     }
 };
 const getHightssByBabyId = async (req, res) => {
-    const {id } = req.params; // קבלת ה-ID מהפרמטרים של ה-URL
-console.log(id);
+    const { id } = req.params; // קבלת ה-ID מהפרמטרים של ה-URL
+    console.log(id);
     try {
         // חיפוש התינוק לפי ID
         const baby = await Babies.findById(id);
@@ -167,10 +169,10 @@ console.log(id);
 const addMeasurement = async (req, res) => {
     try {
         const { identity, height, weight } = req.body
-        console.log( identity, height, weight);
+        console.log(identity, height, weight);
         if (!identity || !height || !weight)
             return res.status(400).json({ message: 'All fields are required' })
-    
+
         const baby = await Babies.findById(identity)
         if (!baby)
             return res.status(404).json({ message: 'Baby not found' })
@@ -196,6 +198,6 @@ module.exports = {
     addMeasurement,
     getWeightsByBabyId,
     getHightssByBabyId
-    
+
 }
 

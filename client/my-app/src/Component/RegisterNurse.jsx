@@ -148,7 +148,6 @@ const RegisterNurse = () => {
                             type="submit"
                             label="הצטרפות"
                             className="login-button"
-                            onClick={handleRegister}
                         />
                     </form>
 
