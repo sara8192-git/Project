@@ -4,6 +4,7 @@ import { Menubar } from 'primereact/menubar';
 import BookedAppointmentParent from "./BookedAppointmentParent"
 import UseCalendar from './UseCalendar';
 import ChatParent from './ChatParent'
+import Home from './Home'
 import { Route, Routes } from 'react-router-dom'
 import { useSelector, useDispatch } from "react-redux"; // לשימוש בפרטי המשתמש מ-Redux
 import defaultProfilePicture from "../picture/WIN_20250430_18_06_45_Pro.jpg";
@@ -35,7 +36,7 @@ export default function Parent() {
             label: 'בית',
             icon: 'pi pi-home',
             command: () => {
-                navigate('/Home')
+                navigate('/parent/Home')
             }
         },
         {
@@ -90,6 +91,8 @@ export default function Parent() {
                 <Route path='/BookedAppointmentParent' element={<BookedAppointmentParent />} />
                 <Route path='/UseCalendar' element={<UseCalendar />} />
                 <Route path='/ChatParent' element={<ChatParent />} />
+                <Route path='/Home' element={<Home />} />
+
             </Routes>
         </div>
     );

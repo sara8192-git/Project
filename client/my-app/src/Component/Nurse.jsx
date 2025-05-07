@@ -4,6 +4,8 @@ import { Menubar } from 'primereact/menubar';
 import QueueSummaryNurse from './QueueSummaryNurse'
 import { Route, Routes } from 'react-router-dom'
 import ChatNurse from './ChatNurse'
+import Home from './Home'
+
 import TestsAndStatistics from "./TestsAndStatistics"
 import defaultProfilePicture from "../picture/WIN_20250430_18_06_45_Pro.jpg";
 import { useSelector, useDispatch } from "react-redux"; // לשימוש בפרטי המשתמש מ-Redux
@@ -30,7 +32,7 @@ export default function Nurse() {
             label: 'בית',
             icon: 'pi pi-home',
             command: () => {
-                navigate('/Home')
+                navigate('/nurse/Home')
             }
         },
         {
@@ -78,6 +80,8 @@ export default function Nurse() {
                 <Route path='/QueueSummaryNurse' element={<QueueSummaryNurse />} />
                 <Route path='/ChatNurse' element={<ChatNurse />} /> {/* נתיב נכון */}
                 <Route path='/nurse/TestsAndStatistics/:id' element={<TestsAndStatistics />} />
+                <Route path='/Home' element={<Home />} />
+
             </Routes>
         </div>
     );
