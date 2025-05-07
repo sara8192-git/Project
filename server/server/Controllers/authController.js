@@ -13,7 +13,7 @@ const login = async (req, res) => {
             return res.status(400).json({ message: 'Both identity and password are required' })
         }
 
-        const foundUser = await User.findOne({ email}).lean()
+        const foundUser = await User.findOne({ email }).lean()
         if (!foundUser) {
             return res.status(401).json({ message: 'Unauthorized - Invalid email' })
         }
@@ -21,13 +21,13 @@ const login = async (req, res) => {
             throw new Error('Password or hash is missing');
         }
 
-console.log(password+"    "+foundUser.password);
+        console.log(password + "    " + foundUser.password);
         const match = await bcrypt.compare(password, foundUser.password)
         console.log(match);
         if (!match) {
             return res.status(401).json({ message: 'Unauthorized - Invalid password' })
         }
-        
+
         const userInfo = {
             _id: foundUser._id,
             identity: foundUser.identity,
@@ -50,11 +50,19 @@ console.log(password+"    "+foundUser.password);
 const register = async (req, res) => {
     try {
         const { identity, name, email, password, role } = req.body; // הוספת role
-        console.log("role"+role);
+        console.log("role" + role);
         // בדיקת שדות חובה
         if (!identity || !name || !email || !password) {
             return res.status(400).json({ message: 'כל השדות חובה' });
         }
+        const isNumeric = !isNaN(identity) && Number.isInteger(Number(identity));
+
+        if (!isNumeric) {
+            return res.status(409).json({message:"ה-תז מכיל תווים שאינם מספרים"});
+
+        } 
+        if(role!="Nurse"||role !="Secretary")
+            return res.status(409).json({message:"התפקיד חייב להיות מזכיר או אחות "});
 
         // בדיקת משתמש קיים
         const dupliemail = await User.findOne({ email: email }).lean();

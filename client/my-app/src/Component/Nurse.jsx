@@ -35,7 +35,7 @@ export default function Nurse() {
         },
         {
             label: 'התורים שלי',
-            icon: 'pi pi-star',
+            icon: 'pi pi-list-check',
             command: () => {
                 navigate('/nurse/QueueSummaryNurse')
             }

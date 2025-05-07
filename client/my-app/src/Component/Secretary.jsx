@@ -29,21 +29,21 @@ export default function Parent() {
     const items = [
         {
             label: 'הוסף אחות',
-            icon: 'pi pi-home',
+            icon: 'pi pi-users',
             command: () => {
                 navigate('/secretary/RegisterNurse')
             }
         },
         {
             label: 'הוספת תינוק',
-            icon: 'pi pi-star',
+            icon: 'pi pi-user',
             command: () => {
                 navigate('/secretary/AddBabySecretary')
             }
         },
         {
             label: 'הוספת מערכת שעות לאחות',
-            icon: 'pi pi-search',
+            icon: 'pi pi-calendar-times',
             command: () => {
                 navigate('/secretary/AddScheduleNurse')
             }

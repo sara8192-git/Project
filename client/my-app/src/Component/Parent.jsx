@@ -40,14 +40,14 @@ export default function Parent() {
         },
         {
             label: 'קביעת תור',
-            icon: 'pi pi-star',
+            icon: 'pi pi-calendar-times',
             command: () => {
                 navigate('/parent/UseCalendar')
             }
         },
         {
             label: 'התורים שלי',
-            icon: 'pi pi-search',
+            icon: 'pi pi-list-check',
             command: () => {
                 navigate('/parent/BookedAppointmentParent')
             }
