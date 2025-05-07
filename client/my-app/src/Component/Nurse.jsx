@@ -30,7 +30,7 @@ export default function Nurse() {
             label: 'בית',
             icon: 'pi pi-home',
             command: () => {
-                navigate('./Home')
+                navigate('/Home')
             }
         },
         {

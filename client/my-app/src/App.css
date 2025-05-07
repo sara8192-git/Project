@@ -61,18 +61,3 @@ body {
   background-color: #3f51b5;
   border: none;
 } */
-.parent-message {
-  text-align: right; /* הודעות ההורה יהיו מימין */
-  background-color: #e0f7fa; /* צבע רקע מותאם להודעות ההורה */
-  padding: 10px;
-  margin: 5px;
-  border-radius: 5px;
-}
-
-.nurse-message {
-  text-align: left; /* הודעות האחות יהיו משמאל */
-  background-color: #f1f8e9; /* צבע רקע מותאם להודעות האחות */
-  padding: 10px;
-  margin: 5px;
-  border-radius: 5px;
-}

@@ -35,7 +35,7 @@ export default function Parent() {
             label: 'בית',
             icon: 'pi pi-home',
             command: () => {
-                navigate('./Home')
+                navigate('/Home')
             }
         },
         {
