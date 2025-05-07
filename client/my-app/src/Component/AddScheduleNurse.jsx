@@ -31,6 +31,11 @@ const AddScheduleNurse = () => {
                     },
                 }
             );
+            
+            if(response.data.role!="Nurse"){
+                const errorMessage="התז שהוכנס אינו שיייך לאחות"
+                return toast.current.show({ severity: "error", summary: "Error", detail: errorMessage, life: 3000 });}
+
             handleAddBabySecretary(response.data._id);
         } catch (error) {
             const errorMessage = error.response?.data?.message || "שגיאה בחיבור לשרת";

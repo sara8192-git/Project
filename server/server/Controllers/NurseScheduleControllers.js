@@ -150,7 +150,7 @@ const createScheduleForNurse = async (req, res) => {
         // if (isNaN(startTime) || isNaN(endTime) || startTime < 0 || startTime >= 1440 || endTime <= 0 || endTime > 1440) {
         //     return res.status(400).json({ message: "שעות העבודה חייבות להיות בטווח 0-1440 דקות." });
         // }
-
+      
         if (startTime >= endTime) {
             return res.status(400).json({ message: "שעת הסיום חייבת להיות אחרי שעת ההתחלה." });
         }

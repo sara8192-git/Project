@@ -61,9 +61,7 @@ const register = async (req, res) => {
             return res.status(409).json({message:"ה-תז מכיל תווים שאינם מספרים"});
 
         } 
-        if(role!="Nurse"||role !="Secretary")
-            return res.status(409).json({message:"התפקיד חייב להיות מזכיר או אחות "});
-
+        
         // בדיקת משתמש קיים
         const dupliemail = await User.findOne({ email: email }).lean();
         if (dupliemail) {
