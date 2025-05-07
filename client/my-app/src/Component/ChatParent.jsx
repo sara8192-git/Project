@@ -147,7 +147,7 @@ export default function ChatParent() {
                             onKeyPress={handleKeyPress}
                             placeholder="Type your message..."
                         />
-                        <button onClick={sendMessage}>Send</button>
+                        <button >Send</button>
                     </div>
                 </>
             )}
