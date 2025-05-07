@@ -1719,7 +1719,7 @@ button:hover {
     transform: scale(1.1);
   }
   .chart-container {
-    width: 40%;  /* הגדרת רוחב הגרף ל-80% מהמסך */
+    width: 80%;  /* הגדרת רוחב הגרף ל-80% מהמסך */
     height: 300px;  /* הגדרת גובה הגרף */
     margin: 0 auto;  /* ממקם את הגרף במרכז */
 }
@@ -1733,3 +1733,55 @@ button:hover {
 .home-container {
     margin-top: 20px;
 }
+.chat-container {
+    max-width: 600px;
+    margin: 30px auto;
+    background-color: #f0f0f0;
+    border-radius: 12px;
+    padding: 16px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  }
+  
+  .message {
+    display: flex;
+    align-items: flex-end;
+    margin: 8px 0;
+  }
+  
+  .message .icon {
+    width: 32px;
+    height: 32px;
+    background-color: #ccc;
+    border-radius: 50%;
+    margin: 0 8px;
+  }
+  
+  .message-bubble {
+    padding: 10px 14px;
+    border-radius: 18px;
+    max-width: 70%;
+    position: relative;
+    word-wrap: break-word;
+    background-color: #fff;
+    box-shadow: 0 0 3px rgba(0,0,0,0.1);
+  }
+  
+  .message-parent {
+    justify-content: flex-end;
+  }
+  
+  .message-parent .message-bubble {
+    background-color: #d4f7dc;
+    border-bottom-right-radius: 4px;
+  }
+  
+  .message-nurse {
+    justify-content: flex-start;
+  }
+  
+  .message-nurse .message-bubble {
+    background-color: #ffffff;
+    border-bottom-left-radius: 4px;
+  }
+  
+ 
