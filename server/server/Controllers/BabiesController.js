@@ -11,6 +11,12 @@ const creatNewBaby = async (req, res) => {
         if (dupliidentity) {
             return res.status(409).json({ message: 'תעודת זהות של התינוק כבר קיימת' });
         }
+        const isNumeric = !isNaN(identity) && Number.isInteger(Number(identity));
+
+        if (!isNumeric) {
+            return res.status(409).json({message:"ה-תז מכיל תווים שאינם מספרים"});
+
+        } 
         const formattedDate = new Date(dob);
         if (isNaN(formattedDate.getTime())) {
             return res.status(400).json({ message: "תאריך לא תקין. יש להזין תאריך בפורמט YYYY-MM-DD" });

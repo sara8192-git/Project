@@ -45,6 +45,11 @@ const RegisterNurse = () => {
             formDataToSend.append("password", formData.password);
             formDataToSend.append("role", formData.role);
 
+            console.log("response"+formData.role);
+            if(formData.role!="Nurse")
+                return toast.current.show({ severity: "error", summary: "Error", detail: "התפקיד חייב להיות אחות  ", life: 3000 });
+
+    
             if (formData.profilePicture) {
                 formDataToSend.append("profilePicture", formData.profilePicture);
             }
@@ -53,7 +58,7 @@ const RegisterNurse = () => {
                 method: "POST",
                 body: formDataToSend // שליחת הנתונים כ-FormData
             });
-
+         
             const data = await response.json();
             if (response.ok) {
                 toast.current.show({ severity: "success", summary: "Success", detail: "נרשמת בהצלחה לטיפת חלב!", life: 3000 });
@@ -74,8 +79,8 @@ const RegisterNurse = () => {
             </div>
             <div className="login-right">
                 <div className="login-box">
-                    <h1>הצטרפות לאזור אישי</h1>
-                    <p>הזן את פרטיך כדי להירשם</p>
+                    <h1>  הוספת אחות</h1>
+                    <p>הזן את פרטיה כדי להירשם</p>
                     <form onSubmit={(e) => { e.preventDefault(); handleRegister(); }} className="p-fluid">
                         <div className="p-field">
                             <label>תעודת זהות</label>
