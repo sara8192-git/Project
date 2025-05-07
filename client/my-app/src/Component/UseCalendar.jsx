@@ -155,22 +155,23 @@ export default function UseCalendar() {
 
     // 🟡 **פונקציה להזמנת תור**
     const handleBookSlot = async () => {
-        console.log("aaaaaaaaaaaaaaaaaa");
-
+        console.log("התחלת תהליך הזמנת תור");
+    
         if (!selectedTime) {
             alert('אנא בחר שעה');
             return;
         }
-
+    
         try {
             const timeAndId = availableHours.find((e) => e.value == selectedTime);
-
+    
             const appointmentData = {
                 time: timeAndId.key,
                 date: new Date(date) // המרת המשתנה date לאובייקט תאריך
             };
-
-            console.log("selectedBaby" + availableHours);
+    
+            console.log("נתוני תור נבחרו:", appointmentData);
+    
             const res = await axios.post('http://localhost:7002/appointment/', {
                 appointment_time: appointmentData,
                 baby_id: selectedBaby,   //⭐ תוספת של התינוק
@@ -180,16 +181,16 @@ export default function UseCalendar() {
                     Authorization: `Bearer ${token}`,
                 }
             });
-
+    
             if (res.status === 201) {
                 alert('הזמנת התור בוצעה בהצלחה');
-
+    
                 setAvailableHours(availableHours.filter(hour => hour.value !== selectedTime));
                 setSelectedAppointmentId(res.data._id); // שמירת ה-ID
-
+    
                 const formattedDate = new Date(date).toLocaleDateString('en-CA');
-                console.log("formattedDate" + formattedDate);
-
+                console.log("formattedDate", formattedDate);
+    
                 await axios.put('http://localhost:7002/nurseScheduler/book-slot', {
                     nurseId: timeAndId.label,
                     date: formattedDate,
@@ -203,7 +204,13 @@ export default function UseCalendar() {
                 alert('הייתה בעיה בהזמנת התור');
             }
         } catch (error) {
-            console.error('❌ שגיאה בהזמנת תור:', error);
+            // טיפול בשגיאות מהשרת
+            if (error.response && error.response.status) {
+                alert(error.response.data.message || 'אירעה שגיאה בתהליך הזמנת התור.');
+            } else {
+                console.error('❌ שגיאה בהזמנת תור:', error);
+                alert('שגיאה לא ידועה התרחשה.');
+            }
         }
     };
 

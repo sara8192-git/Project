@@ -6,9 +6,23 @@ const jwt = require('jsonwebtoken'); // ודא שהחבילה מותקנת
 const createNewAppointments = async (req, res) => {
     try {
         const { appointment_time, nurse_id, baby_id } = req.body;
-console.log(appointment_time, nurse_id, baby_id);
+        console.log(appointment_time, nurse_id, baby_id);
+        // תאריך ושעה נוכחיים
+        const now = new Date();
+
+        // המרת השעה לפורמט 'HH:mm'
+        const time = now.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+
+        // המרת התאריך לפורמט ISO 8601
+        const date = now.toISOString();
+        console.log(date);
+
+        // השוואה בין התאריך הנוכחי לתאריך הקיים
+        if ( (date) > (appointment_time.date)) {
+            return res.status(409).json({ message:'התאריך הנוכחי מאוחר יותר מהתאריך הקיים.'});
+        } 
         const appointment = new Appointment({
-            baby_id:baby_id,
+            baby_id: baby_id,
             appointment_time,
             nurse_id,
         });
@@ -138,41 +152,41 @@ const getAppointmentsByDate = async (req, res) => {
         });
 
     } catch (error) {
-    
+
         return res.status(500).json({ message: 'Server error', error: error.message });
     }
 };
 
 const getAppointmentByNurseId = async (req, res) => {
     const { nurse_id } = req.params
-    
+
     if (!nurse_id) {
         return res.status(400).json({ message: "יש לספק מזהה אחות  ." });
     }
 
     // Get single task from MongoDB
-    const Appointments = await Appointment.find({nurse_id:nurse_id});
+    const Appointments = await Appointment.find({ nurse_id: nurse_id });
     // If no tasks
     console.log(Appointments);
-    
-    if (!Appointments ) {
+
+    if (!Appointments) {
         return res.status(400).json({ message: 'No Appointment found' })
     }
     res.json(Appointments)
 }
 const getAppointmentByBabyId = async (req, res) => {
     const { baby_id } = req.params
-    
+
     if (!baby_id) {
         return res.status(400).json({ message: "יש לספק מזהה אחות  ." });
     }
 
     // Get single task from MongoDB
-    const Appointments = await Appointment.find({baby_id:baby_id});
+    const Appointments = await Appointment.find({ baby_id: baby_id });
     // If no tasks
     console.log(Appointments);
-    
-    if (!Appointments ) {
+
+    if (!Appointments) {
         return res.status(400).json({ message: 'No Appointment found' })
     }
     res.json(Appointments)
@@ -187,7 +201,7 @@ const deleteAppointment = async (req, res) => {
         }
 
         const appointment = await Appointment.findById(_id).exec()
-        console.log("appointment"+appointment+"_id"+_id);
+        console.log("appointment" + appointment + "_id" + _id);
         if (!appointment) {
             return res.status(400).json({ message: 'Appointment not found' })
         }
@@ -214,7 +228,7 @@ const updateAppointmentStatus = async (req, res) => {
         }
 
         // עדכון הסטטוס
-        appointment.status =  "completed"
+        appointment.status = "completed"
 
         await appointment.save();
         return res.status(200).json({ message: 'Appointment status updated successfully', appointment });
