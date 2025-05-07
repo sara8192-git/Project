@@ -50,7 +50,7 @@ console.log(password+"    "+foundUser.password);
 const register = async (req, res) => {
     try {
         const { identity, name, email, password, role } = req.body; // הוספת role
-
+        console.log("role"+role);
         // בדיקת שדות חובה
         if (!identity || !name || !email || !password) {
             return res.status(400).json({ message: 'כל השדות חובה' });

@@ -16,7 +16,7 @@ const RegisterNurse = () => {
         name: "",
         email: "",
         password: "",
-        role: "",
+        role: "Nurse",
         emailDomain: "@gmail.com",
         profilePicture: null // שמירת התמונה שהועלתה
     });
@@ -99,7 +99,7 @@ const RegisterNurse = () => {
                             <label>תפקיד</label>
                             <InputText
                                 id="role"
-                                value={formData.role || "Nurse"} // אם אין ערך, מציג "Nurse" כערך ברירת מחדל
+                                value={formData.role } // אם אין ערך, מציג "Nurse" כערך ברירת מחדל
                                 onChange={(e) => handleChange(e, "role")}
                                 placeholder="כתוב תפקיד"
                             />

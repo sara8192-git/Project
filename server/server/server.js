@@ -5,8 +5,6 @@ const mongoose = require("mongoose");
 const corsOptions = require("./config/corsOptions");
 const connectDB = require("./config/dbConn");
 const nodemailer = require("nodemailer");
-const messageRoutes = require('./Routes/messageRoutes');
-const chatRoomRoutes = require('./Routes/chatRoomRoutes');
 const path = require('path');
 
 const PORT = process.env.PORT || 7002;
@@ -92,8 +90,6 @@ app.use("/baby", require("./Routes/BabiesRout"));
 app.use("/testResults", require("./Routes/TestResultRout"));
 app.use("/auth", require("./Routes/authRoutes"));
 app.use("/nurseScheduler", require("./Routes/NurseScheduleroute"));
-app.use('/messages', messageRoutes);
-app.use('/chatrooms', chatRoomRoutes);
 
 // התחברות למסד נתונים והרצת השרת
 mongoose.connection.once("open", () => {

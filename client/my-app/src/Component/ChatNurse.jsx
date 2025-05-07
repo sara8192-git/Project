@@ -147,7 +147,7 @@ export default function ChatNurse() {
                             onKeyPress={handleKeyPress}
                             placeholder="Type your message..."
                         />
-                        <button onClick={sendMessage}>Send</button>
+                        <button >Send</button>
                     </div>
                 </>
             )}

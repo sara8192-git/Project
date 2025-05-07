@@ -1,13 +1,12 @@
 const Appointment = require('../models/Appointments')
 const jwt = require('jsonwebtoken'); // ודא שהחבילה מותקנת
 
-// יצירת תור חדש
+
 // יצירת תור חדש
 const createNewAppointments = async (req, res) => {
     try {
         const { appointment_time, nurse_id, baby_id } = req.body;
 console.log(appointment_time, nurse_id, baby_id);
-        // יצירת תור חדש
         const appointment = new Appointment({
             baby_id:baby_id,
             appointment_time,
@@ -119,19 +118,17 @@ const getAppointmentsByDate = async (req, res) => {
                 return res.status(400).json({ message: "Date parameter is required" });
             }
 
-            // ✅ המרה של התאריך לפורמט Date כדי לבצע השוואה תקינה
             const selectedDate = new Date(date);
             selectedDate.setHours(0, 0, 0, 0);
 
             const nextDay = new Date(selectedDate);
             nextDay.setDate(nextDay.getDate() + 1);
 
-            // ✅ חיפוש תורים בתאריך הנתון
+            // חיפוש תורים בתאריך הנתון
             const appointments = await Appointment.find({
                 appointment_time: { $gte: selectedDate, $lt: nextDay } // משתמשים בטווח תאריכים
             }).lean();
 
-            console.log("Appointments found:", appointments); // 🔥 הדפסה לדיבוג
 
             if (!appointments.length) {
                 return res.status(404).json({ message: 'No appointments found for this date' });
@@ -141,7 +138,7 @@ const getAppointmentsByDate = async (req, res) => {
         });
 
     } catch (error) {
-        console.error("Error in getAppointmentsByDate:", error); // 🔥 דיבוג
+    
         return res.status(500).json({ message: 'Server error', error: error.message });
     }
 };

@@ -154,14 +154,14 @@ const createScheduleForNurse = async (req, res) => {
         if (startTime >= endTime) {
             return res.status(400).json({ message: "שעת הסיום חייבת להיות אחרי שעת ההתחלה." });
         }
-        // 🟡 בדיקת תקינות ObjectId
+        //  בדיקת תקינות ObjectId
         if (!mongoose.Types.ObjectId.isValid(identity)) {
             return res.status(400).json({ message: "ה-identity שסופק אינו ObjectId חוקי" });
         }
-        // 🟡 המרת identity ל-ObjectId
+        //  המרת identity ל-ObjectId
         const nurseId = new mongoose.Types.ObjectId(identity);
 
-        // 🟡 המרת workingDay לתאריך תקין
+        //  המרת workingDay לתאריך תקין
         const formattedDate = new Date(workingDay);
         if (isNaN(formattedDate.getTime())) {
             return res.status(400).json({ message: "תאריך לא תקין. יש להזין תאריך בפורמט YYYY-MM-DD" });
@@ -190,7 +190,7 @@ const createScheduleForNurse = async (req, res) => {
     }
 };
 
-// 🎯 שליפת שעות פנויות של אחות ביום מסוים
+//שליפת שעות פנויות של אחות ביום מסוים
 
 const getAvailableSlots = async (req, res) => {
 
@@ -223,7 +223,7 @@ const getAvailableSlots = async (req, res) => {
     }
 };
 
-// 🎯 הזמנת שעה מסוימת (עדכון סטטוס)
+//  הזמנת שעה מסוימת (עדכון סטטוס)
 const bookSlot = async (req, res) => {
     try {
         const { nurseId, date, selectedTime } = req.body;
