@@ -8,7 +8,7 @@ export default function Home() {
     useEffect(() => {
         // הגדרת הנתונים לגרף
         const data = {
-            labels: ['אחוזי מרוצים', 'אחוזי חיסונים', 'שימור תינוקות עם מעקב'],
+            labels: ['אחוזי לקוחות מרוצים', 'אחוזי חיסונים', 'שימור תינוקות עם מעקב'],
             datasets: [
                 {
                     label: 'סטטיסטיקות טיפת חלב',
@@ -80,11 +80,13 @@ export default function Home() {
                 <section className="testimonials">
                     <h2>מה הלקוחות שלנו אומרים</h2>
                     <div className="testimonial">
-                        <p>"הצוות היה מדהים ותומך לאורך כל הדרך!"</p>
+                    <p>"הרגשתי בטוחה ומודרכת בכל שלב."</p>
+
                         <span>- אמא מרוצה</span>
                     </div>
                     <div className="testimonial">
-                        <p>"הרגשתי בטוחה ומודרכת בכל שלב."</p>
+                    <p>"הצוות היה מדהים ותומך לאורך כל הדרך!"</p>
+
                         <span>- אבא מרוצה</span>
                     </div>
                 </section>

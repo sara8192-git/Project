@@ -157,8 +157,9 @@ export default function ChatParent() {
               onKeyPress={handleKeyPress}
               placeholder="הקלד הודעה..."
             />
-            <button >שלח</button>
-          </div>
+<button>
+    <i className="pi pi-send"></i>
+</button>          </div>
         </>
       )}
     </div>

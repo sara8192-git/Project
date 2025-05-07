@@ -44,13 +44,13 @@ export default function ChatNurse() {
             [message.chatRoomId]: true,
           }));
         } else {
-          setMessages((prev) => {
-            if (!prev.some((msg) => msg.timestamp === message.timestamp)) {
-              return [...prev, message];
-            }
-            return prev;
-          });
-          setHighlightedSender(message.user);
+            if (!messages.some((msg) => msg.timestamp === message.timestamp)) {
+              setMessages((prev) => 
+                  [...prev, message]);
+                  setHighlightedSender(message.user);
+
+            
+          };
         }
       });
 
@@ -58,7 +58,7 @@ export default function ChatNurse() {
         socket.off("newMessage");
       };
     }
-  }, [selectedParent]);
+  }, [selectedParent, messages]);
 
   const playSound = () => {
     const audio = new Audio(sound);
@@ -101,7 +101,7 @@ export default function ChatNurse() {
 
   return (
     <div className="chat-container">
-      <div className="parent-selection">
+      <div className="nurse-selection">
         <label>בחר הורה:</label>
         <select onChange={(e) => selectParent(e.target.value)} value={selectedParent}>
           <option value="">--בחר--</option>
@@ -111,7 +111,7 @@ export default function ChatNurse() {
               value={parent.name}
               className={highlightedSender === parent.name ? "highlight" : ""}
             >
-              {unreadMessages[`${parent.name}-${userName}`]
+              {unreadMessages[`${userName}-${parent.name}`]
                 ? `🔴 ${parent.name}`
                 : parent.name}
             </option>
@@ -126,10 +126,10 @@ export default function ChatNurse() {
               <div
                 key={index}
                 className={`message ${
-                  msg.userRole === "parent" ? "message-parent" : "message-nurse"
+                  msg.user === userName ? "message-parent" : "message-nurse"
                 }`}
               >
-                {msg.userRole === "parent" && <div className="icon"></div>}
+                {msg.user === userName && <div className="icon"></div>}
                 <div className="message-bubble">
                 <div className="chat-user">
                 <strong>{msg.user}:</strong> {/* הוספת שם השולח */}
@@ -144,7 +144,7 @@ export default function ChatNurse() {
                     </div>
                   )}
                 </div>
-                {msg.userRole === "nurse" && <div className="icon"></div>}
+                {msg.user === userName && <div className="icon"></div>}
               </div>
             ))}
           </div>
@@ -157,8 +157,9 @@ export default function ChatNurse() {
               onKeyPress={handleKeyPress}
               placeholder="הקלד הודעה..."
             />
-            <button >שלח</button>
-          </div>
+<button>
+    <i className="pi pi-send"></i>
+</button>          </div>
         </>
       )}
     </div>
