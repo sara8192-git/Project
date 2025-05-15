@@ -86,7 +86,6 @@ const deleteTestResults = async (req, res) => {
     }
 }
 
-// קבלת תוצאות בדיקות לפי מזהה חולה
 const getTestResultById = async (req, res) => {
     try {
         const { _id } = req.params

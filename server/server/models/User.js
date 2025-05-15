@@ -31,9 +31,9 @@ const UserSchema = new mongoose.Schema({
             return this.role === 'Parent' ? [] : undefined;
         }
     },
-    profilePicture: { // שדה חדש לשמירת נתיב התמונה
+    profilePicture: {
         type: String,
-        allowNull: true, // לא חובה
+        allowNull: true, 
     },
 }
     , { timestamps: true })

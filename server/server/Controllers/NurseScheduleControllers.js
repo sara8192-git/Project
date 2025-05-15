@@ -115,7 +115,6 @@ const { format } = require('date-fns');
 //         return res.status(500).json({ message: 'Error fetching schedules for nurse', error })
 //     }
 // }
-// פונקציה ליצירת שעות עבודה (חצי שעה הפרש)
 const generateTimeSlots = (startTime, endTime, interval = 30) => {
     const [startHours, startMinutes] = startTime.split(':').map(Number);
     const [endHours, endMinutes] = endTime.split(':').map(Number);
@@ -136,7 +135,6 @@ const generateTimeSlots = (startTime, endTime, interval = 30) => {
 
     return slots;
 };
-//  יצירת מערכת שעות לאחות
 const createScheduleForNurse = async (req, res) => {
     try {
         const { identity, workingDay, startTime, endTime } = req.body;
@@ -154,20 +152,16 @@ const createScheduleForNurse = async (req, res) => {
         if (startTime >= endTime) {
             return res.status(400).json({ message: "שעת הסיום חייבת להיות אחרי שעת ההתחלה." });
         }
-        //  בדיקת תקינות ObjectId
         if (!mongoose.Types.ObjectId.isValid(identity)) {
             return res.status(400).json({ message: "ה-identity שסופק אינו ObjectId חוקי" });
         }
-        //  המרת identity ל-ObjectId
         const nurseId = new mongoose.Types.ObjectId(identity);
 
-        //  המרת workingDay לתאריך תקין
         const formattedDate = new Date(workingDay);
         if (isNaN(formattedDate.getTime())) {
             return res.status(400).json({ message: "תאריך לא תקין. יש להזין תאריך בפורמט YYYY-MM-DD" });
         }
 
-        // בדיקה אם כבר קיימת מערכת שעות לאותו יום
 
         const existingSchedule = await NurseSchedule.findOne({ identity: identity, working_day: new Date(workingDay) });
             if (existingSchedule) {
@@ -190,7 +184,6 @@ const createScheduleForNurse = async (req, res) => {
     }
 };
 
-//שליפת שעות פנויות של אחות ביום מסוים
 
 const getAvailableSlots = async (req, res) => {
 
@@ -204,7 +197,7 @@ const getAvailableSlots = async (req, res) => {
         }
         console.log(working_day + "   " + new Date(working_day + 'T00:00:00Z'));
         console.log(working_day + "T00:00:00.000+00:00");
-        const dateToCheck = new Date(working_day);//+ 'T00:00:00Z'
+        const dateToCheck = new Date(working_day);
         console.log(dateToCheck);
         // const schedule = await NurseSchedule.findOne({ _id: _id, working_day: new Date(working_day+ 'T00:00:00Z') });
         const schedule = await NurseSchedule.findOne({
@@ -223,12 +216,10 @@ const getAvailableSlots = async (req, res) => {
     }
 };
 
-//  הזמנת שעה מסוימת (עדכון סטטוס)
 const bookSlot = async (req, res) => {
     try {
         const { nurseId, date, selectedTime } = req.body;
 
-        // בדיקות ולידציה
         if (!nurseId || !date || !selectedTime) {
             return res.status(400).json({ message: "יש לספק מזהה אחות, תאריך ושעת תור." });
         }
@@ -276,7 +267,7 @@ const getAvailablebyDate = async (req, res) => {
             return res.status(400).json({ message: "יש לספק מזהה אחות ויום עבודה." });
         }
 
-        const dateToCheck = new Date(working_day);//+ 'T00:00:00Z'
+        const dateToCheck = new Date(working_day);
 
         // const schedule = await NurseSchedule.findOne({ _id: _id, working_day: new Date(working_day+ 'T00:00:00Z') });
         const schedule = await NurseSchedule.find({
@@ -343,7 +334,6 @@ const bookTimeSlot = async (req, res) => {
             return res.status(404).json({ message: "לא נמצאה מערכת שעות לאחות ביום הזה." });
         }
 
-        // למצוא את השעה המתאימה
         const slot = schedule.available_slots.find(slot => slot.time === time);
 
         if (!slot) {
@@ -354,7 +344,6 @@ const bookTimeSlot = async (req, res) => {
             return res.status(400).json({ message: "השעה כבר מוזמנת." });
         }
 
-        // לסמן אותה כתפוסה
         slot.is_booked = true;
 
         await schedule.save();
@@ -378,5 +367,5 @@ module.exports = {
     //          updateNurseSchedule ,
     //          deleteNurseSchedule,
     //          getNurseScheduleById,
-    //          getSchedulesByNurseId//רק הוספתי פה בלי ברוטר והמידל...
+    //          getSchedulesByNurseId
 }

@@ -131,18 +131,15 @@ const getBabiesById = async (req, res) => {
 
 }
 const getWeightsByBabyId = async (req, res) => {
-    const { id } = req.params; // קבלת ה-ID מהפרמטרים של ה-URL
+    const { id } = req.params; 
     console.log(id);
     try {
-        // חיפוש התינוק לפי ID
         const baby = await Babies.findById(id);
 
-        // בדיקה אם התינוק לא נמצא
         if (!baby) {
             return res.status(404).json({ message: 'Baby not found' });
         }
 
-        // יצירת מערך של כל המשקלים של התינוק
         const weights = baby.messure.map(measure => measure.weight);
 
         res.status(200).json({ weights });
@@ -152,18 +149,15 @@ const getWeightsByBabyId = async (req, res) => {
     }
 };
 const getHightssByBabyId = async (req, res) => {
-    const { id } = req.params; // קבלת ה-ID מהפרמטרים של ה-URL
+    const { id } = req.params; 
     console.log(id);
     try {
-        // חיפוש התינוק לפי ID
         const baby = await Babies.findById(id);
 
-        // בדיקה אם התינוק לא נמצא
         if (!baby) {
             return res.status(404).json({ message: 'Baby not found' });
         }
 
-        // יצירת מערך של כל המשקלים של התינוק
         const weights = baby.messure.map(measure => measure.height);
 
         res.status(200).json({ height });
@@ -183,7 +177,6 @@ const addMeasurement = async (req, res) => {
         if (!baby)
             return res.status(404).json({ message: 'Baby not found' })
 
-        // מחפש אם יש כבר measurements ומעדכן אם כן
         baby.messure.push({ height, weight });
         await baby.save();
 

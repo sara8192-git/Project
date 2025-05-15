@@ -7,17 +7,13 @@ const createNewAppointments = async (req, res) => {
     try {
         const { appointment_time, nurse_id, baby_id } = req.body;
         console.log(appointment_time, nurse_id, baby_id);
-        // תאריך ושעה נוכחיים
         const now = new Date();
 
-        // המרת השעה לפורמט 'HH:mm'
         const time = now.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
 
-        // המרת התאריך לפורמט ISO 8601
         const date = now.toISOString();
         console.log(date);
 
-        // השוואה בין התאריך הנוכחי לתאריך הקיים
         if ( (date) > (appointment_time.date)) {
             return res.status(409).json({ message:'התאריך הנוכחי מאוחר יותר מהתאריך הקיים.'});
         } 
@@ -43,7 +39,6 @@ const getAllAppointments = async (req, res) => {
     res.json(Appointments)
 
 }
-// עדכון תור
 const updateAppointment = async (req, res) => {
     try {
         const { _id, appointment_time, status } = req.body;
@@ -52,13 +47,11 @@ const updateAppointment = async (req, res) => {
             return res.status(400).json({ message: 'Appointment ID is required' });
         }
 
-        // מציאת התור על ידי ID
         const appointment = await Appointment.findById(_id).exec();
         if (!appointment) {
             return res.status(400).json({ message: 'Appointment not found' });
         }
 
-        // עדכון פרטי התור
         appointment.appointment_time = appointment_time || appointment.appointment_time;
         appointment.status = status || appointment.status;
 
@@ -78,16 +71,13 @@ const cancelAppointment = async (req, res) => {
             return res.status(400).json({ message: 'Appointment ID is required' });
         }
 
-        // מציאת התור על ידי ID
         const appointment = await Appointment.findById(_id).exec();
         if (!appointment) {
             return res.status(400).json({ message: 'Appointment not found' });
         }
-        // בדיקה שהיוזר הוא הבעלים של התור
         if (appointment.user_id.toString() !== decoded.userId) {
             return res.status(403).json({ message: 'You are not authorized to cancel this appointment' });
         }
-        // עדכון סטטוס
         appointment.status = 'מבוטל';
         await appointment.save();
         return res.status(200).json({ message: 'Appointment change status' });
@@ -99,9 +89,7 @@ const cancelAppointment = async (req, res) => {
 
 const getAppointmentById = async (req, res) => {
     const { _id } = req.params
-    // Get single task from MongoDB
     const Appointments = await Appointment.findById(_id).lean()
-    // If no tasks
     if (!Appointments || !_id) {
         return res.status(400).json({ message: 'No Appointment found' })
     }
@@ -112,21 +100,20 @@ const getAppointmentsByDate = async (req, res) => {
     console.log(req.headers['authorization']);
     try {
 
-        const token = req.headers['authorization']?.split(' ')[1]; // 'Bearer <token>'
+        const token = req.headers['authorization']?.split(' ')[1]; 
         if (!token) {
-            return res.status(401).json({ message: 'No token provided' }); // אם לא קיים טוקן
+            return res.status(401).json({ message: 'No token provided' }); 
         }
 
-        jwt.verify(token, 'your-secret-key', async (err, decoded) => { // הוספתי `async`
-            console.log("Decoded token:", decoded);  // הצגת המידע מהטוקן
+        jwt.verify(token, 'your-secret-key', async (err, decoded) => { 
+            console.log("Decoded token:", decoded); 
 
             if (err) {
                 return res.status(401).json({ message: 'Unauthorized' });
             }
 
-            req.user = decoded; // שמירת המידע על המשתמש מהטוקן
+            req.user = decoded; 
 
-            // ✅ עכשיו נוודא שהתאריך נשלח בבקשה
             const { date } = req.params;
             if (!date) {
                 return res.status(400).json({ message: "Date parameter is required" });
@@ -138,9 +125,8 @@ const getAppointmentsByDate = async (req, res) => {
             const nextDay = new Date(selectedDate);
             nextDay.setDate(nextDay.getDate() + 1);
 
-            // חיפוש תורים בתאריך הנתון
             const appointments = await Appointment.find({
-                appointment_time: { $gte: selectedDate, $lt: nextDay } // משתמשים בטווח תאריכים
+                appointment_time: { $gte: selectedDate, $lt: nextDay } 
             }).lean();
 
 
@@ -164,9 +150,7 @@ const getAppointmentByNurseId = async (req, res) => {
         return res.status(400).json({ message: "יש לספק מזהה אחות  ." });
     }
 
-    // Get single task from MongoDB
     const Appointments = await Appointment.find({ nurse_id: nurse_id });
-    // If no tasks
     console.log(Appointments);
 
     if (!Appointments) {
@@ -181,9 +165,7 @@ const getAppointmentByBabyId = async (req, res) => {
         return res.status(400).json({ message: "יש לספק מזהה אחות  ." });
     }
 
-    // Get single task from MongoDB
     const Appointments = await Appointment.find({ baby_id: baby_id });
-    // If no tasks
     console.log(Appointments);
 
     if (!Appointments) {
@@ -221,13 +203,11 @@ const updateAppointmentStatus = async (req, res) => {
             return res.status(400).json({ message: 'Appointment ID is required' });
         }
 
-        // מציאת התור על ידי ID
         const appointment = await Appointment.findById(_id).exec();
         if (!appointment) {
             return res.status(404).json({ message: 'Appointment not found' });
         }
 
-        // עדכון הסטטוס
         appointment.status = "completed"
 
         await appointment.save();

@@ -35,13 +35,12 @@ const login = async (req, res) => {
             role: foundUser.role,
             email: foundUser.email
         }
-        // { expiresIn: '1h' }להוסיף אם רוצים הגבלת זמן לטוקן
         const accessToken = jwt.sign(userInfo, process.env.ACCESS_TOKEN_SECRET)
 
         res.json({ accessToken, user: foundUser })
 
     } catch (error) {
-        console.error("❌ שגיאה במהלך לוגין:", error);
+        console.error(" שגיאה במהלך לוגין:", error);
         return res.status(500).json({ message: 'Error during login', error })
     }
 }
@@ -49,9 +48,8 @@ const login = async (req, res) => {
 
 const register = async (req, res) => {
     try {
-        const { identity, name, email, password, role } = req.body; // הוספת role
+        const { identity, name, email, password, role } = req.body; 
         console.log("role" + role);
-        // בדיקת שדות חובה
         if (!identity || !name || !email || !password) {
             return res.status(400).json({ message: 'כל השדות חובה' });
         }
@@ -62,7 +60,6 @@ const register = async (req, res) => {
 
         } 
         
-        // בדיקת משתמש קיים
         const dupliemail = await User.findOne({ email: email }).lean();
         if (dupliemail) {
             return res.status(409).json({ message: 'המייל הנוכחי שייך למשתמש שונה' });
@@ -78,29 +75,24 @@ const register = async (req, res) => {
             return res.status(409).json({ message: 'קיים משתמש עם התז הנוכחי' });
         }
 
-        // העלאת תמונה (אם קיימת)
         let profilePicturePath = null;
         if (req.file) {
             profilePicturePath = `/uploads/${req.file.filename}`;
         }
 
-        // הצפנת סיסמה
         const hashedPwd = await bcrypt.hash(password, 10);
 
-        // אם role לא סופק, ברירת המחדל היא "Parent"
         const userRole = role ? role : "Parent";
 
-        // יצירת אובייקט משתמש
         const userObject = {
             identity,
             name,
             email,
             password: hashedPwd,
-            profilePicture: profilePicturePath, // שמירת נתיב התמונה
-            role: userRole // הוספת role לאובייקט המשתמש
+            profilePicture: profilePicturePath, 
+            role: userRole 
         };
 
-        // שמירת המשתמש בבסיס הנתונים
         const user = await User.create(userObject);
 
         if (user) {

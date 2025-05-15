@@ -7,7 +7,6 @@ const creatNewUsers = async (req, res) => {
             return res.status(400).json({ message: 'All fields (identity, name, email, password, role) are required' })
         }
 
-        // בדיקת קיום משתמש קיים לפי אימייל
         const existingUser = await Users.findOne({ email })
         if (existingUser) {
             return res.status(400).json({ message: 'User with this email already exists' })

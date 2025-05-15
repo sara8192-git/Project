@@ -16,7 +16,6 @@ const verifyJWT = (req, res, next) => {
                 message: 'Forbidden - Invalid or expired token'
             })
         }
-//מדוע לא מוכן לעשות את הפונקציות בפוסטמן אם יש את הif הזה??
         req.user = decoded
         next()
     })

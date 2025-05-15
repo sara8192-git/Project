@@ -11,8 +11,8 @@ const NurseScheduleSchema = new mongoose.Schema({
         format:('YYYY-MM-DD'),
         required: true
     }, 
-    available_slots: [{  // מערך של שעות פנויות 
-        time: String, // למשל: "09:00"
+    available_slots: [{  
+        time: String, 
         is_booked: { type: Boolean, default: false }
     }]
     // satrt_time:{
